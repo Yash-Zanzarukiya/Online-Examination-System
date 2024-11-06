@@ -1,4 +1,4 @@
-package com.yashpz.examination_system.examination_system.models;
+package com.yashpz.examination_system.examination_system.utils;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,12 +8,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public class ApiResponse<T> {
-    private int statusCode;
-    private T data;
-    private String message;
-    private boolean success;
+    private final int statusCode;
+    private final T data;
+    private final String message;
+    private final boolean success;
 
     public ApiResponse(int statusCode, T data, String message) {
         this.statusCode = statusCode;

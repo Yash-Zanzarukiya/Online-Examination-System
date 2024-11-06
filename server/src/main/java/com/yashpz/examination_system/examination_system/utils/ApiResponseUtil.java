@@ -1,6 +1,5 @@
 package com.yashpz.examination_system.examination_system.utils;
 
-import com.yashpz.examination_system.examination_system.models.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

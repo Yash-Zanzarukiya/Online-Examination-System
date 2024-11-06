@@ -12,7 +12,7 @@ Key functionalities include student profile management, question management, exa
 
 | Content           | Link                                       |
 | ----------------- | ------------------------------------------ |
-| API Documentation | [click here](#)                            |
+| API Documentation | [click here](https://documenter.getpostman.com/view/32807699/2sAY4yfgmp)                            |
 | Data Model          | [click here](https://app.eraser.io/workspace/3CXNu48LUM1W0jHVxsxp?origin=share) |
 <!--
 ## Features

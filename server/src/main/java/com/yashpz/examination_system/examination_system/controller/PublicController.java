@@ -1,8 +1,6 @@
 package com.yashpz.examination_system.examination_system.controller;
 
-
-import com.yashpz.examination_system.examination_system.models.ApiResponse;
-import com.yashpz.examination_system.examination_system.utils.ApiError;
+import com.yashpz.examination_system.examination_system.utils.ApiResponse;
 import com.yashpz.examination_system.examination_system.utils.ApiResponseUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
