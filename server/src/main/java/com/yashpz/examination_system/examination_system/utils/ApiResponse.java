@@ -2,7 +2,6 @@ package com.yashpz.examination_system.examination_system.utils;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
