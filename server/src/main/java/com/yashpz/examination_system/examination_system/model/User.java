@@ -25,8 +25,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(unique = true, nullable = false)
-    private String username;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "auth", referencedColumnName = "id", nullable = false)
+    private Auth auth;
 
     private String fullName;
 
@@ -39,5 +40,4 @@ public class User {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
-
 }
