@@ -11,5 +11,6 @@ public interface AuthRepository extends JpaRepository<Auth, UUID> {
     Auth findByUsername(String username);
     Auth findByEmail(String email);
     Auth findByUsernameOrEmail(String username, String email);
+    Auth deleteByUsername(String username);
 }
 

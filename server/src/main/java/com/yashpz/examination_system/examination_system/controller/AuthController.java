@@ -8,23 +8,23 @@ import com.yashpz.examination_system.examination_system.service.AuthService;
 import com.yashpz.examination_system.examination_system.utils.ApiResponse;
 import com.yashpz.examination_system.examination_system.utils.ApiResponseUtil;
 import com.yashpz.examination_system.examination_system.utils.JwtUtil;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("auth")
 public class AuthController {
 
     private final AuthService authService;
 
     private final JwtUtil jwtUtil;
+
+    @Value("${ACCESS_TOKEN_EXPIRY}")
+    private int ACCESS_TOKEN_EXPIRY;
 
     public AuthController(AuthService authService, JwtUtil jwtUtil) {
         this.authService = authService;
@@ -46,14 +46,34 @@ public class AuthController {
 
         String accessToken = jwtUtil.generateToken(auth.getUsername());
 
-        ApiResponseUtil.setJwtCookie(response, accessToken);
+        ApiResponseUtil.setCookie(response,"access_token", accessToken,ACCESS_TOKEN_EXPIRY / 1000);
 
         return ApiResponseUtil.handleResponse(HttpStatus.OK, accessToken,"User Logged In Successfully");
     }
 
-    @PostMapping("verify")
-    public ResponseEntity<ApiResponse<String>> verify(@Valid @RequestBody String token) {
+    // TODO: verify JWT token and Create UserDTO and return it
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<Auth>> getCurrentUser() {
+        return ApiResponseUtil.handleResponse(HttpStatus.OK, authService.getCurrentUser(),"User Details Fetched Successfully");
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<String>> logout(HttpServletResponse response) {
+        ApiResponseUtil.deleteCookie(response, "access_token");
+        return ApiResponseUtil.handleResponse(HttpStatus.OK, "User Logged Out Successfully");
+    }
+
+    @GetMapping("/verify")
+    public ResponseEntity<ApiResponse<String>> verify(@Valid @RequestParam String token) {
         authService.verifyUser(token);
         return ApiResponseUtil.handleResponse(HttpStatus.OK, "User Verified Successfully");
+    }
+
+    @GetMapping("/check/username/{username}")
+    public ResponseEntity<ApiResponse<Boolean>> checkUniqueUsername(@Valid @PathVariable String username) {
+        if(authService.isUsernameAvailable(username))
+            return ApiResponseUtil.handleResponse(HttpStatus.OK, true,"Username Available");
+        else
+            return ApiResponseUtil.handleResponse(HttpStatus.OK, false,"Username Already Taken");
     }
 }

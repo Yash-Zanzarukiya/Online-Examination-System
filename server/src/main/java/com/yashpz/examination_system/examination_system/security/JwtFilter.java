@@ -3,6 +3,7 @@ package com.yashpz.examination_system.examination_system.security;
 import com.yashpz.examination_system.examination_system.utils.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +26,24 @@ public class JwtFilter  extends OncePerRequestFilter{
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        String authorizationHeader = request.getHeader("Authorization");
         String username = null;
         String jwt = null;
+
+        String authorizationHeader = request.getHeader("Authorization");
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
             username = jwtUtil.extractUsername(jwt);
+        }else {
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("access_token")) {
+                        jwt = cookie.getValue();
+                        username = jwtUtil.extractUsername(jwt);
+                    }
+                }
+            }
         }
 
         if (username != null) {
