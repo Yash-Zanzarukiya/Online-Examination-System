@@ -43,4 +43,8 @@ public class Auth {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    // bi-directional one-to-one association to User for optional mapping
+    @OneToOne(mappedBy = "auth", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private User user;
 }

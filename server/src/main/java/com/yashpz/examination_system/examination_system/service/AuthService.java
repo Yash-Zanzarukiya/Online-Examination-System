@@ -87,8 +87,8 @@ public class AuthService {
         auth.setVerified(true);
         saveAuth(auth);
 
+        // TODO: set user details
         User user = new User();
-        user.setUsername(auth.getUsername());
         user.setRole(Roles.STUDENT);
         userService.saveUser(user);
     }

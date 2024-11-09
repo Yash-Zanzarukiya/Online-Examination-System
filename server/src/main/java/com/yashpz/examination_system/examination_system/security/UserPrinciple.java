@@ -34,7 +34,7 @@ public class UserPrinciple implements UserDetailsService {
 
         return org.springframework.security.core.userdetails.User
                 .builder()
-                .username(user.getUsername())
+                .username(auth.getUsername())
                 .password(auth.getPassword())
                 .roles(String.valueOf(user.getRole()))
                 .build();
