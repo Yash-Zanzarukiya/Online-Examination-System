@@ -1,8 +1,9 @@
 package com.yashpz.examination_system.examination_system.service;
 
 import com.yashpz.examination_system.examination_system.constants.Roles;
-import com.yashpz.examination_system.examination_system.dto.AuthDTO;
-import com.yashpz.examination_system.examination_system.dto.LoginDTO;
+import com.yashpz.examination_system.examination_system.dto.Auth.AuthDTO;
+import com.yashpz.examination_system.examination_system.dto.Auth.LoginDTO;
+import com.yashpz.examination_system.examination_system.dto.User.UserDataDTO;
 import com.yashpz.examination_system.examination_system.exception.ApiError;
 import com.yashpz.examination_system.examination_system.model.Auth;
 import com.yashpz.examination_system.examination_system.model.User;
@@ -14,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Map;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -47,7 +50,7 @@ public class AuthService {
                 existingAuth.setUsername(user.getUsername());
                 existingAuth.setPassword(passwordEncoder.encode(user.getPassword()));
                 saveAuth(existingAuth);
-                sendVerificationEmail(existingAuth);
+                sendVerificationEmail(existingAuth, user.getFullName(), user.getRole().name());
                 throw new ApiError(HttpStatus.BAD_REQUEST, "Verification Email Sent Again");
             }
         }
@@ -58,7 +61,8 @@ public class AuthService {
             newUser.setEmail(user.getEmail());
             newUser.setVerified(false);
             saveAuth(newUser);
-            sendVerificationEmail(newUser);
+
+            sendVerificationEmail(newUser, user.getFullName(), user.getRole().name());
         }
     }
 
@@ -87,9 +91,14 @@ public class AuthService {
         auth.setVerified(true);
         saveAuth(auth);
 
-        // TODO: set user details
+        Map<String, Object> payloadData = jwtUtil.getPayloadData(token);
+        String role = (String) payloadData.get("role");
+        String fullName = (String) payloadData.get("fullName");
+
         User user = new User();
-        user.setRole(Roles.STUDENT);
+        user.setAuth(auth);
+        user.setRole(Roles.valueOf(role));
+        user.setFullName(fullName);
         userService.saveUser(user);
     }
 
@@ -112,10 +121,21 @@ public class AuthService {
             return true;
     }
 
-    public Auth getCurrentUser(){
+    public UserDataDTO getCurrentUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-        return getAuthByUsername(username);
+
+        Auth auth = getAuthByUsername(username);
+        if (auth == null)
+            throw new ApiError(HttpStatus.UNAUTHORIZED, "User Not Logged In");
+
+        return new UserDataDTO(
+                auth.getUser().getId(),
+                auth.getUsername(),
+                auth.getEmail(),
+                auth.getUser().getRole().name(),
+                auth.getUser().getFullName()
+        );
     }
 
     public Auth getAuthByUsernameOrEmail(String username, String email) {
@@ -134,10 +154,10 @@ public class AuthService {
         return authRepository.save(auth);
     }
 
-    public void sendVerificationEmail(Auth auth) {
-            String token = jwtUtil.generateToken(auth.getUsername());
-            emailService.sendMail(auth.getEmail(), "Verification Email", "Click on the link to verify your email: http://localhost:8080/auth/verify?token=" + token);
-            auth.setVerificationEmailSentAt(LocalDateTime.now());
-            saveAuth(auth);
-        }
+    public void sendVerificationEmail(Auth auth, String fullName, String role) {
+        String token = jwtUtil.generateToken(auth.getUsername(), fullName, role);
+        emailService.sendMail(auth.getEmail(), "Verification Email", "Click on the link to verify your email: http://localhost:8080/auth/verify?token=" + token);
+        auth.setVerificationEmailSentAt(LocalDateTime.now());
+        saveAuth(auth);
+    }
 }

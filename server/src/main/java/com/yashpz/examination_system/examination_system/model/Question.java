@@ -1,5 +1,7 @@
 package com.yashpz.examination_system.examination_system.model;
 
+import com.yashpz.examination_system.examination_system.constants.Difficulty;
+import com.yashpz.examination_system.examination_system.constants.QuestionType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,27 +20,30 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentProfile {
+public class Question {
 
    @Id
-   @GeneratedValue(strategy = GenerationType.UUID)
+   @GeneratedValue(strategy = GenerationType.AUTO)
    private UUID id;
 
-   @OneToOne
-   @JoinColumn(name = "user", referencedColumnName = "id", nullable = false)
-   private User user;
+   @ManyToOne(fetch = FetchType.LAZY)
+   @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)
+   private Category category;
 
-   private String fullName;
+   @Enumerated(EnumType.STRING)
+   private Difficulty difficulty;
 
-   @ManyToOne(fetch = FetchType.EAGER)
-   @JoinColumn(name = "college", referencedColumnName = "id", nullable = false)
-   private College college;
+   @Enumerated(EnumType.STRING)
+   private QuestionType type;
 
-   private String branch;
+   @Column(nullable = false)
+   private String questionText;
 
-   private String phone;
+   private String image;
 
-   private int passOut;
+   @ManyToOne(fetch = FetchType.LAZY)
+   @JoinColumn(name = "correct_answer_id", referencedColumnName = "id")
+   private McqOption correctAnswer;
 
    @CreatedDate
    @Column(nullable = false, updatable = false)
@@ -46,4 +51,5 @@ public class StudentProfile {
 
    @LastModifiedDate
    private LocalDateTime updatedAt;
+
 }

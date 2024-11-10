@@ -1,0 +1,14 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Spring Boot-ExaminationSystemApplication<examination_system>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.yashpz.examination_system.examination_system.ExaminationSystemApplication",
+      "projectName": "examination_system",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}

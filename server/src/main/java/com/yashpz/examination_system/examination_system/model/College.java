@@ -18,27 +18,14 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentProfile {
+public class College {
 
    @Id
-   @GeneratedValue(strategy = GenerationType.UUID)
+   @GeneratedValue(strategy = GenerationType.AUTO)
    private UUID id;
 
-   @OneToOne
-   @JoinColumn(name = "user", referencedColumnName = "id", nullable = false)
-   private User user;
-
-   private String fullName;
-
-   @ManyToOne(fetch = FetchType.EAGER)
-   @JoinColumn(name = "college", referencedColumnName = "id", nullable = false)
-   private College college;
-
-   private String branch;
-
-   private String phone;
-
-   private int passOut;
+   @Column(nullable = false, unique = true)
+   private String name;
 
    @CreatedDate
    @Column(nullable = false, updatable = false)
@@ -46,4 +33,5 @@ public class StudentProfile {
 
    @LastModifiedDate
    private LocalDateTime updatedAt;
+
 }

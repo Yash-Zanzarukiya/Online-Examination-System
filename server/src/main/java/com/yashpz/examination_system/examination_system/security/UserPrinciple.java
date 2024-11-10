@@ -1,5 +1,6 @@
 package com.yashpz.examination_system.examination_system.security;
 
+import com.yashpz.examination_system.examination_system.constants.Roles;
 import com.yashpz.examination_system.examination_system.model.Auth;
 import com.yashpz.examination_system.examination_system.model.User;
 import com.yashpz.examination_system.examination_system.repository.AuthRepository;
@@ -28,7 +29,8 @@ public class UserPrinciple implements UserDetailsService {
         else if (!auth.isVerified())
             throw new UsernameNotFoundException("User is Not Verified");
 
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findByAuthUsername(username);
+
         if (user == null)
             throw new UsernameNotFoundException("User Not Found with username: " + username);
 
@@ -37,6 +39,7 @@ public class UserPrinciple implements UserDetailsService {
                 .username(auth.getUsername())
                 .password(auth.getPassword())
                 .roles(String.valueOf(user.getRole()))
+//                .roles(String.valueOf(Roles.STUDENT))
                 .build();
     }
 }

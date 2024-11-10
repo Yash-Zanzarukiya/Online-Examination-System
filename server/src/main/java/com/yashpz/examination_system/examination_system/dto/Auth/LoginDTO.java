@@ -1,4 +1,4 @@
-package com.yashpz.examination_system.examination_system.dto;
+package com.yashpz.examination_system.examination_system.dto.Auth;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
