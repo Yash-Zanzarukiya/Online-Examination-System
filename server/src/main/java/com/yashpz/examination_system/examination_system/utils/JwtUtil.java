@@ -32,6 +32,13 @@ public class JwtUtil {
         return createToken(claims, username);
     }
 
+    public String generateToken(String username, String fullName, String role) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", role);
+        claims.put("fullName", fullName);
+        return createToken(claims, username);
+    }
+
     public Auth validateUserFromToken(String token) {
         Boolean isValid = validateToken(token);
         String username = extractUsername(token);
@@ -54,6 +61,17 @@ public class JwtUtil {
     public Date extractExpiration(String token) {
         return extractAllClaims(token).getExpiration();
     }
+
+    public Map<String, Object> getPayloadData(String token) {
+        Claims claims = extractAllClaims(token);
+        Map<String, Object> payloadData = new HashMap<>();
+
+        payloadData.put("role", claims.get("role"));
+        payloadData.put("fullName", claims.get("fullName"));
+
+        return payloadData;
+    }
+
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(ACCESS_TOKEN_SECRET.getBytes());

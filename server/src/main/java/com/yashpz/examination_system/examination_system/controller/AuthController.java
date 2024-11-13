@@ -1,7 +1,8 @@
 package com.yashpz.examination_system.examination_system.controller;
 
-import com.yashpz.examination_system.examination_system.dto.AuthDTO;
-import com.yashpz.examination_system.examination_system.dto.LoginDTO;
+import com.yashpz.examination_system.examination_system.dto.Auth.AuthDTO;
+import com.yashpz.examination_system.examination_system.dto.Auth.LoginDTO;
+import com.yashpz.examination_system.examination_system.dto.User.UserDataDTO;
 import com.yashpz.examination_system.examination_system.exception.ApiError;
 import com.yashpz.examination_system.examination_system.model.Auth;
 import com.yashpz.examination_system.examination_system.service.AuthService;
@@ -51,10 +52,13 @@ public class AuthController {
         return ApiResponseUtil.handleResponse(HttpStatus.OK, accessToken,"User Logged In Successfully");
     }
 
-    // TODO: verify JWT token and Create UserDTO and return it
+    // TODO: verify JWT token
     @GetMapping("/me")
-    public ResponseEntity<ApiResponse<Auth>> getCurrentUser() {
-        return ApiResponseUtil.handleResponse(HttpStatus.OK, authService.getCurrentUser(),"User Details Fetched Successfully");
+    public ResponseEntity<ApiResponse<UserDataDTO>> getCurrentUser() {
+        UserDataDTO userData =  authService.getCurrentUser();
+        if(userData == null)
+            throw new ApiError(HttpStatus.UNAUTHORIZED, "User Not Found");
+        return ApiResponseUtil.handleResponse(HttpStatus.OK, userData,"User Details Fetched Successfully");
     }
 
     @PostMapping("/logout")
