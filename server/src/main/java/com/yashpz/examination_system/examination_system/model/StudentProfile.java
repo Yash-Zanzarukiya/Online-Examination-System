@@ -38,7 +38,7 @@ public class StudentProfile {
 
    private String phone;
 
-   private int passOut;
+   private int passout;
 
    @CreatedDate
    @Column(nullable = false, updatable = false)

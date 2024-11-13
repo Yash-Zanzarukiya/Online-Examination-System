@@ -3,6 +3,7 @@ package com.yashpz.examination_system.examination_system.security;
 import com.yashpz.examination_system.examination_system.constants.Roles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,7 +29,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(request -> request
-                        .requestMatchers("/public/**","/auth/**").permitAll()
+                        .requestMatchers("/public/**").permitAll()
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/colleges/**").hasRole(Roles.ADMIN.name())
+                        .requestMatchers(HttpMethod.PATCH, "/colleges/**").hasRole(Roles.ADMIN.name())
+                        .requestMatchers(HttpMethod.DELETE, "/colleges/**").hasRole(Roles.ADMIN.name())
                         .requestMatchers("/admin/**").hasRole(Roles.ADMIN.name())
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
