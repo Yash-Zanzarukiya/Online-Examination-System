@@ -31,10 +31,10 @@ public class SecurityConfig {
         return http.authorizeHttpRequests(request -> request
                         .requestMatchers("/public/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/exam/**").hasRole(Roles.ADMIN.name())
                         .requestMatchers(HttpMethod.POST, "/colleges/**").hasRole(Roles.ADMIN.name())
                         .requestMatchers(HttpMethod.PATCH, "/colleges/**").hasRole(Roles.ADMIN.name())
                         .requestMatchers(HttpMethod.DELETE, "/colleges/**").hasRole(Roles.ADMIN.name())
-                        .requestMatchers("/admin/**").hasRole(Roles.ADMIN.name())
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
