@@ -11,11 +11,9 @@ import com.yashpz.examination_system.examination_system.repository.StudentProfil
 import com.yashpz.examination_system.examination_system.repository.UserRepository;
 import com.yashpz.examination_system.examination_system.repository.CollegeRepository;
 import com.yashpz.examination_system.examination_system.utils.ResourceAccessUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -26,7 +24,6 @@ public class StudentProfileService {
     private final CollegeRepository collegeRepository;
     private final ResourceAccessUtil resourceAccessUtil;
 
-    @Autowired
     public StudentProfileService(StudentProfileRepository studentProfileRepository, UserRepository userRepository, CollegeRepository collegeRepository, ResourceAccessUtil resourceAccessUtil) {
         this.studentProfileRepository = studentProfileRepository;
         this.userRepository = userRepository;
