@@ -5,23 +5,20 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.UUID;
 
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class McqOption {
-
    @Id
    @GeneratedValue(strategy = GenerationType.AUTO)
    private UUID id;
 
-   @ManyToOne(fetch = FetchType.LAZY)
+   @ManyToOne(fetch = FetchType.LAZY, optional = false)
    @JoinColumn(name = "question_id", referencedColumnName = "id", nullable = false)
    private Question question;
 
@@ -30,6 +27,10 @@ public class McqOption {
 
    private String image;
 
-   @Column(nullable = false)
-   private Boolean isCorrect;
+   @PreRemove
+   private void preRemove() {
+      if (question != null && question.getCorrectAnswer() != null && question.getCorrectAnswer().equals(this)) {
+         question.setCorrectAnswer(null);
+      }
+   }
 }
