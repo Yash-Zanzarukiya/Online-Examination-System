@@ -67,7 +67,7 @@ public class StudentProfileService {
         StudentProfile existingProfile = studentProfileRepository.findById(profileId)
                 .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "Student Profile Not Found"));
 
-        resourceAccessUtil.AdminOrOwnerAccess(existingProfile.getUser().getId());
+        resourceAccessUtil.AdminOrOwnerAccess(existingProfile.getUser().getAuth().getId());
 
         User user = userRepository.findById(studentProfileDTO.getUserId())
                 .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "User Not Found"));
@@ -91,7 +91,7 @@ public class StudentProfileService {
         StudentProfile existingProfile = studentProfileRepository.findById(userId)
                 .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "Student Profile Not Found"));
 
-        resourceAccessUtil.AdminOrOwnerAccess(existingProfile.getUser().getId());
+        resourceAccessUtil.AdminOrOwnerAccess(existingProfile.getUser().getAuth().getId());
 
         studentProfileRepository.deleteById(userId);
     }

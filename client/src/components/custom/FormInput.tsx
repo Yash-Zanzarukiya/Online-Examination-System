@@ -7,6 +7,7 @@ interface Props {
   label: string;
   placeholder: string;
   type?: string;
+  restProps?: any;
 }
 
 export const FormInput = ({

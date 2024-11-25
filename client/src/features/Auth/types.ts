@@ -10,33 +10,18 @@ export interface AuthState {
 
 export interface AuthData {
   id: UUID;
+  userId: UUID;
   username: string;
   email: string;
   role: Roles;
   fullName: string;
 }
 
-export type signInResponse = ApiResponse<{
-  data: {
-    id: UUID;
-    username: string;
-    email: string;
-    role: Roles;
-    fullName: string;
-  };
-}>;
+export type signInResponse = ApiResponse<{ data: AuthData }>;
 
 export type logoutResponse = ApiResponse<null>;
 
-export type getCurrentUserResponse = ApiResponse<{
-  data: {
-    id: UUID;
-    username: string;
-    email: string;
-    role: Roles;
-    fullName: string;
-  };
-}>;
+export type getCurrentUserResponse = ApiResponse<{ data: AuthData }>;
 
 export interface ISignUpDTO {
   username: string;

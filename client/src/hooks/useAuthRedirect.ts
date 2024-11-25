@@ -12,7 +12,7 @@ function useAuthRedirect() {
     if (isAuthenticated && authData?.role === Roles.ADMIN) {
       navigate("/admin");
     } else if (isAuthenticated && authData?.role === Roles.STUDENT) {
-      navigate("/user");
+      navigate("/student");
     }
   }, [authData?.role, isAuthenticated, navigate]);
 }

@@ -1,5 +1,6 @@
 package com.yashpz.examination_system.examination_system.dto.User;
 
+import com.yashpz.examination_system.examination_system.dto.CollegeDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,7 @@ public class StudentProfileResponseDTO {
 
     private String fullName;
 
-    private String college;
+    private CollegeDTO college;
 
     private String branch;
 

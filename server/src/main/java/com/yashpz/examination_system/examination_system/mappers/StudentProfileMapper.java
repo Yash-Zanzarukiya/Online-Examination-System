@@ -1,6 +1,7 @@
 package com.yashpz.examination_system.examination_system.mappers;
 
 
+import com.yashpz.examination_system.examination_system.dto.CollegeDTO;
 import com.yashpz.examination_system.examination_system.dto.User.StudentProfileRequestDTO;
 import com.yashpz.examination_system.examination_system.dto.User.StudentProfileResponseDTO;
 import com.yashpz.examination_system.examination_system.model.StudentProfile;
@@ -21,11 +22,12 @@ public class StudentProfileMapper {
     }
 
     public static StudentProfileResponseDTO toResponseDTO(StudentProfile studentProfile) {
+        College college = studentProfile.getCollege();
         return new StudentProfileResponseDTO(
                 studentProfile.getId(),
                 studentProfile.getUser().getId(),
                 studentProfile.getFullName(),
-                studentProfile.getCollege().getName(),
+                new CollegeDTO(college.getId(), college.getName()),
                 studentProfile.getBranch(),
                 studentProfile.getPhone(),
                 studentProfile.getPassout(),

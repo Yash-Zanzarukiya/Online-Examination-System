@@ -7,6 +7,7 @@ public class AuthDataMapper {
     public static UserDataDTO toUserDataDTO(Auth auth) {
         return new UserDataDTO(
                 auth.getId(),
+                auth.getUser().getId(),
                 auth.getUsername(),
                 auth.getEmail(),
                 auth.getUser().getRole().name(),
