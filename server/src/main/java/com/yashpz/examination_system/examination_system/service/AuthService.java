@@ -5,6 +5,7 @@ import com.yashpz.examination_system.examination_system.dto.Auth.AuthDTO;
 import com.yashpz.examination_system.examination_system.dto.Auth.LoginDTO;
 import com.yashpz.examination_system.examination_system.dto.User.UserDataDTO;
 import com.yashpz.examination_system.examination_system.exception.ApiError;
+import com.yashpz.examination_system.examination_system.mappers.AuthDataMapper;
 import com.yashpz.examination_system.examination_system.model.Auth;
 import com.yashpz.examination_system.examination_system.model.User;
 import com.yashpz.examination_system.examination_system.repository.AuthRepository;
@@ -66,7 +67,7 @@ public class AuthService {
         }
     }
 
-    public Auth loginUser(LoginDTO user) {
+    public UserDataDTO loginUser(LoginDTO user) {
         Auth auth = authRepository.findByUsernameOrEmail(user.getIdentifier(), user.getIdentifier());
 
         if(auth == null)
@@ -77,7 +78,7 @@ public class AuthService {
         if(!passwordEncoder.matches(user.getPassword(), auth.getPassword()))
             throw new ApiError(HttpStatus.BAD_REQUEST, "Invalid Password");
 
-        return auth;
+        return AuthDataMapper.toUserDataDTO(auth);
     }
 
     public void verifyUser(String token) {
@@ -129,13 +130,7 @@ public class AuthService {
         if (auth == null)
             throw new ApiError(HttpStatus.UNAUTHORIZED, "User Not Logged In");
 
-        return new UserDataDTO(
-                auth.getUser().getId(),
-                auth.getUsername(),
-                auth.getEmail(),
-                auth.getUser().getRole().name(),
-                auth.getUser().getFullName()
-        );
+        return AuthDataMapper.toUserDataDTO(auth);
     }
 
     public Auth getAuthByUsernameOrEmail(String username, String email) {

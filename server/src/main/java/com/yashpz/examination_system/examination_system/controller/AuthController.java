@@ -39,17 +39,14 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<String>>  login(@Valid @RequestBody LoginDTO user, HttpServletResponse response) {
-        Auth auth = authService.loginUser(user);
+    public ResponseEntity<ApiResponse<UserDataDTO>>  login(@Valid @RequestBody LoginDTO user, HttpServletResponse response) {
+        UserDataDTO userData = authService.loginUser(user);
 
-        if(auth == null)
-            throw new ApiError(HttpStatus.BAD_REQUEST, "User Not Found");
-
-        String accessToken = jwtUtil.generateToken(auth.getUsername());
+        String accessToken = jwtUtil.generateToken(userData.getUsername());
 
         ApiResponseUtil.setCookie(response,"access_token", accessToken,ACCESS_TOKEN_EXPIRY / 1000);
 
-        return ApiResponseUtil.handleResponse(HttpStatus.OK, accessToken,"User Logged In Successfully");
+        return ApiResponseUtil.handleResponse(HttpStatus.OK, userData,"User Logged In Successfully");
     }
 
     // TODO: verify JWT token
