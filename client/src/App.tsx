@@ -10,6 +10,7 @@ import { Login, SignUp } from "./features/Auth/pages";
 import { AdminDashboard } from "./features/admin/pages";
 import AuthLayout from "./routes/AuthLayout";
 import { Roles } from "./types/Roles";
+import CollegePage from "./features/college/pages/CollegePage";
 
 function App() {
   const { toast } = useToast();
@@ -19,8 +20,6 @@ function App() {
   setNavigationUtil(navigate);
 
   const isLoading = useInitialLoading();
-
-  useAuthRedirect();
 
   if (isLoading) {
     return <InitialLoadingPage />;
@@ -38,6 +37,7 @@ function App() {
         {/* Protected Routes */}
         <Route path="/admin" element={<AuthLayout allowedRoles={[Roles.ADMIN]} />}>
           <Route path="" element={<AdminDashboard />} />
+          <Route path="colleges" element={<CollegePage />} />
         </Route>
 
         <Route element={<AuthLayout allowedRoles={[Roles.STUDENT]} />}>

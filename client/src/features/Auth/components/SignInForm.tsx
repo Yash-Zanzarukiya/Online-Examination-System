@@ -3,7 +3,7 @@ import { Form } from "@/components/ui/form";
 import { Loader2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { FormInput } from "@/components/ui/FormInput";
+import { FormInput } from "@/components/custom/FormInput";
 import { useState } from "react";
 import { useSignInForm } from "../hooks/useSignInForm";
 import { Link } from "react-router-dom";

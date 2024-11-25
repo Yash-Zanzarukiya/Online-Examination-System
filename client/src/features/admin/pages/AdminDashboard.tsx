@@ -35,7 +35,7 @@ function AdminDashboard() {
             </div>
             {/* Buttons */}
             <div className="mt-8 gap-3 flex justify-center">
-              <Button size={"lg"} onClick={() => navigateTo("/")}>
+              <Button size={"lg"} onClick={() => navigateTo("/admin/colleges")}>
                 Get started
               </Button>
               <Button size={"lg"} variant={"outline"} onClick={() => handleLogout()}>

@@ -1,6 +1,7 @@
 import { ModeToggle } from "@/components/Theming/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { useAuthRedirect } from "@/hooks";
 import { navigateTo, toastMessage } from "@/utils";
 import { CheckCircle, Lock, BarChart, Users } from "lucide-react";
 
@@ -28,6 +29,8 @@ const features = [
 ];
 
 export default function LandingPage() {
+  useAuthRedirect();
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="py-4 px-4 sm:px-6 lg:px-8 border-b border-border">
