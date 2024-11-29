@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import { useAuth } from "@/hooks";
 import { Roles } from "@/types/Roles";
 import { navigateTo } from "@/utils";
+import AdminLayout from "@/components/layout/Admin/AdminLayout";
 
 interface IAuthLayoutProps {
   allowedRoles?: Roles[];
@@ -19,7 +20,11 @@ function AuthLayout({ authentication = true, allowedRoles }: IAuthLayoutProps) {
     navigateTo("/");
   }
 
-  return <Outlet />;
+  return (
+    <AdminLayout>
+      <Outlet />
+    </AdminLayout>
+  );
 }
 
 export default AuthLayout;

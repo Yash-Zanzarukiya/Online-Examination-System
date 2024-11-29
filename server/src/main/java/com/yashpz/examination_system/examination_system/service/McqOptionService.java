@@ -30,6 +30,7 @@ public class McqOptionService {
         this.questionService = questionService;
     }
 
+    @Transactional
     public McqOptionResponseDTO createMcqOption(McqOptionDTO mcqOptionDTO){
         McqOption option = mcqOptionMapper.toEntity(mcqOptionDTO);
 
@@ -50,9 +51,20 @@ public class McqOptionService {
         return mcqOptionMapper.toResponseDTO(option);
     }
 
+    @Transactional
     public List<McqOptionResponseDTO> createMultipleMcqOptions(List<McqOptionDTO> mcqOptionDTOList) {
         return mcqOptionDTOList.stream()
                 .map(this::createMcqOption)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<McqOptionResponseDTO> createMultipleOptions(UUID questionId, List<McqOptionDTO> options) {
+        return options.stream()
+                .map(option -> {
+                    option.setQuestionId(questionId);
+                    return createMcqOption(option);
+                })
                 .collect(Collectors.toList());
     }
 
@@ -69,6 +81,7 @@ public class McqOptionService {
         return mcqOptionMapper.toResponseDTO(option);
     }
 
+    @Transactional
     public McqOptionResponseDTO updateOption(UUID optionId, McqOptionDTO mcqOptionDTO) {
         McqOption option = mcqOptionRepository.findById(optionId)
                 .orElseThrow(() -> new ApiError(HttpStatus.BAD_REQUEST, "Invalid option ID"));
@@ -90,6 +103,7 @@ public class McqOptionService {
         return mcqOptionMapper.toResponseDTO(option);
     }
 
+    @Transactional
     public List<McqOptionResponseDTO> updateMultipleOptions(List<McqOptionDTO> mcqOptionDTOList) {
         return mcqOptionDTOList.stream()
                 .map(mcqOptionDTO -> updateOption(mcqOptionDTO.getId(), mcqOptionDTO))

@@ -12,6 +12,9 @@ import AuthLayout from "./routes/AuthLayout";
 import { Roles } from "./types/Roles";
 import CollegePage from "./features/college/pages/CollegePage";
 import { StudentDashboard, StudentProfile } from "./features/student/pages";
+import QuestionCreator from "./features/QuestionBuilder/pages/QuestionCreator";
+import AllQuestions from "./features/QuestionBuilder/pages/AllQuestions";
+import QuestionPicker from "./features/QuestionPicker/pages/QuestionPicker";
 
 function App() {
   const { toast } = useToast();
@@ -39,6 +42,9 @@ function App() {
         <Route path="/admin" element={<AuthLayout allowedRoles={[Roles.ADMIN]} />}>
           <Route path="" element={<AdminDashboard />} />
           <Route path="colleges" element={<CollegePage />} />
+          <Route path="questions/build" element={<QuestionCreator />} />
+          <Route path="questions/all" element={<AllQuestions />} />
+          <Route path="questions/pick" element={<QuestionPicker />} />
         </Route>
 
         <Route path="/student" element={<AuthLayout allowedRoles={[Roles.STUDENT]} />}>

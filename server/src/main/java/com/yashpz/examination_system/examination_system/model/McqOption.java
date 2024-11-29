@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.UUID;
 
@@ -19,6 +21,7 @@ public class McqOption {
    private UUID id;
 
    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+   @OnDelete(action = OnDeleteAction.CASCADE)
    @JoinColumn(name = "question_id", referencedColumnName = "id", nullable = false)
    private Question question;
 

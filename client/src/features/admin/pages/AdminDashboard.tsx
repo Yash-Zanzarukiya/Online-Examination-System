@@ -6,7 +6,7 @@ function AdminDashboard() {
   const { authData, handleLogout } = useAuth();
 
   return (
-    <div className="relative flex items-center justify-center overflow-hidden py-24 lg:py-32">
+    <div className="relative grow flex items-center justify-center overflow-hidden py-24 lg:py-32">
       {/* Gradients */}
       <div
         aria-hidden="true"

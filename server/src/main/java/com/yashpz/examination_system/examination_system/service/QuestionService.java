@@ -1,7 +1,7 @@
 package com.yashpz.examination_system.examination_system.service;
 
-import com.yashpz.examination_system.examination_system.dto.Question.QuestionDTO;
-import com.yashpz.examination_system.examination_system.dto.Question.QuestionResponseDTO;
+import com.yashpz.examination_system.examination_system.constants.QuestionType;
+import com.yashpz.examination_system.examination_system.dto.Question.*;
 import com.yashpz.examination_system.examination_system.exception.ApiError;
 import com.yashpz.examination_system.examination_system.mappers.QuestionMapper;
 import com.yashpz.examination_system.examination_system.model.Category;
@@ -12,6 +12,7 @@ import com.yashpz.examination_system.examination_system.repository.McqOptionRepo
 import com.yashpz.examination_system.examination_system.repository.QuestionRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -35,10 +36,12 @@ public class QuestionService {
         this.mcqOptionRepository = mcqOptionRepository;
     }
 
+    @Transactional
     public QuestionResponseDTO createQuestion(QuestionDTO questionDTO) {
         Question question = questionMapper.toEntity(questionDTO);
 
-        updateCategory(question, questionDTO.getCategoryId());
+        if(question.getType() == QuestionType.MCQ)
+            updateCategory(question, questionDTO.getCategoryId());
 
         if (questionDTO.getImageFile() != null) {
             String imageUrl = cloudinaryService.uploadImage(questionDTO.getImageFile());
@@ -50,7 +53,8 @@ public class QuestionService {
         return questionMapper.toResponseDTO(question);
     }
 
-    public List<QuestionResponseDTO> createMultipleQuestions(List<QuestionDTO> questionDTOList) {
+    @Transactional
+    public List<QuestionResponseDTO> createQuestion(List<QuestionDTO> questionDTOList) {
         return questionDTOList.stream()
                 .map(this::createQuestion)
                 .toList();
@@ -66,30 +70,13 @@ public class QuestionService {
         return questionRepository.findById(questionId).orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND,"Question not found"));
     }
 
-    public List<QuestionResponseDTO> getAllQuestions(String categoryId, String difficulty, String type) {
-        List<Question> questions = questionRepository.findAll();
-
-        if (categoryId != null) {
-            questions = questions.stream()
-                    .filter(question -> question.getCategory().getId().equals(UUID.fromString(categoryId)))
-                    .collect(Collectors.toList());
-        }
-
-        if (difficulty != null) {
-            questions = questions.stream()
-                    .filter(question -> question.getDifficulty().toString().equals(difficulty))
-                    .collect(Collectors.toList());
-        }
-
-        if (type != null) {
-            questions = questions.stream()
-                    .filter(question -> question.getType().toString().equals(type))
-                    .collect(Collectors.toList());
-        }
-
-        return questionMapper.toResponseDTO(questions);
+    public List<QuestionResponseDTO> getAllQuestions(UUID categoryId, String difficulty, String type) {
+        return questionRepository.findAllByFilters(categoryId, difficulty, type).stream()
+                .map(questionMapper::toResponseDTO)
+                .toList();
     }
 
+    @Transactional
     public QuestionResponseDTO updateQuestion(UUID questionId, QuestionDTO questionDTO, MultipartFile imageFile) {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new ApiError(HttpStatus.BAD_REQUEST,"Invalid question ID"));
@@ -121,10 +108,8 @@ public class QuestionService {
 
         McqOption correctAnswer = mcqOptionRepository.findById(correctAnswerId)
                 .orElseThrow(() -> new ApiError(HttpStatus.BAD_REQUEST, "Invalid Option ID"));
-        System.out.println(question);
-        System.out.println(correctAnswer);
+
         question.setCorrectAnswer(correctAnswer);
-        System.out.println(question);
 
         questionRepository.save(question);
     }
@@ -135,6 +120,7 @@ public class QuestionService {
         question.setCategory(category);
     }
 
+    @Transactional
     public void deleteQuestion(UUID questionId) {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new ApiError(HttpStatus.BAD_REQUEST, "Invalid question ID"));
@@ -142,7 +128,12 @@ public class QuestionService {
         if (question.getImage() != null)
             cloudinaryService.deleteImageByURL(question.getImage());
 
-        // TODO: delete all options of the question
+        List<McqOption> options = mcqOptionRepository.findAllByQuestionId(questionId);
+
+        options.forEach((option) -> {
+            cloudinaryService.deleteImageByURL(option.getImage());
+            mcqOptionRepository.deleteById(option.getId());
+        });
 
         questionRepository.deleteById(questionId);
     }

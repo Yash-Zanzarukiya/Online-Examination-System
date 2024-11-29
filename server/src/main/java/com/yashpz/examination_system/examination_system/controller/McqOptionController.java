@@ -25,13 +25,13 @@ public class McqOptionController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<McqOptionResponseDTO>> createMcqOption(@Valid McqOptionDTO mcqOptionDTO) throws IOException {
+    public ResponseEntity<ApiResponse<McqOptionResponseDTO>> createMcqOption(@Valid @RequestBody McqOptionDTO mcqOptionDTO) throws IOException {
         McqOptionResponseDTO mcqOption = mcqOptionService.createMcqOption(mcqOptionDTO);
         return ApiResponseUtil.handleResponse(HttpStatus.CREATED, mcqOption, "Mcq option created successfully");
     }
 
     @PostMapping("/multiple")
-    public ResponseEntity<ApiResponse<List<McqOptionResponseDTO>>> createMultipleMcqOptions(@Valid @RequestBody List<McqOptionDTO> mcqOptionDTOList) {
+    public ResponseEntity<ApiResponse<List<McqOptionResponseDTO>>> createMultipleMcqOptions(@RequestBody @Valid List<McqOptionDTO> mcqOptionDTOList) {
         List<McqOptionResponseDTO> mcqOptions = mcqOptionService.createMultipleMcqOptions(mcqOptionDTOList);
         return ApiResponseUtil.handleResponse(HttpStatus.CREATED, mcqOptions, "Mcq options created successfully");
     }
@@ -49,13 +49,13 @@ public class McqOptionController {
     }
 
     @PatchMapping("/{optionId}")
-    public ResponseEntity<ApiResponse<McqOptionResponseDTO>> updateOption(@PathVariable UUID optionId, @Valid McqOptionDTO mcqOptionDTO) throws IOException {
+    public ResponseEntity<ApiResponse<McqOptionResponseDTO>> updateOption(@PathVariable UUID optionId, @RequestBody @Valid McqOptionDTO mcqOptionDTO) throws IOException {
         McqOptionResponseDTO updateOption = mcqOptionService.updateOption(optionId, mcqOptionDTO);
         return ApiResponseUtil.handleResponse(HttpStatus.OK, updateOption, "Option updated successfully");
     }
 
     @PatchMapping("/multiple")
-    public ResponseEntity<ApiResponse<List<McqOptionResponseDTO>>> updateMultipleOptions(@Valid @RequestBody List<McqOptionDTO> mcqOptionDTOList) {
+    public ResponseEntity<ApiResponse<List<McqOptionResponseDTO>>> updateMultipleOptions(@RequestBody @Valid List<McqOptionDTO> mcqOptionDTOList) {
         List<McqOptionResponseDTO> updatedOptions = mcqOptionService.updateMultipleOptions(mcqOptionDTOList);
         return ApiResponseUtil.handleResponse(HttpStatus.OK, updatedOptions, "Options updated successfully");
     }
