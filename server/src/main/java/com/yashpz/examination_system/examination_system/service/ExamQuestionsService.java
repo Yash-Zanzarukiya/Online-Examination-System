@@ -2,6 +2,7 @@ package com.yashpz.examination_system.examination_system.service;
 
 import com.yashpz.examination_system.examination_system.dto.Exam.AllExamQuestionDTO;
 import com.yashpz.examination_system.examination_system.dto.Exam.ExamQuestionsDTO;
+import com.yashpz.examination_system.examination_system.dto.Exam.ExamQuestionsResponseDTO;
 import com.yashpz.examination_system.examination_system.exception.ApiError;
 import com.yashpz.examination_system.examination_system.mappers.AllExamQuestionsMapper;
 import com.yashpz.examination_system.examination_system.mappers.ExamQuestionsMapper;
@@ -34,34 +35,51 @@ public class ExamQuestionsService {
         this.allExamQuestionsMapper = allExamQuestionsMapper;
     }
 
-    public ExamQuestionsDTO createExamQuestion(ExamQuestionsDTO dto) {
-        if (examQuestionsRepository.existsByExamIdAndQuestionId(dto.getExamId(), dto.getQuestionId()))
-            throw new ApiError(HttpStatus.BAD_REQUEST, "Question already added to exam");
+    public List<ExamQuestionsResponseDTO> createExamQuestions(ExamQuestionsDTO dto) {
+        UUID examId = dto.getExamId();
+        List<UUID> questionIds = dto.getQuestionIds();
 
-        Exam exam = examRepository.findById(dto.getExamId())
+        Exam exam = examRepository.findById(examId)
                 .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "Exam not found"));
 
-        Question question = questionRepository.findById(dto.getQuestionId())
-                .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "Question not found"));
+        List<UUID> existingQuestionIds = examQuestionsRepository
+                .findExistingQuestionIdsByExamIdAndQuestionIds(examId, questionIds);
 
-        ExamQuestions examQuestions = new ExamQuestions();
-        examQuestions.setExam(exam);
-        examQuestions.setQuestion(question);
+        List<UUID> newQuestionIds = questionIds.stream()
+                .filter(id -> !existingQuestionIds.contains(id))
+                .toList();
 
-        examQuestionsRepository.save(examQuestions);
+        if (newQuestionIds.isEmpty())
+            throw new ApiError(HttpStatus.BAD_REQUEST, "All questions are already added to the exam");
 
-        return ExamQuestionsMapper.toDto(examQuestions);
+        // Fetch new questions in bulk
+        List<Question> newQuestions = questionRepository.findAllById(newQuestionIds);
+        if (newQuestions.size() != newQuestionIds.size())
+            throw new ApiError(HttpStatus.NOT_FOUND, "One or more questions not found");
+
+        List<ExamQuestions> examQuestionsList = newQuestions.stream()
+                .map(question -> {
+                    ExamQuestions examQuestions = new ExamQuestions();
+                    examQuestions.setExam(exam);
+                    examQuestions.setQuestion(question);
+                    return examQuestions;
+                })
+                .toList();
+
+        examQuestionsRepository.saveAll(examQuestionsList);
+
+        return ExamQuestionsMapper.toResponseDto(examQuestionsList);
     }
 
-    public ExamQuestionsDTO getExamQuestionsById(UUID id) {
+    public ExamQuestionsResponseDTO getExamQuestionsById(UUID id) {
         ExamQuestions examQuestions = examQuestionsRepository.findById(id)
                 .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "Exam question not found"));
-        return ExamQuestionsMapper.toDto(examQuestions);
+        return ExamQuestionsMapper.toResponseDto(examQuestions);
     }
 
-    public List<ExamQuestionsDTO> getExamQuestionsByExamId(UUID examId) {
+    public List<ExamQuestionsResponseDTO> getExamQuestionsByExamId(UUID examId) {
         List<ExamQuestions> examQuestions = examQuestionsRepository.findByExamId(examId);
-        return ExamQuestionsMapper.toDto(examQuestions);
+        return ExamQuestionsMapper.toResponseDto(examQuestions);
     }
 
     public List<AllExamQuestionDTO> getAllExamQuestions(UUID examId) {
@@ -69,11 +87,9 @@ public class ExamQuestionsService {
         return allExamQuestionsMapper.toDTO(examQuestions);
     }
 
-    public void removeQuestion(UUID id) {
-        if (!examQuestionsRepository.existsById(id))
-            throw new ApiError(HttpStatus.NOT_FOUND, "Exam question not found");
-
-        examQuestionsRepository.deleteById(id);
+    public void removeQuestion(List<UUID> examQuestionIds) {
+        int i = examQuestionsRepository.deleteByQuestionIdIn(examQuestionIds);
+        System.out.println(i);
     }
 
 }

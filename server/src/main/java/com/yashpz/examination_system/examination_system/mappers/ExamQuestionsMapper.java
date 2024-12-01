@@ -1,21 +1,26 @@
 package com.yashpz.examination_system.examination_system.mappers;
 
 import com.yashpz.examination_system.examination_system.dto.Exam.ExamQuestionsDTO;
+import com.yashpz.examination_system.examination_system.dto.Exam.ExamQuestionsResponseDTO;
+import com.yashpz.examination_system.examination_system.model.Exam;
 import com.yashpz.examination_system.examination_system.model.ExamQuestions;
+import com.yashpz.examination_system.examination_system.model.Question;
 
 import java.util.List;
 
 public class ExamQuestionsMapper {
 
-    public static ExamQuestionsDTO toDto(ExamQuestions examQuestions) {
-        return new ExamQuestionsDTO(
-                examQuestions.getId(),
-                examQuestions.getExam().getId(),
-                examQuestions.getQuestion().getId()
-        );
+    public static ExamQuestionsResponseDTO toResponseDto(ExamQuestions examQuestions) {
+        ExamQuestionsResponseDTO dto = new ExamQuestionsResponseDTO();
+        dto.setId(examQuestions.getId());
+        dto.setExamId(examQuestions.getExam().getId());
+        dto.setQuestionId(examQuestions.getQuestion().getId());
+        return dto;
     }
 
-    public static List<ExamQuestionsDTO> toDto(List<ExamQuestions> examQuestions) {
-        return examQuestions.stream().map(ExamQuestionsMapper::toDto).toList();
+    public static List<ExamQuestionsResponseDTO> toResponseDto(List<ExamQuestions> examQuestions) {
+        return examQuestions.stream()
+                .map(ExamQuestionsMapper::toResponseDto)
+                .toList();
     }
 }

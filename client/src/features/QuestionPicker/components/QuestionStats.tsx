@@ -1,90 +1,116 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { FullQuestion } from "../../QuestionBuilder/types";
+import { Badge } from "@/components/ui/badge";
+import { useCategory } from "@/features/QuestionBuilder/hooks/useCategory";
+import { UUID } from "crypto";
 import { Difficulty } from "@/types/Difficulty";
 import { QuestionType } from "@/types/QuestionType";
-
-interface QuestionStats {
-  total: number;
-  byDifficulty: Record<Difficulty, number>;
-  byType: Record<QuestionType, number>;
-  byCategory: Record<string, number>;
-}
+import { Question } from "@/features/QuestionBuilder/types";
+import { useMemo } from "react";
 
 interface QuestionStatsProps {
-  questions: FullQuestion[];
+  selectedQuestions: Question[] | [];
 }
 
-export default function QuestionStats({ questions }: QuestionStatsProps) {
-  const stats: QuestionStats = {
-    total: questions.length,
-    byDifficulty: {
-      [Difficulty.EASY]: 0,
-      [Difficulty.MEDIUM]: 0,
-      [Difficulty.HARD]: 0,
-    },
-    byType: {
-      [QuestionType.MCQ]: 0,
-      [QuestionType.PROGRAMMING]: 0,
-    },
-    byCategory: {},
-  };
+interface QuestionState {
+  difficulty: Record<Difficulty, number>;
+  type: Record<QuestionType, number>;
+  category: Record<UUID, number>;
+}
 
-  questions.forEach((question) => {
-    stats.byDifficulty[question.question.difficulty]++;
-    stats.byType[question.question.type]++;
-    const categoryName = question.question.category.name;
-    stats.byCategory[categoryName] = (stats.byCategory[categoryName] || 0) + 1;
-  });
+export default function QuestionStats({ selectedQuestions = [] }: QuestionStatsProps) {
+  const { categories } = useCategory();
+
+  const questionState: QuestionState = useMemo(() => {
+    return {
+      difficulty: {
+        ...Object.values(Difficulty).reduce((acc, diff) => {
+          acc[diff] = selectedQuestions.filter((question) => question.difficulty === diff).length;
+          return acc;
+        }, {} as Record<Difficulty, number>),
+      },
+      type: {
+        ...Object.values(QuestionType).reduce((acc, type) => {
+          acc[type] = selectedQuestions.filter((question) => question.type === type).length;
+          return acc;
+        }, {} as Record<QuestionType, number>),
+      },
+      category: {
+        ...categories.reduce((acc, cat) => {
+          acc[cat.name] = selectedQuestions.filter(
+            (question) => question.category.id === cat.id
+          ).length;
+          return acc;
+        }, {} as Record<string, number>),
+      },
+    };
+  }, [selectedQuestions, categories]);
+
+  const totalQuestions = useMemo(() => selectedQuestions.length, [selectedQuestions]);
 
   return (
-    <Card>
-      <CardContent className="p-4">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div>
-            <h3 className="text-sm font-medium text-muted-foreground">Total Selected</h3>
-            <p className="text-2xl font-bold">{stats.total}</p>
-          </div>
-          <div>
-            <h3 className="text-sm font-medium text-muted-foreground">By Difficulty</h3>
-            <div className="space-y-1">
-              {Object.entries(stats.byDifficulty).map(
-                ([difficulty, count]) =>
-                  count > 0 && (
-                    <div key={difficulty} className="flex justify-between text-sm">
-                      <span>{difficulty}</span>
-                      <span>{count}</span>
-                    </div>
-                  )
-              )}
-            </div>
-          </div>
-          <div>
-            <h3 className="text-sm font-medium text-muted-foreground">By Type</h3>
-            <div className="space-y-1">
-              {Object.entries(stats.byType).map(
-                ([type, count]) =>
-                  count > 0 && (
-                    <div key={type} className="flex justify-between text-sm">
-                      <span>{type}</span>
-                      <span>{count}</span>
-                    </div>
-                  )
-              )}
-            </div>
-          </div>
-          <div>
-            <h3 className="text-sm font-medium text-muted-foreground">By Category</h3>
-            <div className="space-y-1">
-              {Object.entries(stats.byCategory).map(([category, count]) => (
-                <div key={category} className="flex justify-between text-sm">
-                  <span>{category}</span>
-                  <span>{count}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+    <Card className="w-full max-w-7xl mx-auto">
+      <CardContent className="p-3 px-7">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <DifficultySection difficulty={questionState.difficulty} />
+          <TypeSection type={questionState.type} />
+          <CategorySection category={questionState.category} />
+          <TotalQuestions total={totalQuestions} />
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+function DifficultySection({ difficulty }: { difficulty: QuestionState["difficulty"] }) {
+  return (
+    <div className="grid gap-2">
+      <h4 className="text-md font-semibold text-foreground">Difficulty</h4>
+      <div className="flex flex-wrap gap-2">
+        {Object.entries(difficulty).map(([diff, count]) => (
+          <Badge key={diff} variant="outline" className="border-muted-foreground bg-muted">
+            {diff}: {count}
+          </Badge>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function TypeSection({ type }: { type: QuestionState["type"] }) {
+  return (
+    <div className="grid gap-2">
+      <h4 className="text-md font-semibold text-foreground">Type</h4>
+      <div className="flex flex-wrap gap-2">
+        {Object.entries(type).map(([t, count]) => (
+          <Badge key={t} variant="outline" className="border-muted-foreground bg-muted">
+            {t}: {count}
+          </Badge>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CategorySection({ category }: { category: QuestionState["category"] }) {
+  return (
+    <div className="grid gap-2">
+      <h4 className="text-md font-semibold text-foreground">Category</h4>
+      <div className="flex flex-wrap gap-2">
+        {Object.entries(category).map(([cat, count]) => (
+          <Badge key={cat} variant="outline" className="border-muted-foreground bg-muted">
+            {cat}: {count}
+          </Badge>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function TotalQuestions({ total }: { total: number }) {
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <h4 className="text-md font-semibold text-foreground">Total</h4>
+      <Badge className="text-md">{total}</Badge>
+    </div>
   );
 }

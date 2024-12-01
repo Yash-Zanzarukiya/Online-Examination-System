@@ -1,61 +1,46 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Loader2 } from "lucide-react";
 import { FilterBar, QuestionList, QuestionDialog, QuestionStats } from "../components";
-import { useAppDispatch } from "@/app/hooks";
-import { UUID } from "crypto";
-import { getAllFullQuestionsThunk } from "@/features/QuestionBuilder/redux/questionThunks";
-import { FullQuestion, QuestionFilter } from "@/features/QuestionBuilder/types";
+import { QuestionFilter } from "@/features/QuestionBuilder/types";
+import { useQuestionDialog, useQuestionPickerForm } from "../hooks";
 
 export default function QuestionPicker() {
-  const dispatch = useAppDispatch();
+  const { dialogQuestion, isDialogOpen, handleQuestionClick, setIsDialogOpen } =
+    useQuestionDialog();
+
+  const {
+    availableQuestions,
+    selectedQuestions,
+    isLoading,
+    isSubmitting,
+    loadQuestions,
+    handleAddQuestion,
+    handleRemoveQuestion,
+    clearAllQuestions,
+    handleSubmit,
+  } = useQuestionPickerForm();
+
   const [filter, setFilter] = useState<QuestionFilter>({});
-  const [questions, setQuestions] = useState<FullQuestion[]>([]);
-  const [selectedQuestions, setSelectedQuestions] = useState<FullQuestion[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedQuestion, setSelectedQuestion] = useState<FullQuestion | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const loadQuestions = async () => {
-    setIsLoading(true);
-    try {
-      const response = await dispatch(getAllFullQuestionsThunk(filter)).unwrap();
-      if (response) setQuestions(response);
-    } catch (error) {
-      console.error("Error loading questions:", error);
-    }
-    setIsLoading(false);
-  };
-
-  const handleFilterChange = (newFilter: Partial<QuestionFilter>) => {
-    setFilter({ ...filter, ...newFilter });
-    loadQuestions();
-  };
-
-  const handleSelectQuestion = (question: FullQuestion) => {
-    if (!selectedQuestions.find((q) => q.question.id === question.question.id)) {
-      setSelectedQuestions([...selectedQuestions, question]);
-    }
-  };
-
-  const handleRemoveQuestion = (questionId: UUID) => {
-    setSelectedQuestions(selectedQuestions.filter((q) => q.question.id !== questionId));
-  };
-
-  const handleQuestionClick = (question: FullQuestion) => {
-    setSelectedQuestion(question);
-    setIsDialogOpen(true);
-  };
+  const handleFilterChange = useCallback(
+    (newFilter: Partial<QuestionFilter>) => {
+      setFilter((prev) => ({ ...prev, ...newFilter }));
+      loadQuestions({ ...filter, ...newFilter });
+    },
+    [filter, loadQuestions]
+  );
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="space-y-6">
+    <div className="container mx-auto p-4">
+      <div className="space-y-5">
         {/* Header */}
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Question Bank</h1>
-          <Button onClick={loadQuestions} disabled={isLoading}>
+
+          <Button onClick={() => loadQuestions(filter)} disabled={isLoading}>
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -75,22 +60,23 @@ export default function QuestionPicker() {
         </Card>
 
         {/* Stats */}
-        <QuestionStats questions={selectedQuestions} />
+        <QuestionStats selectedQuestions={selectedQuestions} />
 
-        {/* Questions Grid */}
         <div className="grid md:grid-cols-2 gap-6">
           {/* Available Questions */}
           <Card>
             <CardContent className="p-4">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-semibold">Available Questions</h2>
-                <span className="text-sm text-muted-foreground">{questions.length} questions</span>
+                <span className="text-sm text-muted-foreground">
+                  {availableQuestions.length} questions
+                </span>
               </div>
               <ScrollArea className="h-[600px] pr-4">
                 <QuestionList
-                  questions={questions}
+                  questions={availableQuestions}
                   selectedQuestions={selectedQuestions}
-                  onSelect={handleSelectQuestion}
+                  onSelect={handleAddQuestion}
                   onQuestionClick={handleQuestionClick}
                 />
               </ScrollArea>
@@ -102,15 +88,36 @@ export default function QuestionPicker() {
             <CardContent className="p-4">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-semibold">Selected Questions</h2>
-                <span className="text-sm text-muted-foreground">
-                  {selectedQuestions.length} selected
-                </span>
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={clearAllQuestions}
+                    disabled={selectedQuestions.length === 0}
+                  >
+                    Clear
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={handleSubmit}
+                    disabled={isSubmitting || selectedQuestions.length === 0}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Saving
+                      </>
+                    ) : (
+                      "Save All"
+                    )}
+                  </Button>
+                </div>
               </div>
               <ScrollArea className="h-[600px] pr-4">
                 <QuestionList
                   questions={selectedQuestions}
                   selectedQuestions={selectedQuestions}
-                  onSelect={(question) => handleRemoveQuestion(question.question.id)}
+                  onSelect={handleRemoveQuestion}
                   onQuestionClick={handleQuestionClick}
                   showRemoveButton
                 />
@@ -121,7 +128,7 @@ export default function QuestionPicker() {
 
         {/* Question Dialog */}
         <QuestionDialog
-          question={selectedQuestion}
+          question={dialogQuestion}
           isOpen={isDialogOpen}
           onClose={() => setIsDialogOpen(false)}
         />

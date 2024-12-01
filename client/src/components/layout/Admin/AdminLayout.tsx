@@ -6,8 +6,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <SidebarProvider>
       <AdminSidebar />
       <SidebarInset className="w-full">
-        <main className="size-full flex flex-col">
-          <SidebarTrigger />
+        <main className="relative size-full flex flex-col">
+          <SidebarTrigger className="absolute top-2 left-2" />
           {children}
         </main>
       </SidebarInset>

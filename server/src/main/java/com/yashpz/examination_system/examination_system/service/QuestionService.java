@@ -1,5 +1,6 @@
 package com.yashpz.examination_system.examination_system.service;
 
+import com.yashpz.examination_system.examination_system.constants.Difficulty;
 import com.yashpz.examination_system.examination_system.constants.QuestionType;
 import com.yashpz.examination_system.examination_system.dto.Question.*;
 import com.yashpz.examination_system.examination_system.exception.ApiError;
@@ -70,7 +71,7 @@ public class QuestionService {
         return questionRepository.findById(questionId).orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND,"Question not found"));
     }
 
-    public List<QuestionResponseDTO> getAllQuestions(UUID categoryId, String difficulty, String type) {
+    public List<QuestionResponseDTO> getAllQuestions(UUID categoryId, Difficulty difficulty, QuestionType type) {
         return questionRepository.findAllByFilters(categoryId, difficulty, type).stream()
                 .map(questionMapper::toResponseDTO)
                 .toList();

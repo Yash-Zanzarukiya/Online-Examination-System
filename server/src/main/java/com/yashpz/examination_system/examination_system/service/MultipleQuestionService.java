@@ -1,5 +1,7 @@
 package com.yashpz.examination_system.examination_system.service;
 
+import com.yashpz.examination_system.examination_system.constants.Difficulty;
+import com.yashpz.examination_system.examination_system.constants.QuestionType;
 import com.yashpz.examination_system.examination_system.dto.Question.FullQuestionDTO;
 import com.yashpz.examination_system.examination_system.dto.Question.McqOptionResponseDTO;
 import com.yashpz.examination_system.examination_system.dto.Question.QuestionResponseDTO;
@@ -37,13 +39,13 @@ public class MultipleQuestionService {
                 .toList();
     }
 
-    public FullQuestionDTO getQuestionWithOptions(UUID questionId) {
+    public FullQuestionDTO getFullQuestion(UUID questionId) {
         QuestionResponseDTO question = questionService.getQuestionById(questionId);
         List<McqOptionResponseDTO> options = mcqOptionService.getOptionsByQuestionId(questionId);
         return new FullQuestionDTO(question, options);
     }
 
-    public List<FullQuestionDTO> getAllQuestionWithOptions(UUID categoryId, String difficulty,String type) {
+    public List<FullQuestionDTO> getAllFullQuestions(UUID categoryId, Difficulty difficulty, QuestionType type) {
         return questionService.getAllQuestions(categoryId, difficulty, type).stream()
                 .map(question -> new FullQuestionDTO(question, mcqOptionService.getOptionsByQuestionId(question.getId())))
                 .toList();

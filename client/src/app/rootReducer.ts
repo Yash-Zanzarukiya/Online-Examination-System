@@ -4,6 +4,7 @@ import publicReducer from "@/features/Public/redux/publicSlice";
 import collegeReducer from "@/features/college/redux/collegeSlice";
 import studentProfileReducer from "@/features/student/redux/studentSlice";
 import questionReducer from "@/features/QuestionBuilder/redux/questionSlice";
+import questionPickerReducer from "@/features/QuestionPicker/redux/questionPickerSlice";
 
 const rootReducer = combineReducers({
   public: publicReducer,
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   college: collegeReducer,
   studentProfile: studentProfileReducer,
   questions: questionReducer,
+  questionPicker: questionPickerReducer,
 });
 
 export default rootReducer;

@@ -11,13 +11,12 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExamQuestionsDTO {
-
+public class ExamQuestionsResponseDTO {
     private UUID id;
 
     @NotNull
     private UUID examId;
 
     @NotNull
-    private List<UUID> questionIds;
+    private UUID questionId;
 }

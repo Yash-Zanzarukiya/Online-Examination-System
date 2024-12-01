@@ -1,5 +1,7 @@
 package com.yashpz.examination_system.examination_system.controller;
 
+import com.yashpz.examination_system.examination_system.constants.Difficulty;
+import com.yashpz.examination_system.examination_system.constants.QuestionType;
 import com.yashpz.examination_system.examination_system.dto.Question.FullQuestionDTO;
 import com.yashpz.examination_system.examination_system.dto.Question.QuestionDTO;
 import com.yashpz.examination_system.examination_system.dto.Question.QuestionResponseDTO;
@@ -44,6 +46,20 @@ public class QuestionController {
         return ApiResponseUtil.handleResponse(HttpStatus.CREATED, questions, "Questions created successfully");
     }
 
+    @GetMapping("/full/{questionId}")
+    public ResponseEntity<ApiResponse<FullQuestionDTO>> getFullQuestion(@PathVariable UUID questionId) {
+        FullQuestionDTO fullQuestionDTO = multipleQuestionService.getFullQuestion(questionId);
+        return ApiResponseUtil.handleResponse(HttpStatus.OK, fullQuestionDTO, "Question fetched successfully");
+    }
+
+    @GetMapping("/all/full")
+    public ResponseEntity<ApiResponse<List<FullQuestionDTO>>> getAllFullQuestion(@RequestParam(required = false) UUID categoryId,
+                                                                                 @RequestParam(required = false) Difficulty difficulty,
+                                                                                 @RequestParam(required = false) QuestionType type) {
+        UUID category = type==QuestionType.MCQ ? categoryId : null;
+        List<FullQuestionDTO> fullQuestionDTOs = multipleQuestionService.getAllFullQuestions(category, difficulty, type);
+        return ApiResponseUtil.handleResponse(HttpStatus.OK, fullQuestionDTOs, "Questions fetched successfully");
+    }
 //    ------------------
 
     @PostMapping
@@ -66,25 +82,11 @@ public class QuestionController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<QuestionResponseDTO>>> getAllQuestions(@RequestParam(required = false) UUID categoryId,
-                                             @RequestParam(required = false) String difficulty,
-                                             @RequestParam(required = false) String type
+                                             @RequestParam(required = false) Difficulty difficulty,
+                                             @RequestParam(required = false) QuestionType type
     ) {
         List<QuestionResponseDTO> allQuestions = questionService.getAllQuestions(categoryId, difficulty, type);
         return ApiResponseUtil.handleResponse(HttpStatus.OK, allQuestions, "Questions fetched successfully");
-    }
-
-    @GetMapping("/full/{questionId}")
-    public ResponseEntity<ApiResponse<FullQuestionDTO>> getQuestionWithOptions(@PathVariable UUID questionId) {
-        FullQuestionDTO fullQuestionDTO = multipleQuestionService.getQuestionWithOptions(questionId);
-        return ApiResponseUtil.handleResponse(HttpStatus.OK, fullQuestionDTO, "Question fetched successfully");
-    }
-
-    @GetMapping("/all/full")
-    public ResponseEntity<ApiResponse<List<FullQuestionDTO>>> getAllQuestionWithOptions(@RequestParam(required = false) UUID categoryId,
-                                                                                        @RequestParam(required = false) String difficulty,
-                                                                                        @RequestParam(required = false) String type) {
-        List<FullQuestionDTO> fullQuestionDTOs = multipleQuestionService.getAllQuestionWithOptions(categoryId, difficulty, type);
-        return ApiResponseUtil.handleResponse(HttpStatus.OK, fullQuestionDTOs, "Questions fetched successfully");
     }
 
     @PatchMapping("/{questionId}")

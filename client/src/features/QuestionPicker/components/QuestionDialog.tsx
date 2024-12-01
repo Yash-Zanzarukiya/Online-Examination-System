@@ -1,15 +1,36 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { FullQuestion } from "../../QuestionBuilder/types";
+import { FullQuestion, Question } from "@/features/QuestionBuilder/types";
+import questionApi from "@/features/QuestionBuilder/api/questionApi";
+import { useEffect, useState } from "react";
 
 interface QuestionDialogProps {
-  question: FullQuestion | null;
+  question: Question | null;
   isOpen: boolean;
   onClose: () => void;
 }
 
 export default function QuestionDialog({ question, isOpen, onClose }: QuestionDialogProps) {
   if (!question) return null;
+
+  const [fullQuestion, setFullQuestion] = useState<FullQuestion | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchFullQuestion = async () => {
+      try {
+        setLoading(true);
+        const response = await questionApi.getFullQuestionByIdApi(question.id);
+        setFullQuestion(response.data.data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (question?.id) fetchFullQuestion();
+  }, [question]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -19,29 +40,31 @@ export default function QuestionDialog({ question, isOpen, onClose }: QuestionDi
         </DialogHeader>
         <div className="space-y-4">
           <div className="flex flex-wrap gap-2">
-            <Badge variant="outline">{question.question.type}</Badge>
-            <Badge variant="outline">{question.question.difficulty}</Badge>
-            <Badge variant="outline">{question.question.category.name}</Badge>
+            <Badge variant="outline">{question.difficulty}</Badge>
+            <Badge variant="outline">{question.type}</Badge>
+            <Badge variant="outline">{question.category?.name}</Badge>
           </div>
 
           <div className="space-y-4">
             <div>
               <h3 className="font-medium mb-2">Question</h3>
-              <p className="text-sm">{question.question.questionText}</p>
-              {question.question.image && (
+              <p className="text-sm">{question.questionText}</p>
+              {question.image && (
                 <img
-                  src={question.question.image}
+                  src={question.image}
                   alt="Question"
                   className="mt-2 rounded-md w-full max-h-48 object-cover"
                 />
               )}
             </div>
 
-            {question.options && (
+            {loading && <div>Loading...</div>}
+
+            {fullQuestion?.options && (
               <div>
                 <h3 className="font-medium mb-2">Options</h3>
                 <div className="grid gap-2">
-                  {question.options.map((option) => (
+                  {fullQuestion.options.map((option) => (
                     <div
                       key={option.id}
                       className={`p-3 rounded-md text-sm ${

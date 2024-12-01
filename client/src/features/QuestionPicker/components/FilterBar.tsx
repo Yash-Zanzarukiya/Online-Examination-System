@@ -18,31 +18,10 @@ interface FilterBarProps {
 }
 
 export default function FilterBar({ onFilterChange, currentFilter }: FilterBarProps) {
-  const { categories } = useCategory();
+  const { categories, isLoading } = useCategory();
 
   return (
     <div className="flex flex-wrap gap-4">
-      <div className="flex-1 min-w-[200px]">
-        <Label htmlFor="category" className="mb-2 block">
-          Category
-        </Label>
-        <Select
-          value={currentFilter.categoryId}
-          onValueChange={(value: UUID) => onFilterChange({ categoryId: value })}
-        >
-          <SelectTrigger id="category" className="w-full">
-            <SelectValue placeholder="All Categories" />
-          </SelectTrigger>
-          <SelectContent>
-            {categories?.map((category) => (
-              <SelectItem key={category.id} value={category.id}>
-                {category.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
       <div className="flex-1 min-w-[200px]">
         <Label htmlFor="difficulty" className="mb-2 block">
           Difficulty
@@ -60,9 +39,11 @@ export default function FilterBar({ onFilterChange, currentFilter }: FilterBarPr
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Difficulties</SelectItem>
-            <SelectItem value={Difficulty.EASY}>Easy</SelectItem>
-            <SelectItem value={Difficulty.MEDIUM}>Medium</SelectItem>
-            <SelectItem value={Difficulty.HARD}>Hard</SelectItem>
+            {Object.values(Difficulty).map((difficulty) => (
+              <SelectItem key={difficulty} value={difficulty}>
+                {difficulty}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
@@ -86,6 +67,37 @@ export default function FilterBar({ onFilterChange, currentFilter }: FilterBarPr
             <SelectItem value="all">All Types</SelectItem>
             <SelectItem value={QuestionType.MCQ}>Multiple Choice</SelectItem>
             <SelectItem value={QuestionType.PROGRAMMING}>Programming</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="flex-1 min-w-[200px]">
+        <Label htmlFor="category" className="mb-2 block">
+          Category
+        </Label>
+        <Select
+          value={currentFilter.categoryId || "all"}
+          onValueChange={(value) =>
+            onFilterChange({
+              categoryId: value === "all" ? undefined : (value as UUID),
+            })
+          }
+        >
+          <SelectTrigger id="category" className="w-full">
+            <SelectValue placeholder="All Categories" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Categories</SelectItem>
+            {isLoading && (
+              <SelectItem value="loading" disabled>
+                Loading...
+              </SelectItem>
+            )}
+            {categories?.map((category) => (
+              <SelectItem key={category.id} value={category.id}>
+                {category.name}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>

@@ -21,7 +21,7 @@ import java.util.UUID;
 public class ExamQuestions {
 
    @Id
-   @GeneratedValue(strategy = GenerationType.AUTO)
+   @GeneratedValue(strategy = GenerationType.UUID)
    private UUID id;
 
    @ManyToOne(fetch = FetchType.LAZY)
