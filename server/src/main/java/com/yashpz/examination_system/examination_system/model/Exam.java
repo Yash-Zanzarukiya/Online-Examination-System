@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -30,7 +31,9 @@ public class Exam {
 
    private Integer passingScore;
 
-   private Duration timeLimit;
+   private Integer timeLimit;
+
+   private Date startDate;
 
    @CreatedDate
    @Column(nullable = false, updatable = false)

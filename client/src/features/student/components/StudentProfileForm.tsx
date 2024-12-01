@@ -1,12 +1,4 @@
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { useStudentProfileForm } from "../hooks/useStudentProfileForm";
 import { FormInput } from "@/components/custom/FormInput";
@@ -39,23 +31,12 @@ export function StudentProfileForm({ userId }: { userId: UUID }) {
         />
 
         {/* Pass out Year */}
-        <FormField
+        <FormInput
           control={form.control}
           name="passout"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Passout Year</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  type="number"
-                  onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
-                  placeholder="Enter your expected year of graduation."
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Pass out Year"
+          placeholder="Enter your expected year of graduation."
+          type="number"
         />
 
         {/* Phone */}

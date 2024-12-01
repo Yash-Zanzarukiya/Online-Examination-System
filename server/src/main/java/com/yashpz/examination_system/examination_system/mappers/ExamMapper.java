@@ -14,7 +14,7 @@ public class ExamMapper {
         Exam exam = new Exam();
         exam.setTitle(dto.getTitle());
         exam.setPassingScore(dto.getPassingScore());
-        exam.setTimeLimit(dto.getTimeLimit() != null ? Duration.parse(dto.getTimeLimit()) : null);
+        exam.setTimeLimit(dto.getTimeLimit());
         return exam;
     }
 
@@ -23,7 +23,8 @@ public class ExamMapper {
                 exam.getId(),
                 exam.getTitle(),
                 exam.getPassingScore(),
-                exam.getTimeLimit() != null ? exam.getTimeLimit().toString() : null,
+                exam.getTimeLimit(),
+                exam.getStartDate(),
                 exam.getCreatedAt(),
                 exam.getUpdatedAt()
         );
@@ -39,6 +40,8 @@ public class ExamMapper {
     public static void updateEntity(Exam exam, ExamRequestDTO dto) {
         exam.setTitle(dto.getTitle());
         exam.setPassingScore(dto.getPassingScore());
-        exam.setTimeLimit(dto.getTimeLimit() != null ? Duration.parse(dto.getTimeLimit()) : null);
+        if (dto.getStartDate()!=null)
+            exam.setStartDate(dto.getStartDate());
+        exam.setTimeLimit(dto.getTimeLimit());
     }
 }

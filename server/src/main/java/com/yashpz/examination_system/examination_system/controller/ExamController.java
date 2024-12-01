@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/exam")
+@RequestMapping("/exams")
 public class ExamController {
 
     private final ExamService examService;

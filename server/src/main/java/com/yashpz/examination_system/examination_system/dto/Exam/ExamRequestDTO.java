@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,6 +20,8 @@ public class ExamRequestDTO {
     @Positive
     private int passingScore;
 
+    private Date startDate;
+
     @NotNull
-    private String timeLimit;
+    private int timeLimit;
 }

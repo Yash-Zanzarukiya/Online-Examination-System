@@ -25,7 +25,16 @@ export const FormInput = ({
       <FormItem>
         <FormLabel>{label}</FormLabel>
         <FormControl>
-          <Input {...field} placeholder={placeholder} type={type} {...restProps} />
+          <Input
+            {...field}
+            placeholder={placeholder}
+            type={type}
+            onChange={(e) => {
+              if (type === "number") field.onChange(parseInt(e.target.value, 10));
+              else field.onChange(e.target.value);
+            }}
+            {...restProps}
+          />
         </FormControl>
         <FormMessage />
       </FormItem>

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.UUID;
 
 @Data
@@ -14,7 +15,8 @@ public class ExamResponseDTO {
     private UUID id;
     private String title;
     private int passingScore;
-    private String timeLimit;
+    private int timeLimit;
+    private Date startDate;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

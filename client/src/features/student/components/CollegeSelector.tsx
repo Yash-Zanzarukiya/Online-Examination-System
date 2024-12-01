@@ -13,15 +13,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useCollegeCrud } from "@/features/college/hooks/useCollegeCrud";
-import { useEffect } from "react";
+import { useColleges } from "@/features/college/hooks/useColleges";
 
 function CollegeSelector({ control }: { control: any }) {
-  const { colleges, loadColleges, loading } = useCollegeCrud();
-
-  useEffect(() => {
-    loadColleges();
-  }, [loadColleges]);
+  const { colleges, isLoading } = useColleges();
 
   return (
     <FormField
@@ -37,7 +32,7 @@ function CollegeSelector({ control }: { control: any }) {
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              {loading && <SelectItem value="loading...">Loading...</SelectItem>}
+              {isLoading && <SelectItem value="loading...">Loading...</SelectItem>}
               {colleges.map((college) => (
                 <SelectItem key={college.id} value={college.id}>
                   {college.name}

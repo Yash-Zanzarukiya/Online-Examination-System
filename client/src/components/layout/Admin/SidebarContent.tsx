@@ -32,7 +32,7 @@ const items = [
   },
   {
     title: "Exams",
-    url: "",
+    url: "exams",
     icon: Layers,
   },
   {

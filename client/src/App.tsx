@@ -15,6 +15,7 @@ import { StudentDashboard, StudentProfile } from "./features/student/pages";
 import QuestionCreator from "./features/QuestionBuilder/pages/QuestionCreator";
 import AllQuestions from "./features/QuestionBuilder/pages/AllQuestions";
 import QuestionPicker from "./features/QuestionPicker/pages/QuestionPicker";
+import { CreateExamPage, ExamsManagementPage, ManageExam } from "./features/Exam/pages";
 
 function App() {
   const { toast } = useToast();
@@ -45,6 +46,10 @@ function App() {
           <Route path="questions/build" element={<QuestionCreator />} />
           <Route path="questions/all" element={<AllQuestions />} />
           <Route path="questions/pick" element={<QuestionPicker />} />
+          <Route path="exams" element={<ExamsManagementPage />} />
+          <Route path="exams/create" element={<CreateExamPage />} />
+          <Route path="exams/manage" element={<ManageExam />} />
+          <Route path="exams/manage/:examId/pick" element={<QuestionPicker />} />
         </Route>
 
         <Route path="/student" element={<AuthLayout allowedRoles={[Roles.STUDENT]} />}>
