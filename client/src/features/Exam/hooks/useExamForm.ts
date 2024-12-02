@@ -3,12 +3,13 @@ import { useForm } from "react-hook-form";
 import { examSchema } from "../validators";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAppDispatch } from "@/app/hooks";
-import { createExam } from "../redux/examThunks";
+import { createExam, updateExam } from "../redux/examThunks";
 import { navigateTo } from "@/utils";
+import { Exam } from "../types";
 
 type ExamSchema = z.infer<typeof examSchema>;
 
-export default function useExamForm(initialValues?: ExamSchema) {
+export default function useExamForm(initialValues?: Exam) {
   const dispatch = useAppDispatch();
 
   const form = useForm<ExamSchema>({
@@ -21,8 +22,12 @@ export default function useExamForm(initialValues?: ExamSchema) {
   });
 
   const onSubmit = async (data: ExamSchema) => {
-    await dispatch(createExam(data));
-    navigateTo("/admin/exams");
+    if (initialValues) {
+      await dispatch(updateExam({ examId: initialValues.id, examData: data }));
+    } else {
+      await dispatch(createExam(data));
+      navigateTo("/admin/exams");
+    }
   };
 
   return { form, onSubmit };

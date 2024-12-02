@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAppSelector } from "@/app/hooks";
 import { ExamForm } from "../components";
-import useExamForm from "../hooks/useExamForm";
+import { useExamForm } from "../hooks";
 
 export default function CreateExamPage() {
   const { isLoading } = useAppSelector(({ exams }) => exams);

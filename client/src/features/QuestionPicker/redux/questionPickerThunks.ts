@@ -10,7 +10,7 @@ export const addExamQuestions = createAsyncThunk(
   async (payload: examQuestionsForm) => {
     try {
       const apiRes = await questionPickerApi.addExamQuestions(payload);
-      toastApiSuccess("Success 🙂", apiRes);
+      toastApiSuccess("Question Added Successfully 🙂");
       return apiRes.data.data;
     } catch (error: any) {
       toastApiError("Failed to add Question...", error);
@@ -22,8 +22,8 @@ export const removeExamQuestion = createAsyncThunk(
   "questionPicker/removeExamQuestion",
   async (payload: UUID[]) => {
     try {
-      const apiRes = await questionPickerApi.removeExamQuestion(payload);
-      toastApiSuccess("Success 🙂", apiRes);
+      await questionPickerApi.removeExamQuestion(payload);
+      toastApiSuccess("Question Removed Successfully 🙂");
       return payload;
     } catch (error: any) {
       toastApiError("Failed to remove Question...", error);

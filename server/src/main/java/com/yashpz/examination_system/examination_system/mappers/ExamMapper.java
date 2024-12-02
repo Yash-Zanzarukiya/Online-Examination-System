@@ -14,6 +14,8 @@ public class ExamMapper {
         Exam exam = new Exam();
         exam.setTitle(dto.getTitle());
         exam.setPassingScore(dto.getPassingScore());
+        if (dto.getStartDate()!=null)
+            exam.setStartDate(dto.getStartDate());
         exam.setTimeLimit(dto.getTimeLimit());
         return exam;
     }

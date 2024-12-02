@@ -1,3 +1,5 @@
 import ExamForm from "./ExamForm";
+import ExamCard from "./ExamCard";
+import EditExamDialog from "./EditExamDialog";
 
-export { ExamForm };
+export { ExamForm, ExamCard, EditExamDialog };
