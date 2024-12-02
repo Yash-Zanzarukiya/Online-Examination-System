@@ -30,8 +30,13 @@ function ExamCard({ exam }: ExamCardProps) {
           <CardTitle>{exam.title}</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-gray-500">Status: {exam.startedAt ? "Scheduled" : "Draft"}</p>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
+            Status:{" "}
+            {exam.startDate
+              ? `Scheduled (${formatter.formatDate(exam.startDate.toString())})`
+              : "Draft"}
+          </p>
+          <p className="text-sm text-muted-foreground">
             Created: {formatter.formatTimestamp(exam.createdAt)}
           </p>
         </CardContent>

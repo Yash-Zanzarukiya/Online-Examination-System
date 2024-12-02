@@ -1,6 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { ExamsState } from "../types";
-import { createExam, deleteExam, getAllExams, getExamById, updateExam } from "./examThunks";
+import {
+  createExam,
+  deleteExam,
+  getAllExams,
+  getExamById,
+  updateExam,
+  updateExamSchedule,
+} from "./examThunks";
 
 const initialState: ExamsState = {
   exams: [],
@@ -59,6 +66,23 @@ const examSlice = createSlice({
       state.isLoading = false;
     });
     builder.addCase(updateExam.rejected, (state) => {
+      state.isLoading = false;
+    });
+    // Update Exam Schedule
+    builder.addCase(updateExamSchedule.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(updateExamSchedule.fulfilled, (state, action) => {
+      if (action.payload) {
+        state.exam = action.payload;
+        state.exams = state.exams.map((exam) => {
+          if (exam.id === action.payload?.id) return action.payload;
+          return exam;
+        });
+      }
+      state.isLoading = false;
+    });
+    builder.addCase(updateExamSchedule.rejected, (state) => {
       state.isLoading = false;
     });
     // Delete Exam

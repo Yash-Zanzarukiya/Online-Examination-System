@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.UUID;
 
 @RestController
@@ -40,6 +41,11 @@ public class ExamController {
     @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse<ExamResponseDTO>> updateExam(@PathVariable UUID id, @Valid @RequestBody ExamRequestDTO dto) {
         return ApiResponseUtil.handleResponse(HttpStatus.OK, examService.updateExam(id, dto), "Exam Updated Successfully");
+    }
+
+    @PatchMapping("/{id}/schedule")
+    public ResponseEntity<ApiResponse<ExamResponseDTO>> updateExamSchedule(@PathVariable UUID id, @Valid @RequestBody Date startDate) {
+        return ApiResponseUtil.handleResponse(HttpStatus.OK, examService.updateExam(id, startDate), "Exam Schedule Updated Successfully");
     }
 
     @DeleteMapping("/{id}")

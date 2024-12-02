@@ -40,10 +40,13 @@ public class ExamMapper {
     }
 
     public static void updateEntity(Exam exam, ExamRequestDTO dto) {
-        exam.setTitle(dto.getTitle());
-        exam.setPassingScore(dto.getPassingScore());
+        if (dto.getTitle()!=null)
+            exam.setTitle(dto.getTitle());
+        if (dto.getPassingScore()>=0)
+            exam.setPassingScore(dto.getPassingScore());
         if (dto.getStartDate()!=null)
             exam.setStartDate(dto.getStartDate());
-        exam.setTimeLimit(dto.getTimeLimit());
+        if (dto.getTimeLimit()>=0)
+            exam.setTimeLimit(dto.getTimeLimit());
     }
 }

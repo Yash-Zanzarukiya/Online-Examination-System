@@ -22,6 +22,6 @@ public class ExamRequestDTO {
 
     private Date startDate;
 
-    @NotNull
+    @Positive
     private int timeLimit;
 }

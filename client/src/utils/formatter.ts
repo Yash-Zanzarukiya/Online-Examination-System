@@ -32,21 +32,39 @@ function formatHMSDuration(totalSecs: number) {
   }
 }
 
-function formatDate(timestamp: Date) {
+function formatDate(timestamp: string) {
   const date = new Date(timestamp);
-  const days = date.getDay() + 1;
+  const days = date.getDate();
   const months = date.getMonth() + 1;
 
   const day = days < 10 ? "0" + days : days;
   const month = months < 10 ? "0" + months : months;
 
-  return day + "/" + month + "/" + date.getFullYear();
+  return day + "-" + month + "-" + date.getFullYear();
+}
+
+function formatScheduleDate(date: Date): string {
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
+function formatScheduleTime(date: Date): string {
+  return date.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
 }
 
 const formatter = {
   formatTimestamp,
   formatHMSDuration,
   formatDate,
+  formatScheduleDate,
+  formatScheduleTime,
 };
 
 export default formatter;

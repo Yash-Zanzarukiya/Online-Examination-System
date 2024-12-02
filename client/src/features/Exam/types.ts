@@ -11,7 +11,7 @@ export interface Exam {
   title: string;
   passingScore: number;
   timeLimit: number;
-  startedAt: Date | null;
+  startDate: Date | null;
   createdAt: string;
   updatedAt: string;
 }

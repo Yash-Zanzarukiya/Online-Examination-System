@@ -3,6 +3,7 @@ import { toastApiError, toastApiSuccess } from "@/utils";
 import { ExamForm } from "../types";
 import { UUID } from "crypto";
 import examApi from "../api/ExamApi";
+import { ExamScheduleForm } from "../validators";
 
 export const createExam = createAsyncThunk("exam/create", async (examData: ExamForm) => {
   try {
@@ -37,6 +38,19 @@ export const updateExam = createAsyncThunk(
   async ({ examId, examData }: { examId: UUID; examData: ExamForm }) => {
     try {
       const apiRes = await examApi.updateExam(examId, examData);
+      toastApiSuccess("Success 🙂", apiRes);
+      return apiRes.data.data;
+    } catch (error) {
+      toastApiError("Failed to Update Exam", error);
+    }
+  }
+);
+
+export const updateExamSchedule = createAsyncThunk(
+  "exam/updateExamSchedule",
+  async ({ examId, examData }: { examId: UUID; examData: ExamScheduleForm }) => {
+    try {
+      const apiRes = await examApi.updateExamSchedule(examId, examData);
       toastApiSuccess("Success 🙂", apiRes);
       return apiRes.data.data;
     } catch (error) {

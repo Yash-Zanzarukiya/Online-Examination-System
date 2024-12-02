@@ -8,3 +8,11 @@ export const examSchema = z.object({
   passingScore: z.number().int().min(0, "Passing score must be at least 0"),
   timeLimit: z.number().int().min(1).max(300, "Time limit must be between 1 and 300 minutes"),
 });
+
+export const examScheduleSchema = z.object({
+  startDate: z.date({
+    required_error: "Exam start date and time is required.",
+  }),
+});
+
+export type ExamScheduleForm = z.infer<typeof examScheduleSchema>;

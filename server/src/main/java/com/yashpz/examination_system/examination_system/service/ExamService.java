@@ -9,6 +9,7 @@ import com.yashpz.examination_system.examination_system.repository.ExamRepositor
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Service
@@ -39,6 +40,13 @@ public class ExamService {
         Exam exam = examRepository.findById(examId)
                 .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "Exam not found"));
         ExamMapper.updateEntity(exam, dto);
+        return ExamMapper.toResponseDTO(examRepository.save(exam));
+    }
+
+    public ExamResponseDTO updateExam(UUID examId, Date startDate) {
+        Exam exam = examRepository.findById(examId)
+                .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "Exam not found"));
+        exam.setStartDate(startDate);
         return ExamMapper.toResponseDTO(examRepository.save(exam));
     }
 
