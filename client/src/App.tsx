@@ -2,7 +2,7 @@ import "./App.css";
 import { Toaster } from "@/components/ui/toaster";
 import { InitialLoadingPage, LandingPage } from "./pages";
 import { useToast } from "@/hooks/use-toast";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Outlet, Route, Routes, useNavigate } from "react-router-dom";
 import { setToastUtil } from "./utils/toastMessage";
 import { setNavigationUtil } from "./utils/navigate";
 import { useInitialLoading } from "./hooks";
@@ -21,6 +21,8 @@ import {
   ManageExam,
   ScheduleExam,
 } from "./features/Exam/pages";
+import ActiveExam from "./features/ActiveExam/pages/ActiveExam";
+import AdminLayout from "./components/layout/Admin/AdminLayout";
 
 function App() {
   const { toast } = useToast();
@@ -45,7 +47,18 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
 
         {/* Protected Routes */}
-        <Route path="/admin" element={<AuthLayout allowedRoles={[Roles.ADMIN]} />}>
+
+        {/* Admin Routes */}
+        <Route
+          path="/admin"
+          element={
+            <AuthLayout allowedRoles={[Roles.ADMIN]}>
+              <AdminLayout>
+                <Outlet />
+              </AdminLayout>
+            </AuthLayout>
+          }
+        >
           <Route path="" element={<AdminDashboard />} />
           <Route path="colleges" element={<CollegePage />} />
           <Route path="questions/build" element={<QuestionCreator />} />
@@ -61,6 +74,11 @@ function App() {
         <Route path="/student" element={<AuthLayout allowedRoles={[Roles.STUDENT]} />}>
           <Route path="" element={<StudentDashboard />} />
           <Route path="profile" element={<StudentProfile />} />
+        </Route>
+
+        {/* Exam Routes */}
+        <Route path="/active-exam" element={<AuthLayout authentication />}>
+          <Route path=":examId" element={<ActiveExam />} />
         </Route>
 
         <Route path="*" element={<div>404</div>} />

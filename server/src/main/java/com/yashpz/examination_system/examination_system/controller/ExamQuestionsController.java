@@ -1,9 +1,8 @@
 package com.yashpz.examination_system.examination_system.controller;
 
 import com.yashpz.examination_system.examination_system.dto.Exam.AllExamQuestionDTO;
-import com.yashpz.examination_system.examination_system.dto.Exam.ExamQuestionsDTO;
+import com.yashpz.examination_system.examination_system.dto.Exam.ExamQuestionsRequestDTO;
 import com.yashpz.examination_system.examination_system.dto.Exam.ExamQuestionsResponseDTO;
-import com.yashpz.examination_system.examination_system.model.ExamQuestions;
 import com.yashpz.examination_system.examination_system.service.ExamQuestionsService;
 import com.yashpz.examination_system.examination_system.utils.ApiResponse;
 import com.yashpz.examination_system.examination_system.utils.ApiResponseUtil;
@@ -26,7 +25,7 @@ public class ExamQuestionsController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<List<ExamQuestionsResponseDTO>>> addExamQuestion(@RequestBody @Valid ExamQuestionsDTO dto) {
+    public ResponseEntity<ApiResponse<List<ExamQuestionsResponseDTO>>> addExamQuestion(@RequestBody @Valid ExamQuestionsRequestDTO dto) {
         List<ExamQuestionsResponseDTO> createdExamQuestion = examQuestionsService.createExamQuestions(dto);
         return ApiResponseUtil.handleResponse(HttpStatus.CREATED, createdExamQuestion, "Exam question added successfully");
     }
