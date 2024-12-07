@@ -11,7 +11,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExamQuestionsDTO {
+public class ExamQuestionsRequestDTO {
 
     private UUID id;
 

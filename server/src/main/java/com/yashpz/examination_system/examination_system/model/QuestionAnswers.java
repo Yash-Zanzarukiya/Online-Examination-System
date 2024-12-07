@@ -26,20 +26,21 @@ public class QuestionAnswers {
 
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "student_id", referencedColumnName = "id", nullable = false)
-   private User student;
+   private ExamAttempt examAttempt;
 
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "question_id", referencedColumnName = "id", nullable = false)
-   private ExamQuestions question;
+   private Question question;
 
    @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "selected_option_id", referencedColumnName = "id")
+   @JoinColumn(name = "selected_option_id", referencedColumnName = "id", nullable = true)
    private McqOption selectedOption;
 
    private String answerText;
 
-   @Column(nullable = false)
    private Boolean isCorrect;
+
+   private int timeSpent;
 
    @CreatedDate
    @Column(nullable = false, updatable = false)

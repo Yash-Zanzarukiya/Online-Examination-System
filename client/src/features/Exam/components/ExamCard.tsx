@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ConfirmDialog from "@/components/custom/ConfirmDialog";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Pencil, Trash2 } from "lucide-react";
+import { MoveRight, Pencil, Trash2 } from "lucide-react";
 import { Exam } from "../types";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -53,6 +53,11 @@ function ExamCard({ exam }: ExamCardProps) {
                 <Trash2 className="size-4 text-destructive" />
               </Button>
             </ConfirmDialog>
+            <Button size="icon" variant="outline" asChild>
+              <Link to={`/active-exam/${exam.id}`}>
+                <MoveRight />
+              </Link>
+            </Button>
           </div>
         </CardFooter>
       </Card>

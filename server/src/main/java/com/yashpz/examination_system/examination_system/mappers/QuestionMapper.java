@@ -1,7 +1,7 @@
 package com.yashpz.examination_system.examination_system.mappers;
 
 import com.yashpz.examination_system.examination_system.dto.CategoryDTO;
-import com.yashpz.examination_system.examination_system.dto.Question.QuestionDTO;
+import com.yashpz.examination_system.examination_system.dto.Question.QuestionRequestDTO;
 import com.yashpz.examination_system.examination_system.dto.Question.QuestionResponseDTO;
 import com.yashpz.examination_system.examination_system.model.Question;
 import org.springframework.stereotype.Component;
@@ -11,7 +11,7 @@ import java.util.List;
 @Component
 public class QuestionMapper {
 
-    public Question toEntity(QuestionDTO dto) {
+    public Question toEntity(QuestionRequestDTO dto) {
         Question question = new Question();
         question.setQuestionText(dto.getQuestionText());
         question.setDifficulty(dto.getDifficulty());
@@ -20,7 +20,7 @@ public class QuestionMapper {
         return question;
     }
 
-    public List<Question> toEntity(List<QuestionDTO> dtos) {
+    public List<Question> toEntity(List<QuestionRequestDTO> dtos) {
         return dtos.stream().map(this::toEntity).toList();
     }
 
@@ -40,7 +40,7 @@ public class QuestionMapper {
         return questions.stream().map(this::toResponseDTO).toList();
     }
 
-    public void updateEntity(Question question, QuestionDTO dto) {
+    public void updateEntity(Question question, QuestionRequestDTO dto) {
         if (dto.getQuestionText() != null) question.setQuestionText(dto.getQuestionText());
         if (dto.getDifficulty() != null) question.setDifficulty(dto.getDifficulty());
         if (dto.getType() != null) question.setType(dto.getType());

@@ -1,10 +1,8 @@
 package com.yashpz.examination_system.examination_system.mappers;
 
-import com.yashpz.examination_system.examination_system.dto.Exam.ExamQuestionsDTO;
 import com.yashpz.examination_system.examination_system.dto.Exam.ExamQuestionsResponseDTO;
-import com.yashpz.examination_system.examination_system.model.Exam;
 import com.yashpz.examination_system.examination_system.model.ExamQuestions;
-import com.yashpz.examination_system.examination_system.model.Question;
+import com.yashpz.examination_system.examination_system.model.McqOption;
 
 import java.util.List;
 
@@ -22,5 +20,9 @@ public class ExamQuestionsMapper {
         return examQuestions.stream()
                 .map(ExamQuestionsMapper::toResponseDto)
                 .toList();
+    }
+
+    public static void toExamQuestions(ExamQuestions examQuestions, List<McqOption> mcqOptions) {
+
     }
 }

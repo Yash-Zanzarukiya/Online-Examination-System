@@ -1,6 +1,5 @@
 package com.yashpz.examination_system.examination_system.model;
 
-import com.yashpz.examination_system.examination_system.constants.QuestionType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

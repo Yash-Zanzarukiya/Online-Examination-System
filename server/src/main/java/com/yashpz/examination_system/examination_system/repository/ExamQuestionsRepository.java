@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface ExamQuestionsRepository extends JpaRepository<ExamQuestions, UUID> {
@@ -25,4 +26,22 @@ public interface ExamQuestionsRepository extends JpaRepository<ExamQuestions, UU
     @Transactional
     @Query("DELETE FROM ExamQuestions eq WHERE eq.id IN :examQuestionIds")
     int deleteByQuestionIdIn(@Param("examQuestionIds") List<UUID> examQuestionIds);
+
+    @Query(value = """
+        SELECT
+            q.id as question_id,
+            q.type as question_type,
+            q.difficulty as question_difficulty,
+            q.question_text as question_text,
+            q.image as question_image,
+            mo.id as option_id,
+            mo.option_text as option_text,
+            mo.image as option_image
+        FROM exam_questions eq
+        JOIN question q ON eq.question_id = q.id
+        LEFT JOIN mcq_option mo ON mo.question_id = q.id
+        WHERE eq.exam_id = :examId
+    """, nativeQuery = true)
+    List<Map<String, Object>> findActiveExamQuestionsByExamId(@Param("examId") UUID examId);
+
 }

@@ -2,14 +2,14 @@ import { Outlet } from "react-router-dom";
 import { useAuth } from "@/hooks";
 import { Roles } from "@/types/Roles";
 import { navigateTo } from "@/utils";
-import AdminLayout from "@/components/layout/Admin/AdminLayout";
 
 interface IAuthLayoutProps {
   allowedRoles?: Roles[];
   authentication?: boolean;
+  children?: React.ReactNode;
 }
 
-function AuthLayout({ authentication = true, allowedRoles }: IAuthLayoutProps) {
+function AuthLayout({ authentication = true, allowedRoles, children }: IAuthLayoutProps) {
   const { isAuthenticated, authData } = useAuth();
 
   if (!isAuthenticated && authentication) {
@@ -20,11 +20,9 @@ function AuthLayout({ authentication = true, allowedRoles }: IAuthLayoutProps) {
     navigateTo("/");
   }
 
-  return (
-    <AdminLayout>
-      <Outlet />
-    </AdminLayout>
-  );
+  if (children) return children;
+
+  return <Outlet />;
 }
 
 export default AuthLayout;

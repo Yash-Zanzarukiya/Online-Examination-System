@@ -1,4 +1,4 @@
-package com.yashpz.examination_system.examination_system.dto.User;
+package com.yashpz.examination_system.examination_system.dto.Auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

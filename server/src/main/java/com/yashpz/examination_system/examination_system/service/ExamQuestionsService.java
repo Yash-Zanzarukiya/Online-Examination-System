@@ -1,7 +1,7 @@
 package com.yashpz.examination_system.examination_system.service;
 
 import com.yashpz.examination_system.examination_system.dto.Exam.AllExamQuestionDTO;
-import com.yashpz.examination_system.examination_system.dto.Exam.ExamQuestionsDTO;
+import com.yashpz.examination_system.examination_system.dto.Exam.ExamQuestionsRequestDTO;
 import com.yashpz.examination_system.examination_system.dto.Exam.ExamQuestionsResponseDTO;
 import com.yashpz.examination_system.examination_system.exception.ApiError;
 import com.yashpz.examination_system.examination_system.mappers.AllExamQuestionsMapper;
@@ -35,7 +35,7 @@ public class ExamQuestionsService {
         this.allExamQuestionsMapper = allExamQuestionsMapper;
     }
 
-    public List<ExamQuestionsResponseDTO> createExamQuestions(ExamQuestionsDTO dto) {
+    public List<ExamQuestionsResponseDTO> createExamQuestions(ExamQuestionsRequestDTO dto) {
         UUID examId = dto.getExamId();
         List<UUID> questionIds = dto.getQuestionIds();
 
@@ -91,5 +91,4 @@ public class ExamQuestionsService {
         int i = examQuestionsRepository.deleteByQuestionIdIn(examQuestionIds);
         System.out.println(i);
     }
-
 }
