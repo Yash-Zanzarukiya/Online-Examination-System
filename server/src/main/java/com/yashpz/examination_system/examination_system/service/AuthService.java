@@ -3,7 +3,7 @@ package com.yashpz.examination_system.examination_system.service;
 import com.yashpz.examination_system.examination_system.constants.Roles;
 import com.yashpz.examination_system.examination_system.dto.Auth.AuthDTO;
 import com.yashpz.examination_system.examination_system.dto.Auth.LoginDTO;
-import com.yashpz.examination_system.examination_system.dto.User.UserDataDTO;
+import com.yashpz.examination_system.examination_system.dto.Auth.UserDataDTO;
 import com.yashpz.examination_system.examination_system.exception.ApiError;
 import com.yashpz.examination_system.examination_system.mappers.AuthDataMapper;
 import com.yashpz.examination_system.examination_system.model.Auth;

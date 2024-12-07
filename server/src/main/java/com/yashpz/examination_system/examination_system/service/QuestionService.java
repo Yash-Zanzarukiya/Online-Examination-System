@@ -18,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
@@ -38,14 +37,14 @@ public class QuestionService {
     }
 
     @Transactional
-    public QuestionResponseDTO createQuestion(QuestionDTO questionDTO) {
-        Question question = questionMapper.toEntity(questionDTO);
+    public QuestionResponseDTO createQuestion(QuestionRequestDTO questionRequestDTO) {
+        Question question = questionMapper.toEntity(questionRequestDTO);
 
         if(question.getType() == QuestionType.MCQ)
-            updateCategory(question, questionDTO.getCategoryId());
+            updateCategory(question, questionRequestDTO.getCategoryId());
 
-        if (questionDTO.getImageFile() != null) {
-            String imageUrl = cloudinaryService.uploadImage(questionDTO.getImageFile());
+        if (questionRequestDTO.getImageFile() != null) {
+            String imageUrl = cloudinaryService.uploadImage(questionRequestDTO.getImageFile());
             question.setImage(imageUrl);
         }
 
@@ -55,8 +54,8 @@ public class QuestionService {
     }
 
     @Transactional
-    public List<QuestionResponseDTO> createQuestion(List<QuestionDTO> questionDTOList) {
-        return questionDTOList.stream()
+    public List<QuestionResponseDTO> createQuestion(List<QuestionRequestDTO> questionRequestDTOList) {
+        return questionRequestDTOList.stream()
                 .map(this::createQuestion)
                 .toList();
     }
@@ -78,17 +77,17 @@ public class QuestionService {
     }
 
     @Transactional
-    public QuestionResponseDTO updateQuestion(UUID questionId, QuestionDTO questionDTO, MultipartFile imageFile) {
+    public QuestionResponseDTO updateQuestion(UUID questionId, QuestionRequestDTO questionRequestDTO, MultipartFile imageFile) {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new ApiError(HttpStatus.BAD_REQUEST,"Invalid question ID"));
 
-        questionMapper.updateEntity(question, questionDTO);
+        questionMapper.updateEntity(question, questionRequestDTO);
 
-        if (questionDTO.getCategoryId() != null)
-            updateCategory(question, questionDTO.getCategoryId());
+        if (questionRequestDTO.getCategoryId() != null)
+            updateCategory(question, questionRequestDTO.getCategoryId());
 
-        if (questionDTO.getCorrectAnswerId() != null)
-            updateCorrectAnswer(question.getId(), questionDTO.getCorrectAnswerId());
+        if (questionRequestDTO.getCorrectAnswerId() != null)
+            updateCorrectAnswer(question.getId(), questionRequestDTO.getCorrectAnswerId());
 
         if (imageFile != null) {
             if (question.getImage() != null)

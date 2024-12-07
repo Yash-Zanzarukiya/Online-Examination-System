@@ -6,7 +6,6 @@ import com.yashpz.examination_system.examination_system.dto.ActiveExam.ActiveExa
 import com.yashpz.examination_system.examination_system.dto.ActiveExam.ActiveExamQuestion;
 import com.yashpz.examination_system.examination_system.dto.ActiveExam.ActiveExamQuestionsDTO;
 import com.yashpz.examination_system.examination_system.repository.ExamQuestionsRepository;
-import jakarta.persistence.Tuple;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

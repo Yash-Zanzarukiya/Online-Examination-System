@@ -1,8 +1,6 @@
 package com.yashpz.examination_system.examination_system.repository;
 
-import com.yashpz.examination_system.examination_system.dto.ActiveExam.ActiveExamQuestionsDTO;
 import com.yashpz.examination_system.examination_system.model.ExamQuestions;
-import jakarta.persistence.Tuple;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

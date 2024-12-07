@@ -1,6 +1,6 @@
 package com.yashpz.examination_system.examination_system.controller;
 
-import com.yashpz.examination_system.examination_system.dto.Question.McqOptionDTO;
+import com.yashpz.examination_system.examination_system.dto.Question.McqOptionRequestDTO;
 import com.yashpz.examination_system.examination_system.dto.Question.McqOptionResponseDTO;
 import com.yashpz.examination_system.examination_system.service.McqOptionService;
 import com.yashpz.examination_system.examination_system.utils.ApiResponse;
@@ -25,14 +25,14 @@ public class McqOptionController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<McqOptionResponseDTO>> createMcqOption(@Valid @RequestBody McqOptionDTO mcqOptionDTO) throws IOException {
-        McqOptionResponseDTO mcqOption = mcqOptionService.createMcqOption(mcqOptionDTO);
+    public ResponseEntity<ApiResponse<McqOptionResponseDTO>> createMcqOption(@Valid @RequestBody McqOptionRequestDTO mcqOptionRequestDTO) throws IOException {
+        McqOptionResponseDTO mcqOption = mcqOptionService.createMcqOption(mcqOptionRequestDTO);
         return ApiResponseUtil.handleResponse(HttpStatus.CREATED, mcqOption, "Mcq option created successfully");
     }
 
     @PostMapping("/multiple")
-    public ResponseEntity<ApiResponse<List<McqOptionResponseDTO>>> createMultipleMcqOptions(@RequestBody @Valid List<McqOptionDTO> mcqOptionDTOList) {
-        List<McqOptionResponseDTO> mcqOptions = mcqOptionService.createMultipleMcqOptions(mcqOptionDTOList);
+    public ResponseEntity<ApiResponse<List<McqOptionResponseDTO>>> createMultipleMcqOptions(@RequestBody @Valid List<McqOptionRequestDTO> mcqOptionRequestDTOList) {
+        List<McqOptionResponseDTO> mcqOptions = mcqOptionService.createMultipleMcqOptions(mcqOptionRequestDTOList);
         return ApiResponseUtil.handleResponse(HttpStatus.CREATED, mcqOptions, "Mcq options created successfully");
     }
 
@@ -49,14 +49,14 @@ public class McqOptionController {
     }
 
     @PatchMapping("/{optionId}")
-    public ResponseEntity<ApiResponse<McqOptionResponseDTO>> updateOption(@PathVariable UUID optionId, @RequestBody @Valid McqOptionDTO mcqOptionDTO) throws IOException {
-        McqOptionResponseDTO updateOption = mcqOptionService.updateOption(optionId, mcqOptionDTO);
+    public ResponseEntity<ApiResponse<McqOptionResponseDTO>> updateOption(@PathVariable UUID optionId, @RequestBody @Valid McqOptionRequestDTO mcqOptionRequestDTO) throws IOException {
+        McqOptionResponseDTO updateOption = mcqOptionService.updateOption(optionId, mcqOptionRequestDTO);
         return ApiResponseUtil.handleResponse(HttpStatus.OK, updateOption, "Option updated successfully");
     }
 
-    @PatchMapping("/multiple")
-    public ResponseEntity<ApiResponse<List<McqOptionResponseDTO>>> updateMultipleOptions(@RequestBody @Valid List<McqOptionDTO> mcqOptionDTOList) {
-        List<McqOptionResponseDTO> updatedOptions = mcqOptionService.updateMultipleOptions(mcqOptionDTOList);
+    @PatchMapping("/options/multiple")
+    public ResponseEntity<ApiResponse<List<McqOptionResponseDTO>>> updateMultipleOptions(@RequestBody @Valid List<McqOptionRequestDTO> mcqOptionRequestDTOList) {
+        List<McqOptionResponseDTO> updatedOptions = mcqOptionService.updateMultipleOptions(mcqOptionRequestDTOList);
         return ApiResponseUtil.handleResponse(HttpStatus.OK, updatedOptions, "Options updated successfully");
     }
 

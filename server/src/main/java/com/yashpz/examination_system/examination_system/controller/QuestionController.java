@@ -2,11 +2,11 @@ package com.yashpz.examination_system.examination_system.controller;
 
 import com.yashpz.examination_system.examination_system.constants.Difficulty;
 import com.yashpz.examination_system.examination_system.constants.QuestionType;
-import com.yashpz.examination_system.examination_system.dto.Question.FullQuestionDTO;
-import com.yashpz.examination_system.examination_system.dto.Question.QuestionDTO;
+import com.yashpz.examination_system.examination_system.dto.Question.FullQuestionResponseDTO;
+import com.yashpz.examination_system.examination_system.dto.Question.QuestionRequestDTO;
 import com.yashpz.examination_system.examination_system.dto.Question.QuestionResponseDTO;
-import com.yashpz.examination_system.examination_system.dto.Question.QuestionWithOptionsDTO;
-import com.yashpz.examination_system.examination_system.service.MultipleQuestionService;
+import com.yashpz.examination_system.examination_system.dto.Question.FullQuestionRequestDTO;
+import com.yashpz.examination_system.examination_system.service.FullQuestionService;
 import com.yashpz.examination_system.examination_system.service.QuestionService;
 import com.yashpz.examination_system.examination_system.utils.ApiResponse;
 import com.yashpz.examination_system.examination_system.utils.ApiResponseUtil;
@@ -24,53 +24,53 @@ import java.util.UUID;
 public class QuestionController {
 
     private final QuestionService questionService;
-    private final MultipleQuestionService multipleQuestionService;
+    private final FullQuestionService fullQuestionService;
 
-    public QuestionController(QuestionService questionService, MultipleQuestionService multipleQuestionService) {
+    public QuestionController(QuestionService questionService, FullQuestionService fullQuestionService) {
         this.questionService = questionService;
-        this.multipleQuestionService = multipleQuestionService;
+        this.fullQuestionService = fullQuestionService;
     }
 
 //    ------------------
 
     @PostMapping("/with-options")
-    public ResponseEntity<ApiResponse<FullQuestionDTO>> createQuestionWithOptions(@RequestBody @Valid QuestionWithOptionsDTO questionDTO) throws IOException {
+    public ResponseEntity<ApiResponse<FullQuestionResponseDTO>> createQuestionWithOptions(@RequestBody @Valid FullQuestionRequestDTO questionDTO) throws IOException {
         System.out.println("QuestionWithOptionsDTO: " + questionDTO);
-        FullQuestionDTO fullQuestionDTO = multipleQuestionService.createQuestionWithOptions(questionDTO);
-        return ApiResponseUtil.handleResponse(HttpStatus.CREATED, fullQuestionDTO, "Question created successfully");
+        FullQuestionResponseDTO fullQuestionResponseDTO = fullQuestionService.createQuestionWithOptions(questionDTO);
+        return ApiResponseUtil.handleResponse(HttpStatus.CREATED, fullQuestionResponseDTO, "Question created successfully");
     }
 
     @PostMapping("/with-options/multiple")
-    public ResponseEntity<ApiResponse<List<FullQuestionDTO>>> createMultipleQuestionsWithOptions(@RequestBody List<QuestionWithOptionsDTO> questionDTOList) {
-        List<FullQuestionDTO> questions = multipleQuestionService.createQuestionWithOptions(questionDTOList);
+    public ResponseEntity<ApiResponse<List<FullQuestionResponseDTO>>> createMultipleQuestionsWithOptions(@RequestBody List<FullQuestionRequestDTO> questionDTOList) {
+        List<FullQuestionResponseDTO> questions = fullQuestionService.createQuestionWithOptions(questionDTOList);
         return ApiResponseUtil.handleResponse(HttpStatus.CREATED, questions, "Questions created successfully");
     }
 
     @GetMapping("/full/{questionId}")
-    public ResponseEntity<ApiResponse<FullQuestionDTO>> getFullQuestion(@PathVariable UUID questionId) {
-        FullQuestionDTO fullQuestionDTO = multipleQuestionService.getFullQuestion(questionId);
-        return ApiResponseUtil.handleResponse(HttpStatus.OK, fullQuestionDTO, "Question fetched successfully");
+    public ResponseEntity<ApiResponse<FullQuestionResponseDTO>> getFullQuestion(@PathVariable UUID questionId) {
+        FullQuestionResponseDTO fullQuestionResponseDTO = fullQuestionService.getFullQuestion(questionId);
+        return ApiResponseUtil.handleResponse(HttpStatus.OK, fullQuestionResponseDTO, "Question fetched successfully");
     }
 
     @GetMapping("/all/full")
-    public ResponseEntity<ApiResponse<List<FullQuestionDTO>>> getAllFullQuestion(@RequestParam(required = false) UUID categoryId,
-                                                                                 @RequestParam(required = false) Difficulty difficulty,
-                                                                                 @RequestParam(required = false) QuestionType type) {
+    public ResponseEntity<ApiResponse<List<FullQuestionResponseDTO>>> getAllFullQuestion(@RequestParam(required = false) UUID categoryId,
+                                                                                         @RequestParam(required = false) Difficulty difficulty,
+                                                                                         @RequestParam(required = false) QuestionType type) {
         UUID category = type==QuestionType.MCQ ? categoryId : null;
-        List<FullQuestionDTO> fullQuestionDTOs = multipleQuestionService.getAllFullQuestions(category, difficulty, type);
-        return ApiResponseUtil.handleResponse(HttpStatus.OK, fullQuestionDTOs, "Questions fetched successfully");
+        List<FullQuestionResponseDTO> fullQuestionResponseDTOS = fullQuestionService.getAllFullQuestions(category, difficulty, type);
+        return ApiResponseUtil.handleResponse(HttpStatus.OK, fullQuestionResponseDTOS, "Questions fetched successfully");
     }
 //    ------------------
 
     @PostMapping
-    public ResponseEntity<ApiResponse<QuestionResponseDTO>> createQuestion(@RequestBody @Valid QuestionDTO questionDTO) throws IOException {
-        QuestionResponseDTO question = questionService.createQuestion(questionDTO);
+    public ResponseEntity<ApiResponse<QuestionResponseDTO>> createQuestion(@RequestBody @Valid QuestionRequestDTO questionRequestDTO) throws IOException {
+        QuestionResponseDTO question = questionService.createQuestion(questionRequestDTO);
         return ApiResponseUtil.handleResponse(HttpStatus.CREATED, question, "Question created successfully");
     }
 
     @PostMapping("/multiple")
-    public ResponseEntity<ApiResponse<List<QuestionResponseDTO>>> createMultipleQuestions(@RequestBody List<QuestionDTO> questionDTOList) {
-        List<QuestionResponseDTO> questions = questionService.createQuestion(questionDTOList);
+    public ResponseEntity<ApiResponse<List<QuestionResponseDTO>>> createMultipleQuestions(@RequestBody List<QuestionRequestDTO> questionRequestDTOList) {
+        List<QuestionResponseDTO> questions = questionService.createQuestion(questionRequestDTOList);
         return ApiResponseUtil.handleResponse(HttpStatus.CREATED, questions, "Questions created successfully");
     }
 
@@ -90,8 +90,8 @@ public class QuestionController {
     }
 
     @PatchMapping("/{questionId}")
-    public ResponseEntity<ApiResponse<QuestionResponseDTO>> updateQuestion(@PathVariable UUID questionId,@RequestBody @Valid QuestionDTO questionDTO) throws IOException {
-        QuestionResponseDTO updatedQuestion = questionService.updateQuestion(questionId, questionDTO, questionDTO.getImageFile());
+    public ResponseEntity<ApiResponse<QuestionResponseDTO>> updateQuestion(@PathVariable UUID questionId,@RequestBody @Valid QuestionRequestDTO questionRequestDTO) throws IOException {
+        QuestionResponseDTO updatedQuestion = questionService.updateQuestion(questionId, questionRequestDTO, questionRequestDTO.getImageFile());
         return ApiResponseUtil.handleResponse(HttpStatus.OK, updatedQuestion, "Question updated successfully");
     }
 

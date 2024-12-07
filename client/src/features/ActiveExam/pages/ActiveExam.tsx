@@ -3,7 +3,7 @@ import { ExamInstructions, ExamInterface } from "../components";
 import { useAppSelector } from "@/app/hooks";
 import { useActiveExamQuestions } from "../hooks";
 
-export const ActiveExam: React.FC = () => {
+const ActiveExam: React.FC = () => {
   const { isExamStarted, isExamSubmitted } = useAppSelector(({ activeExam }) => activeExam);
   const { isFetchingQuestions } = useActiveExamQuestions();
 

@@ -1,5 +1,7 @@
 package com.yashpz.examination_system.examination_system.dto.Question;
 
+import com.yashpz.examination_system.examination_system.constants.Difficulty;
+import com.yashpz.examination_system.examination_system.constants.QuestionType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -12,18 +14,23 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class McqOptionDTO {
+public class QuestionRequestDTO {
     private UUID id;
 
-    private UUID questionId;
+    private UUID categoryId;
+
+    @NotNull
+    private Difficulty difficulty;
+
+    @NotNull
+    private QuestionType type;
 
     @NotBlank
-    private String optionText;
+    private String questionText;
 
     private String imageUrl;
 
     private MultipartFile imageFile;
 
-    @NotNull
-    private Boolean isCorrect;
+    private UUID correctAnswerId;
 }

@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FullQuestionDTO {
+public class FullQuestionResponseDTO {
     private QuestionResponseDTO question;
     private List<McqOptionResponseDTO> options;
 }

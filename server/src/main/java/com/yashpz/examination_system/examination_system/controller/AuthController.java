@@ -2,9 +2,8 @@ package com.yashpz.examination_system.examination_system.controller;
 
 import com.yashpz.examination_system.examination_system.dto.Auth.AuthDTO;
 import com.yashpz.examination_system.examination_system.dto.Auth.LoginDTO;
-import com.yashpz.examination_system.examination_system.dto.User.UserDataDTO;
+import com.yashpz.examination_system.examination_system.dto.Auth.UserDataDTO;
 import com.yashpz.examination_system.examination_system.exception.ApiError;
-import com.yashpz.examination_system.examination_system.model.Auth;
 import com.yashpz.examination_system.examination_system.service.AuthService;
 import com.yashpz.examination_system.examination_system.utils.ApiResponse;
 import com.yashpz.examination_system.examination_system.utils.ApiResponseUtil;
