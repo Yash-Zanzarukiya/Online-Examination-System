@@ -1,6 +1,5 @@
 package com.yashpz.examination_system.examination_system.model;
 
-import com.yashpz.examination_system.examination_system.constants.ExamAttemptStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +12,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -22,32 +20,19 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExamAttempt {
+public class ProgrammingQuestion {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "exam_id", referencedColumnName = "id", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "question_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private ScheduleExam exam;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_id", referencedColumnName = "id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private User user;
-
-    private ExamAttemptStatus status;
+    private Question question;
 
     @Column(nullable = false)
-    private Date startTime;
-
-    private Date endTime;
-
-    private Integer score;
-
-    private Boolean isPassed;
+    private String referenceAnswer;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

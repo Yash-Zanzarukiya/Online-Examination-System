@@ -46,7 +46,7 @@ public class ExamService {
     public ExamResponseDTO updateExam(UUID examId, Date startDate) {
         Exam exam = examRepository.findById(examId)
                 .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "Exam not found"));
-        exam.setStartDate(startDate);
+//        exam.setStartDate(startDate);
         return ExamMapper.toResponseDTO(examRepository.save(exam));
     }
 

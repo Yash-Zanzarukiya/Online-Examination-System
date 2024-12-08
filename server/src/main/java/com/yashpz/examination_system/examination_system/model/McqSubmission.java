@@ -1,6 +1,5 @@
 package com.yashpz.examination_system.examination_system.model;
 
-import com.yashpz.examination_system.examination_system.constants.Roles;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,20 +18,28 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "[user]")
-public class User {
+public class McqSubmission {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "[auth]", referencedColumnName = "id", nullable = false)
-    private Auth auth;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "question_id", nullable = false)
+    private Question question;
 
-    private String fullName;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "exam_attempt_id", nullable = false)
+    private ExamAttempt examAttempt;
 
-    @Enumerated(EnumType.STRING)
-    private Roles role;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "selected_option_id", nullable = false)
+    private McqOption selectedOption;
+
+    @Column(nullable = false)
+    private Integer timeSpent;
+
+    private Integer marks;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

@@ -5,6 +5,7 @@ import com.yashpz.examination_system.examination_system.dto.Exam.ExamResponseDTO
 import com.yashpz.examination_system.examination_system.model.Exam;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ExamMapper {
@@ -13,8 +14,8 @@ public class ExamMapper {
         Exam exam = new Exam();
         exam.setTitle(dto.getTitle());
         exam.setPassingScore(dto.getPassingScore());
-        if (dto.getStartDate()!=null)
-            exam.setStartDate(dto.getStartDate());
+//        if (dto.getStartDate()!=null)
+//            exam.setStartDate(dto.getStartDate());
         exam.setTimeLimit(dto.getTimeLimit());
         return exam;
     }
@@ -25,7 +26,7 @@ public class ExamMapper {
                 exam.getTitle(),
                 exam.getPassingScore(),
                 exam.getTimeLimit(),
-                exam.getStartDate(),
+                new Date(),
                 exam.getCreatedAt(),
                 exam.getUpdatedAt()
         );
@@ -44,7 +45,7 @@ public class ExamMapper {
         if (dto.getPassingScore()>=0)
             exam.setPassingScore(dto.getPassingScore());
         if (dto.getStartDate()!=null)
-            exam.setStartDate(dto.getStartDate());
+//            exam.setStartDate(dto.getStartDate());
         if (dto.getTimeLimit()>=0)
             exam.setTimeLimit(dto.getTimeLimit());
     }

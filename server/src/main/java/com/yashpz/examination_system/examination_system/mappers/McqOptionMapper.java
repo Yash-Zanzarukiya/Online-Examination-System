@@ -27,7 +27,8 @@ public class McqOptionMapper {
                 option.getQuestion().getId(),
                 option.getOptionText(),
                 option.getImage(),
-                option.getQuestion().getCorrectAnswer() != null && option.getQuestion().getCorrectAnswer().getId().toString().equals(option.getId().toString())
+                true
+//                option.getQuestion().getCorrectAnswer() != null && option.getQuestion().getCorrectAnswer().getId().toString().equals(option.getId().toString())
         );
     }
 

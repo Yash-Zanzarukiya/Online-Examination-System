@@ -34,9 +34,7 @@ public class Question {
    @Column(nullable = false)
    private String questionText;
 
-   private String image;
+   private Integer marks;
 
-   @OneToOne
-   @JoinColumn(name = "correct_answer_id", nullable = true)
-   private McqOption correctAnswer;
+   private String image;
 }

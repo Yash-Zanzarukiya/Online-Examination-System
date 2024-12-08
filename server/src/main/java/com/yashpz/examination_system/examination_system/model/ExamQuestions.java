@@ -1,5 +1,6 @@
 package com.yashpz.examination_system.examination_system.model;
 
+import com.yashpz.examination_system.examination_system.constants.QuestionType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,4 +33,11 @@ public class ExamQuestions {
    @JoinColumn(name = "question_id", referencedColumnName = "id", nullable = false)
    @OnDelete(action = OnDeleteAction.CASCADE)
    private Question question;
+
+   private QuestionType questionType;
+
+   @PostLoad
+   private void postLoad() {
+      questionType = question.getType();
+   }
 }

@@ -109,7 +109,7 @@ public class QuestionService {
         McqOption correctAnswer = mcqOptionRepository.findById(correctAnswerId)
                 .orElseThrow(() -> new ApiError(HttpStatus.BAD_REQUEST, "Invalid Option ID"));
 
-        question.setCorrectAnswer(correctAnswer);
+//        question.setCorrectAnswer(correctAnswer);
 
         questionRepository.save(question);
     }

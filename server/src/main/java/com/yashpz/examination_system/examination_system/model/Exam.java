@@ -32,8 +32,6 @@ public class Exam {
 
    private Integer timeLimit;
 
-   private Date startDate;
-
    @CreatedDate
    @Column(nullable = false, updatable = false)
    private LocalDateTime createdAt;

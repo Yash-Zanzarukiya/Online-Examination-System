@@ -32,7 +32,8 @@ public class QuestionMapper {
                 question.getType(),
                 question.getQuestionText(),
                 question.getImage(),
-                question.getCorrectAnswer() != null ? question.getCorrectAnswer().getId() : null
+                question.getId()
+//                question.getCorrectAnswer() != null ? question.getCorrectAnswer().getId() : null
         );
     }
 

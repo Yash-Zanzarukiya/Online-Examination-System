@@ -9,7 +9,7 @@ public class ExamAttemptMapper {
 
     public static ExamAttempt toEntity(ExamAttemptRequestDTO examAttemptRequestDTO, Exam exam, User user) {
         ExamAttempt examAttempt = new ExamAttempt();
-        examAttempt.setExam(exam);
+//        examAttempt.setExam();
         examAttempt.setUser(user);
         examAttempt.setStatus(examAttemptRequestDTO.getStatus());
         examAttempt.setStartTime(examAttemptRequestDTO.getStartTime());

@@ -25,7 +25,7 @@ public class StudentProfile {
    private UUID id;
 
    @OneToOne
-   @JoinColumn(name = "user", referencedColumnName = "id", nullable = false)
+   @JoinColumn(name = "[user]", referencedColumnName = "id", nullable = false)
    private User user;
 
    private String fullName;
