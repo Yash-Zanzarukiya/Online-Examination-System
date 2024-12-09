@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,9 +29,9 @@ public class McqOptionController {
         return ApiResponseUtil.handleResponse(HttpStatus.CREATED, mcqOption, "Mcq option created successfully");
     }
 
-    @PostMapping("/multiple")
-    public ResponseEntity<ApiResponse<List<McqOptionResponseDTO>>> createMultipleMcqOptions(@RequestBody @Valid List<McqOptionRequestDTO> mcqOptionRequestDTOList) {
-        List<McqOptionResponseDTO> mcqOptions = mcqOptionService.createMultipleMcqOptions(mcqOptionRequestDTOList);
+    @PostMapping("/bulk")
+    public ResponseEntity<ApiResponse<List<McqOptionResponseDTO>>> createBulkMcqOptions(@RequestBody @Valid List<McqOptionRequestDTO> mcqOptionRequestDTOList) {
+        List<McqOptionResponseDTO> mcqOptions = mcqOptionService.createBulkMcqOptions(mcqOptionRequestDTOList);
         return ApiResponseUtil.handleResponse(HttpStatus.CREATED, mcqOptions, "Mcq options created successfully");
     }
 
@@ -54,9 +53,9 @@ public class McqOptionController {
         return ApiResponseUtil.handleResponse(HttpStatus.OK, updateOption, "Option updated successfully");
     }
 
-    @PatchMapping("/update/multiple")
-    public ResponseEntity<ApiResponse<List<McqOptionResponseDTO>>> updateMultipleOptions(@RequestBody @Valid List<McqOptionRequestDTO> mcqOptionRequestDTOList) {
-        List<McqOptionResponseDTO> updatedOptions = mcqOptionService.updateMultipleOptions(mcqOptionRequestDTOList);
+    @PatchMapping("/update/bulk")
+    public ResponseEntity<ApiResponse<List<McqOptionResponseDTO>>> updateBulkOptions(@RequestBody @Valid List<McqOptionRequestDTO> mcqOptionRequestDTOList) {
+        List<McqOptionResponseDTO> updatedOptions = mcqOptionService.updateBulkOptions(mcqOptionRequestDTOList);
         return ApiResponseUtil.handleResponse(HttpStatus.OK, updatedOptions, "Options updated successfully");
     }
 

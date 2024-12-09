@@ -28,9 +28,8 @@ public class QuestionRequestDTO {
     @NotBlank
     private String questionText;
 
+    private Integer marks;
+
     private String imageUrl;
-
     private MultipartFile imageFile;
-
-    private UUID correctAnswerId;
 }

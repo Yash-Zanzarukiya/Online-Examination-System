@@ -49,7 +49,7 @@ public class McqOptionService {
     }
 
     @Transactional
-    public List<McqOptionResponseDTO> createMultipleMcqOptions(List<McqOptionRequestDTO> mcqOptionRequestDTOList) {
+    public List<McqOptionResponseDTO> createBulkMcqOptions(List<McqOptionRequestDTO> mcqOptionRequestDTOList) {
         List<McqOption> mcqOptions = new ArrayList<>();
 
         for (McqOptionRequestDTO mcqOptionRequestDTO : mcqOptionRequestDTOList) {
@@ -71,11 +71,16 @@ public class McqOptionService {
     @Transactional
     public List<McqOptionResponseDTO> createMcqOptionsForQuestion(UUID questionId, List<McqOptionRequestDTO> options) {
         options.forEach(option -> option.setQuestionId(questionId));
-        return createMultipleMcqOptions(options);
+        return createBulkMcqOptions(options);
     }
 
     public List<McqOptionResponseDTO> getOptionsByQuestionId(UUID questionId) {
         List<McqOption> mcqOptions = mcqOptionRepository.findAllByQuestionId(questionId);
+        return McqOptionMapper.toResponseDTO(mcqOptions);
+    }
+
+    public List<McqOptionResponseDTO> getBulkOptionsByQuestionIds(List<UUID> questionIds) {
+        List<McqOption> mcqOptions = mcqOptionRepository.findAllByQuestionIdIn(questionIds);
         return McqOptionMapper.toResponseDTO(mcqOptions);
     }
 
@@ -99,7 +104,7 @@ public class McqOptionService {
     }
 
     @Transactional
-    public List<McqOptionResponseDTO> updateMultipleOptions(List<McqOptionRequestDTO> mcqOptionRequestDTOList) {
+    public List<McqOptionResponseDTO> updateBulkOptions(List<McqOptionRequestDTO> mcqOptionRequestDTOList) {
         List<McqOption> updatedOptions = mcqOptionRequestDTOList.stream().map(requestDTO -> {
             McqOption option = fetchOptionById(requestDTO.getId());
 

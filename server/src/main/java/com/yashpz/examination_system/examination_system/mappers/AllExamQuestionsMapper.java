@@ -10,16 +10,10 @@ import java.util.List;
 @Component
 public class AllExamQuestionsMapper {
 
-    private final QuestionMapper questionMapper;
-
-    public AllExamQuestionsMapper(QuestionMapper questionMapper) {
-        this.questionMapper = questionMapper;
-    }
-
     public AllExamQuestionDTO toDTO(ExamQuestions examQuestions) {
         AllExamQuestionDTO dto = new AllExamQuestionDTO();
         dto.setId(examQuestions.getId());
-        QuestionResponseDTO questionDTO = questionMapper.toResponseDTO(examQuestions.getQuestion());
+        QuestionResponseDTO questionDTO = QuestionMapper.toResponseDTO(examQuestions.getQuestion());
         dto.setQuestion(questionDTO);
         return dto;
     }
