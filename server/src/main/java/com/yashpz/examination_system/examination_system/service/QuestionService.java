@@ -81,7 +81,8 @@ public class QuestionService {
     }
 
     public List<QuestionResponseDTO> getAllQuestions(UUID categoryId, Difficulty difficulty, QuestionType type) {
-        List<Question> questions = questionRepository.findAllByFilters(categoryId, difficulty, type);
+        UUID category = QuestionType.MCQ.equals(type) ? categoryId : null;
+        List<Question> questions = questionRepository.findAllByFilters(category, difficulty, type);
         return QuestionMapper.toResponseDTO(questions);
     }
 

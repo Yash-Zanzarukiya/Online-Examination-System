@@ -28,6 +28,7 @@ public class QuestionRequestDTO {
     @NotBlank
     private String questionText;
 
+    @NotBlank
     private Integer marks;
 
     private String imageUrl;
