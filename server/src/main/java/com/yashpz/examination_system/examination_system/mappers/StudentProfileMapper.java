@@ -2,8 +2,8 @@ package com.yashpz.examination_system.examination_system.mappers;
 
 
 import com.yashpz.examination_system.examination_system.dto.CollegeDTO;
-import com.yashpz.examination_system.examination_system.dto.User.StudentProfileRequestDTO;
-import com.yashpz.examination_system.examination_system.dto.User.StudentProfileResponseDTO;
+import com.yashpz.examination_system.examination_system.dto.StudentProfile.StudentProfileRequestDTO;
+import com.yashpz.examination_system.examination_system.dto.StudentProfile.StudentProfileResponseDTO;
 import com.yashpz.examination_system.examination_system.model.StudentProfile;
 import com.yashpz.examination_system.examination_system.model.College;
 import com.yashpz.examination_system.examination_system.model.User;

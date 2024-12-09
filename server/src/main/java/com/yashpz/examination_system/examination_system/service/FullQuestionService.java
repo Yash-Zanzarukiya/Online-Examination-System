@@ -3,7 +3,7 @@ package com.yashpz.examination_system.examination_system.service;
 import com.yashpz.examination_system.examination_system.constants.Difficulty;
 import com.yashpz.examination_system.examination_system.constants.QuestionType;
 import com.yashpz.examination_system.examination_system.dto.Question.FullQuestionResponseDTO;
-import com.yashpz.examination_system.examination_system.dto.Question.McqOptionResponseDTO;
+import com.yashpz.examination_system.examination_system.dto.McqOption.McqOptionResponseDTO;
 import com.yashpz.examination_system.examination_system.dto.Question.QuestionResponseDTO;
 import com.yashpz.examination_system.examination_system.dto.Question.FullQuestionRequestDTO;
 import jakarta.transaction.Transactional;
@@ -27,7 +27,7 @@ public class FullQuestionService {
     public FullQuestionResponseDTO createQuestionWithOptions(FullQuestionRequestDTO fullQuestionRequestDTO) {
         QuestionResponseDTO question = questionService.createQuestion(fullQuestionRequestDTO.getQuestion());
 
-        List<McqOptionResponseDTO> options = mcqOptionService.createMultipleOptions(question.getId(), fullQuestionRequestDTO.getOptions());
+        List<McqOptionResponseDTO> options = mcqOptionService.createMcqOptionsForQuestion(question.getId(), fullQuestionRequestDTO.getOptions());
 
         return new FullQuestionResponseDTO(question, options);
     }

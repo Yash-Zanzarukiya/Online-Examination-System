@@ -1,7 +1,7 @@
 package com.yashpz.examination_system.examination_system.service;
 
-import com.yashpz.examination_system.examination_system.dto.User.StudentProfileRequestDTO;
-import com.yashpz.examination_system.examination_system.dto.User.StudentProfileResponseDTO;
+import com.yashpz.examination_system.examination_system.dto.StudentProfile.StudentProfileRequestDTO;
+import com.yashpz.examination_system.examination_system.dto.StudentProfile.StudentProfileResponseDTO;
 import com.yashpz.examination_system.examination_system.exception.ApiError;
 import com.yashpz.examination_system.examination_system.mappers.StudentProfileMapper;
 import com.yashpz.examination_system.examination_system.model.StudentProfile;

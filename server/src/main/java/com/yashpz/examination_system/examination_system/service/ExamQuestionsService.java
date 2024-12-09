@@ -1,8 +1,8 @@
 package com.yashpz.examination_system.examination_system.service;
 
 import com.yashpz.examination_system.examination_system.dto.Exam.AllExamQuestionDTO;
-import com.yashpz.examination_system.examination_system.dto.Exam.ExamQuestionsRequestDTO;
-import com.yashpz.examination_system.examination_system.dto.Exam.ExamQuestionsResponseDTO;
+import com.yashpz.examination_system.examination_system.dto.ExamQuestions.ExamQuestionsRequestDTO;
+import com.yashpz.examination_system.examination_system.dto.ExamQuestions.ExamQuestionsResponseDTO;
 import com.yashpz.examination_system.examination_system.exception.ApiError;
 import com.yashpz.examination_system.examination_system.mappers.AllExamQuestionsMapper;
 import com.yashpz.examination_system.examination_system.mappers.ExamQuestionsMapper;

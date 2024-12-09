@@ -1,6 +1,6 @@
 package com.yashpz.examination_system.examination_system.mappers;
 
-import com.yashpz.examination_system.examination_system.dto.Exam.ExamQuestionsResponseDTO;
+import com.yashpz.examination_system.examination_system.dto.ExamQuestions.ExamQuestionsResponseDTO;
 import com.yashpz.examination_system.examination_system.model.ExamQuestions;
 import com.yashpz.examination_system.examination_system.model.McqOption;
 

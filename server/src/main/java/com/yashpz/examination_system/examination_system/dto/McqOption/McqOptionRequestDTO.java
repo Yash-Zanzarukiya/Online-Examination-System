@@ -1,4 +1,4 @@
-package com.yashpz.examination_system.examination_system.dto.Question;
+package com.yashpz.examination_system.examination_system.dto.McqOption;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

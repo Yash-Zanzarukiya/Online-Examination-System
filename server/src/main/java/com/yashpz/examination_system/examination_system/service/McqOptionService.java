@@ -1,7 +1,7 @@
 package com.yashpz.examination_system.examination_system.service;
 
-import com.yashpz.examination_system.examination_system.dto.Question.McqOptionRequestDTO;
-import com.yashpz.examination_system.examination_system.dto.Question.McqOptionResponseDTO;
+import com.yashpz.examination_system.examination_system.dto.McqOption.McqOptionRequestDTO;
+import com.yashpz.examination_system.examination_system.dto.McqOption.McqOptionResponseDTO;
 import com.yashpz.examination_system.examination_system.exception.ApiError;
 import com.yashpz.examination_system.examination_system.mappers.McqOptionMapper;
 import com.yashpz.examination_system.examination_system.model.McqOption;
@@ -10,8 +10,11 @@ import com.yashpz.examination_system.examination_system.repository.McqOptionRepo
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -20,22 +23,19 @@ public class McqOptionService {
 
     private final McqOptionRepository mcqOptionRepository;
     private final QuestionService questionService;
-    private final McqOptionMapper mcqOptionMapper;
     private final CloudinaryService cloudinaryService;
 
-    public McqOptionService(McqOptionRepository mcqOptionRepository, McqOptionMapper mcqOptionMapper, CloudinaryService cloudinaryService, QuestionService questionService) {
+    public McqOptionService(McqOptionRepository mcqOptionRepository, CloudinaryService cloudinaryService, QuestionService questionService) {
         this.mcqOptionRepository = mcqOptionRepository;
-        this.mcqOptionMapper = mcqOptionMapper;
         this.cloudinaryService = cloudinaryService;
         this.questionService = questionService;
     }
 
     @Transactional
     public McqOptionResponseDTO createMcqOption(McqOptionRequestDTO mcqOptionRequestDTO){
-        McqOption option = mcqOptionMapper.toEntity(mcqOptionRequestDTO);
+        McqOption option = McqOptionMapper.toEntity(mcqOptionRequestDTO);
 
         Question question = questionService.getQuestionEntityById(mcqOptionRequestDTO.getQuestionId());
-
         option.setQuestion(question);
 
         if (mcqOptionRequestDTO.getImageFile() != null) {
@@ -45,74 +45,79 @@ public class McqOptionService {
 
         mcqOptionRepository.save(option);
 
-        if (mcqOptionRequestDTO.getIsCorrect())
-            questionService.updateCorrectAnswer(question.getId(), option.getId());
-
-        return mcqOptionMapper.toResponseDTO(option);
+        return McqOptionMapper.toResponseDTO(option);
     }
 
     @Transactional
     public List<McqOptionResponseDTO> createMultipleMcqOptions(List<McqOptionRequestDTO> mcqOptionRequestDTOList) {
-        return mcqOptionRequestDTOList.stream()
-                .map(this::createMcqOption)
-                .collect(Collectors.toList());
+        List<McqOption> mcqOptions = new ArrayList<>();
+
+        for (McqOptionRequestDTO mcqOptionRequestDTO : mcqOptionRequestDTOList) {
+            McqOption option = McqOptionMapper.toEntity(mcqOptionRequestDTO);
+            Question question = questionService.getQuestionEntityById(mcqOptionRequestDTO.getQuestionId());
+            option.setQuestion(question);
+            if (mcqOptionRequestDTO.getImageFile() != null) {
+                String imageUrl = cloudinaryService.uploadImage(mcqOptionRequestDTO.getImageFile());
+                option.setImage(imageUrl);
+            }
+            mcqOptions.add(option);
+        }
+
+        List<McqOption> mcqOptionsEntities = mcqOptionRepository.saveAll(mcqOptions);
+
+        return McqOptionMapper.toResponseDTO(mcqOptionsEntities);
     }
 
     @Transactional
-    public List<McqOptionResponseDTO> createMultipleOptions(UUID questionId, List<McqOptionRequestDTO> options) {
-        return options.stream()
-                .map(option -> {
-                    option.setQuestionId(questionId);
-                    return createMcqOption(option);
-                })
-                .collect(Collectors.toList());
+    public List<McqOptionResponseDTO> createMcqOptionsForQuestion(UUID questionId, List<McqOptionRequestDTO> options) {
+        options.forEach(option -> option.setQuestionId(questionId));
+        return createMultipleMcqOptions(options);
     }
 
     public List<McqOptionResponseDTO> getOptionsByQuestionId(UUID questionId) {
-        return mcqOptionRepository.findAllByQuestionId(questionId)
-                .stream()
-                .map(mcqOptionMapper::toResponseDTO)
-                .collect(Collectors.toList());
+        List<McqOption> mcqOptions = mcqOptionRepository.findAllByQuestionId(questionId);
+        return McqOptionMapper.toResponseDTO(mcqOptions);
     }
 
     public McqOptionResponseDTO getOptionById(UUID optionId) {
-        McqOption option = mcqOptionRepository.findById(optionId)
-                .orElseThrow(() -> new ApiError(HttpStatus.BAD_REQUEST, "Invalid option ID"));
-        return mcqOptionMapper.toResponseDTO(option);
+        McqOption option = fetchOptionById(optionId);
+        return McqOptionMapper.toResponseDTO(option);
     }
 
     @Transactional
     public McqOptionResponseDTO updateOption(UUID optionId, McqOptionRequestDTO mcqOptionRequestDTO) {
-        McqOption option = mcqOptionRepository.findById(optionId)
-                .orElseThrow(() -> new ApiError(HttpStatus.BAD_REQUEST, "Invalid option ID"));
+        McqOption option = fetchOptionById(optionId);
 
-        option = mcqOptionMapper.updateEntity(option, mcqOptionRequestDTO);
+        McqOptionMapper.updateEntity(option, mcqOptionRequestDTO);
 
-        if (mcqOptionRequestDTO.getImageFile() != null) {
-            if (option.getImage() != null)
-                cloudinaryService.deleteImageByURL(option.getImage());
-            String imageUrl = cloudinaryService.uploadImage(mcqOptionRequestDTO.getImageFile());
-            option.setImage(imageUrl);
-        }
-
-        if (mcqOptionRequestDTO.getIsCorrect())
-            questionService.updateCorrectAnswer(option.getQuestion().getId(), option.getId());
+        if (mcqOptionRequestDTO.getImageFile() != null)
+            handleImageUpdate(option, mcqOptionRequestDTO.getImageFile());
 
         mcqOptionRepository.save(option);
 
-        return mcqOptionMapper.toResponseDTO(option);
+        return McqOptionMapper.toResponseDTO(option);
     }
 
     @Transactional
     public List<McqOptionResponseDTO> updateMultipleOptions(List<McqOptionRequestDTO> mcqOptionRequestDTOList) {
-        return mcqOptionRequestDTOList.stream()
-                .map(mcqOptionRequestDTO -> updateOption(mcqOptionRequestDTO.getId(), mcqOptionRequestDTO))
-                .collect(Collectors.toList());
+        List<McqOption> updatedOptions = mcqOptionRequestDTOList.stream().map(requestDTO -> {
+            McqOption option = fetchOptionById(requestDTO.getId());
+
+            McqOptionMapper.updateEntity(option, requestDTO);
+
+            if (requestDTO.getImageFile() != null)
+                handleImageUpdate(option, requestDTO.getImageFile());
+
+            return option;
+        }).collect(Collectors.toList());
+
+        List<McqOption> mcqOptionEntities = mcqOptionRepository.saveAll(updatedOptions);
+
+        return McqOptionMapper.toResponseDTO(mcqOptionEntities);
     }
 
     public void deleteOption(UUID optionId) {
-        McqOption option = mcqOptionRepository.findById(optionId)
-                .orElseThrow(() -> new ApiError(HttpStatus.BAD_REQUEST, "Invalid option ID"));
+        McqOption option = fetchOptionById(optionId);
 
         if (option.getImage() != null)
             cloudinaryService.deleteImageByURL(option.getImage());
@@ -131,13 +136,26 @@ public class McqOptionService {
     }
 
     public void deleteOptionImage(UUID optionId) {
-        McqOption option = mcqOptionRepository.findById(optionId)
-                .orElseThrow(() -> new ApiError(HttpStatus.BAD_REQUEST, "Invalid option ID"));
+        McqOption option = fetchOptionById(optionId);
 
         if (option.getImage() != null)
             cloudinaryService.deleteImageByURL(option.getImage());
 
         option.setImage(null);
         mcqOptionRepository.save(option);
+    }
+
+    // <----------- Helpers ----------->
+
+    private McqOption fetchOptionById(UUID optionId) {
+        return mcqOptionRepository.findById(optionId)
+                .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND,"Option not found"));
+    }
+
+    private void handleImageUpdate(McqOption option, MultipartFile imageFile) {
+        Optional.ofNullable(option.getImage())
+                .ifPresent(cloudinaryService::deleteImageByURL);
+        String imageUrl = cloudinaryService.uploadImage(imageFile);
+        option.setImage(imageUrl);
     }
 }
