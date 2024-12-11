@@ -1,5 +1,7 @@
 package com.yashpz.examination_system.examination_system.mappers;
 
+import com.yashpz.examination_system.examination_system.constants.QuestionType;
+import com.yashpz.examination_system.examination_system.dto.CategoryDTO;
 import com.yashpz.examination_system.examination_system.dto.Question.QuestionRequestDTO;
 import com.yashpz.examination_system.examination_system.dto.Question.QuestionResponseDTO;
 import com.yashpz.examination_system.examination_system.model.Question;
@@ -23,9 +25,10 @@ public class QuestionMapper {
     }
 
     public static QuestionResponseDTO toResponseDTO(Question question) {
+        CategoryDTO category = question.getType() == QuestionType.MCQ ? CategoryMapper.toDTO(question.getCategory()) : null;
         return new QuestionResponseDTO(
                 question.getId(),
-                CategoryMapper.toDTO(question.getCategory()),
+                category,
                 question.getDifficulty(),
                 question.getType(),
                 question.getQuestionText(),

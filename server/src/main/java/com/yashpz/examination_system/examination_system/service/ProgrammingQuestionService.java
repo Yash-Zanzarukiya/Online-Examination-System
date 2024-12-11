@@ -39,7 +39,7 @@ public class ProgrammingQuestionService {
 
         ProgrammingQuestion programmingQuestionEntity = programmingQuestionRepository.save(programmingQuestion);
 
-        return ProgrammingQuestionMapper.toResponseDTO(programmingQuestion);
+        return ProgrammingQuestionMapper.toResponseDTO(programmingQuestionEntity);
     }
 
     //  TODO : Optimize this code
@@ -89,7 +89,9 @@ public class ProgrammingQuestionService {
 
     @Transactional
     public void deleteProgrammingQuestion(UUID id) {
-        programmingQuestionRepository.deleteById(id);
+        ProgrammingQuestion programmingQuestion = fetchProgrammingQuestionById(id);
+        programmingQuestion.setReferenceAnswer("");
+        programmingQuestionRepository.save(programmingQuestion);
     }
 
     // <----------- Helpers ----------->

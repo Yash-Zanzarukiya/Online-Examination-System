@@ -37,9 +37,9 @@ public class ProgrammingQuestionController {
         return ApiResponseUtil.handleResponse(HttpStatus.CREATED, questions, "Questions created successfully");
     }
 
-    @GetMapping("/{questionId}")
-    public ResponseEntity<ApiResponse<ProgrammingQuestionResponseDTO>> getProgrammingQuestion(@PathVariable UUID questionId) {
-        ProgrammingQuestionResponseDTO programmingQuestionResponseDTO = programmingQuestionService.getProgrammingQuestionById(questionId);
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<ProgrammingQuestionResponseDTO>> getProgrammingQuestion(@PathVariable UUID id) {
+        ProgrammingQuestionResponseDTO programmingQuestionResponseDTO = programmingQuestionService.getProgrammingQuestionById(id);
         return ApiResponseUtil.handleResponse(HttpStatus.OK, programmingQuestionResponseDTO, "Question fetched successfully");
     }
 
@@ -55,15 +55,15 @@ public class ProgrammingQuestionController {
         return ApiResponseUtil.handleResponse(HttpStatus.OK, programmingQuestionResponseDTOS, "Questions fetched successfully");
     }
 
-    @PatchMapping("/{questionId}")
-    public ResponseEntity<ApiResponse<ProgrammingQuestionResponseDTO>> updateProgrammingQuestion(@PathVariable UUID questionId, @RequestBody ProgrammingQuestionRequestDTO questionDTO) {
-        ProgrammingQuestionResponseDTO programmingQuestionResponseDTO = programmingQuestionService.updateProgrammingQuestion(questionId, questionDTO);
+    @PatchMapping("/{id}")
+    public ResponseEntity<ApiResponse<ProgrammingQuestionResponseDTO>> updateProgrammingQuestion(@PathVariable UUID id, @RequestBody ProgrammingQuestionRequestDTO questionDTO) {
+        ProgrammingQuestionResponseDTO programmingQuestionResponseDTO = programmingQuestionService.updateProgrammingQuestion(id, questionDTO);
         return ApiResponseUtil.handleResponse(HttpStatus.OK, programmingQuestionResponseDTO, "Question updated successfully");
     }
 
-    @DeleteMapping("/{questionId}")
-    public ResponseEntity<ApiResponse<String>> deleteProgrammingQuestion(@PathVariable UUID questionId) {
-        programmingQuestionService.deleteProgrammingQuestion(questionId);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteProgrammingQuestion(@PathVariable UUID id) {
+        programmingQuestionService.deleteProgrammingQuestion(id);
         return ApiResponseUtil.handleResponse(HttpStatus.OK, "Question deleted successfully");
     }
 }

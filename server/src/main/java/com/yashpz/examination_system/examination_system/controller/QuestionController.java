@@ -4,6 +4,7 @@ import com.yashpz.examination_system.examination_system.constants.Difficulty;
 import com.yashpz.examination_system.examination_system.constants.QuestionType;
 import com.yashpz.examination_system.examination_system.dto.Question.QuestionRequestDTO;
 import com.yashpz.examination_system.examination_system.dto.Question.QuestionResponseDTO;
+import com.yashpz.examination_system.examination_system.service.QuestionFileService;
 import com.yashpz.examination_system.examination_system.service.QuestionService;
 import com.yashpz.examination_system.examination_system.utils.ApiResponse;
 import com.yashpz.examination_system.examination_system.utils.ApiResponseUtil;
@@ -11,6 +12,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,9 +22,11 @@ import java.util.UUID;
 public class QuestionController {
 
     private final QuestionService questionService;
+    private final QuestionFileService questionFileService;
 
-    public QuestionController(QuestionService questionService) {
+    public QuestionController(QuestionService questionService, QuestionFileService questionFileService) {
         this.questionService = questionService;
+        this.questionFileService = questionFileService;
     }
 
     @PostMapping
@@ -35,6 +39,12 @@ public class QuestionController {
     public ResponseEntity<ApiResponse<List<QuestionResponseDTO>>> createBulkQuestions(@RequestBody List<QuestionRequestDTO> questionRequestDTOList) {
         List<QuestionResponseDTO> questions = questionService.createBulkQuestions(questionRequestDTOList);
         return ApiResponseUtil.handleResponse(HttpStatus.CREATED, questions, "Questions created successfully");
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<ApiResponse<String>> uploadQuestions(@RequestBody MultipartFile file) {
+        questionFileService.processQuestionsFile(file);
+        return ApiResponseUtil.handleResponse(HttpStatus.CREATED, "Questions saved successfully");
     }
 
     @GetMapping("/{questionId}")

@@ -31,7 +31,8 @@ public class ProgrammingQuestion {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Question question;
 
-    @Column(nullable = false)
+    @Lob
+    @Column(nullable = true)
     private String referenceAnswer;
 
     @CreatedDate

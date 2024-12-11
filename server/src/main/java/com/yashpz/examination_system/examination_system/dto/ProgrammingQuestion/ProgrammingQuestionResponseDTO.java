@@ -1,6 +1,5 @@
 package com.yashpz.examination_system.examination_system.dto.ProgrammingQuestion;
 
-import com.yashpz.examination_system.examination_system.dto.Question.QuestionRequestDTO;
 import com.yashpz.examination_system.examination_system.dto.Question.QuestionResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;

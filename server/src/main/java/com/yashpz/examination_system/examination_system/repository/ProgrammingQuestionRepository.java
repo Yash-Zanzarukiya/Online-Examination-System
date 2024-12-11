@@ -19,6 +19,6 @@ public interface ProgrammingQuestionRepository extends JpaRepository<Programming
     @Query("SELECT pq FROM ProgrammingQuestion pq JOIN FETCH pq.question q WHERE q.difficulty = :difficulty")
     List<ProgrammingQuestion> findAllByQuestionDifficulty(@Param("difficulty") Difficulty difficulty);
 
-    @Query("SELECT pq FROM ProgrammingQuestion pq JOIN FETCH pq.question q WHERE q.difficulty = :difficulty AND q.questionType = :questionType")
+    @Query("SELECT pq FROM ProgrammingQuestion pq JOIN FETCH pq.question q WHERE (:difficulty IS NULL OR q.difficulty = :difficulty) AND q.type = :questionType")
     List<ProgrammingQuestion> findAllByQuestionDifficultyAndQuestionType(@Param("difficulty") Difficulty difficulty, @Param("questionType") QuestionType questionType);
 }
