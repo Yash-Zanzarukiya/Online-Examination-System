@@ -19,14 +19,14 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "[user]")
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "auth", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "[auth]", referencedColumnName = "id", nullable = false)
     private Auth auth;
 
     private String fullName;

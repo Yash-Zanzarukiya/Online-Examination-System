@@ -25,5 +25,5 @@ public class QuestionResponseDTO {
 
     private String image;
 
-    private UUID correctAnswerId;
+    private Integer marks;
 }

@@ -1,7 +1,7 @@
 package com.yashpz.examination_system.examination_system.controller;
 
-import com.yashpz.examination_system.examination_system.dto.Question.McqOptionRequestDTO;
-import com.yashpz.examination_system.examination_system.dto.Question.McqOptionResponseDTO;
+import com.yashpz.examination_system.examination_system.dto.McqOption.McqOptionRequestDTO;
+import com.yashpz.examination_system.examination_system.dto.McqOption.McqOptionResponseDTO;
 import com.yashpz.examination_system.examination_system.service.McqOptionService;
 import com.yashpz.examination_system.examination_system.utils.ApiResponse;
 import com.yashpz.examination_system.examination_system.utils.ApiResponseUtil;
@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,14 +24,14 @@ public class McqOptionController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<McqOptionResponseDTO>> createMcqOption(@Valid @RequestBody McqOptionRequestDTO mcqOptionRequestDTO) throws IOException {
+    public ResponseEntity<ApiResponse<McqOptionResponseDTO>> createMcqOption(@Valid @RequestBody McqOptionRequestDTO mcqOptionRequestDTO) {
         McqOptionResponseDTO mcqOption = mcqOptionService.createMcqOption(mcqOptionRequestDTO);
         return ApiResponseUtil.handleResponse(HttpStatus.CREATED, mcqOption, "Mcq option created successfully");
     }
 
-    @PostMapping("/multiple")
-    public ResponseEntity<ApiResponse<List<McqOptionResponseDTO>>> createMultipleMcqOptions(@RequestBody @Valid List<McqOptionRequestDTO> mcqOptionRequestDTOList) {
-        List<McqOptionResponseDTO> mcqOptions = mcqOptionService.createMultipleMcqOptions(mcqOptionRequestDTOList);
+    @PostMapping("/bulk")
+    public ResponseEntity<ApiResponse<List<McqOptionResponseDTO>>> createBulkMcqOptions(@RequestBody @Valid List<McqOptionRequestDTO> mcqOptionRequestDTOList) {
+        List<McqOptionResponseDTO> mcqOptions = mcqOptionService.createBulkMcqOptions(mcqOptionRequestDTOList);
         return ApiResponseUtil.handleResponse(HttpStatus.CREATED, mcqOptions, "Mcq options created successfully");
     }
 
@@ -49,14 +48,14 @@ public class McqOptionController {
     }
 
     @PatchMapping("/{optionId}")
-    public ResponseEntity<ApiResponse<McqOptionResponseDTO>> updateOption(@PathVariable UUID optionId, @RequestBody @Valid McqOptionRequestDTO mcqOptionRequestDTO) throws IOException {
+    public ResponseEntity<ApiResponse<McqOptionResponseDTO>> updateOption(@PathVariable UUID optionId, @RequestBody @Valid McqOptionRequestDTO mcqOptionRequestDTO){
         McqOptionResponseDTO updateOption = mcqOptionService.updateOption(optionId, mcqOptionRequestDTO);
         return ApiResponseUtil.handleResponse(HttpStatus.OK, updateOption, "Option updated successfully");
     }
 
-    @PatchMapping("/options/multiple")
-    public ResponseEntity<ApiResponse<List<McqOptionResponseDTO>>> updateMultipleOptions(@RequestBody @Valid List<McqOptionRequestDTO> mcqOptionRequestDTOList) {
-        List<McqOptionResponseDTO> updatedOptions = mcqOptionService.updateMultipleOptions(mcqOptionRequestDTOList);
+    @PatchMapping("/update/bulk")
+    public ResponseEntity<ApiResponse<List<McqOptionResponseDTO>>> updateBulkOptions(@RequestBody @Valid List<McqOptionRequestDTO> mcqOptionRequestDTOList) {
+        List<McqOptionResponseDTO> updatedOptions = mcqOptionService.updateBulkOptions(mcqOptionRequestDTOList);
         return ApiResponseUtil.handleResponse(HttpStatus.OK, updatedOptions, "Options updated successfully");
     }
 

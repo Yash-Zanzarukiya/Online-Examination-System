@@ -1,4 +1,4 @@
-package com.yashpz.examination_system.examination_system.dto.Question;
+package com.yashpz.examination_system.examination_system.dto.McqOption;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

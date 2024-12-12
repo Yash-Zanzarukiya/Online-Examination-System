@@ -6,10 +6,12 @@ import com.yashpz.examination_system.examination_system.exception.ApiError;
 import com.yashpz.examination_system.examination_system.mappers.ExamMapper;
 import com.yashpz.examination_system.examination_system.model.Exam;
 import com.yashpz.examination_system.examination_system.repository.ExamRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.UUID;
 
 @Service
@@ -21,38 +23,43 @@ public class ExamService {
         this.examRepository = examRepository;
     }
 
+    @Transactional
     public ExamResponseDTO createExam(ExamRequestDTO dto) {
         Exam exam = ExamMapper.toEntity(dto);
-        return ExamMapper.toResponseDTO(examRepository.save(exam));
-    }
-
-    public ExamResponseDTO getExamById(UUID examId) {
-        Exam exam = examRepository.findById(examId)
-                .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "Exam not found"));
+        examRepository.save(exam);
         return ExamMapper.toResponseDTO(exam);
     }
 
-    public Iterable<ExamResponseDTO> getAllExams() {
-        return ExamMapper.toResponseDTOList(examRepository.findAll());
+    public ExamResponseDTO getExamById(UUID examId) {
+        Exam exam = fetchExamById(examId);
+        return ExamMapper.toResponseDTO(exam);
     }
 
+    public Page<ExamResponseDTO> getAllExams(Pageable pageable) {
+        Page<Exam> examPage = examRepository.findAll(pageable);
+        return examPage.map(ExamMapper::toResponseDTO);
+    }
+
+    @Transactional
     public ExamResponseDTO updateExam(UUID examId, ExamRequestDTO dto) {
-        Exam exam = examRepository.findById(examId)
-                .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "Exam not found"));
+        Exam exam = fetchExamById(examId);
+
         ExamMapper.updateEntity(exam, dto);
-        return ExamMapper.toResponseDTO(examRepository.save(exam));
+        examRepository.save(exam);
+
+        return ExamMapper.toResponseDTO(exam);
     }
 
-    public ExamResponseDTO updateExam(UUID examId, Date startDate) {
-        Exam exam = examRepository.findById(examId)
-                .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "Exam not found"));
-        exam.setStartDate(startDate);
-        return ExamMapper.toResponseDTO(examRepository.save(exam));
-    }
-
+    @Transactional
     public void deleteExam(UUID examId) {
-        Exam exam = examRepository.findById(examId)
-                .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "Exam not found"));
+        Exam exam = fetchExamById(examId);
         examRepository.delete(exam);
+    }
+
+    // <----------- Helpers ----------->
+
+    public Exam fetchExamById(UUID examId) {
+        return examRepository.findById(examId)
+                .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "Exam not found"));
     }
 }

@@ -1,4 +1,4 @@
-package com.yashpz.examination_system.examination_system.dto.Exam;
+package com.yashpz.examination_system.examination_system.dto.ProgrammingQuestion;
 
 import com.yashpz.examination_system.examination_system.dto.Question.QuestionResponseDTO;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,8 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AllExamQuestionDTO {
+public class ProgrammingQuestionResponseDTO {
     private UUID id;
     private QuestionResponseDTO question;
+    private String referenceAnswer;
 }

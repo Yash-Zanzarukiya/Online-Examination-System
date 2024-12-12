@@ -1,4 +1,4 @@
-package com.yashpz.examination_system.examination_system.dto.User;
+package com.yashpz.examination_system.examination_system.dto.StudentProfile;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

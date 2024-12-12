@@ -1,8 +1,8 @@
 package com.yashpz.examination_system.examination_system.controller;
 
-import com.yashpz.examination_system.examination_system.dto.Exam.AllExamQuestionDTO;
-import com.yashpz.examination_system.examination_system.dto.Exam.ExamQuestionsRequestDTO;
-import com.yashpz.examination_system.examination_system.dto.Exam.ExamQuestionsResponseDTO;
+import com.yashpz.examination_system.examination_system.dto.ExamQuestions.FullExamQuestionDTO;
+import com.yashpz.examination_system.examination_system.dto.ExamQuestions.ExamQuestionsRequestDTO;
+import com.yashpz.examination_system.examination_system.dto.ExamQuestions.ExamQuestionsResponseDTO;
 import com.yashpz.examination_system.examination_system.service.ExamQuestionsService;
 import com.yashpz.examination_system.examination_system.utils.ApiResponse;
 import com.yashpz.examination_system.examination_system.utils.ApiResponseUtil;
@@ -24,15 +24,21 @@ public class ExamQuestionsController {
         this.examQuestionsService = examQuestionsService;
     }
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<List<ExamQuestionsResponseDTO>>> addExamQuestion(@RequestBody @Valid ExamQuestionsRequestDTO dto) {
-        List<ExamQuestionsResponseDTO> createdExamQuestion = examQuestionsService.createExamQuestions(dto);
+    @PostMapping("/add")
+    public ResponseEntity<ApiResponse<List<ExamQuestionsResponseDTO>>> addQuestions(@RequestBody @Valid ExamQuestionsRequestDTO dto) {
+        List<ExamQuestionsResponseDTO> createdExamQuestion = examQuestionsService.addQuestions(dto);
         return ApiResponseUtil.handleResponse(HttpStatus.CREATED, createdExamQuestion, "Exam question added successfully");
     }
 
+    @PostMapping("/remove")
+    public ResponseEntity<ApiResponse<String>> removeQuestions(@RequestBody @Valid List<UUID> examQuestionIds) {
+        examQuestionsService.removeQuestions(examQuestionIds);
+        return ApiResponseUtil.handleResponse(HttpStatus.OK, "Exam question deleted successfully");
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ExamQuestionsResponseDTO>> getExamQuestionsById(@PathVariable UUID id) {
-        ExamQuestionsResponseDTO examQuestionsDTO = examQuestionsService.getExamQuestionsById(id);
+    public ResponseEntity<ApiResponse<ExamQuestionsResponseDTO>> getExamQuestionById(@PathVariable UUID id) {
+        ExamQuestionsResponseDTO examQuestionsDTO = examQuestionsService.getExamQuestionById(id);
         return ApiResponseUtil.handleResponse(HttpStatus.OK, examQuestionsDTO, "Exam question fetched successfully");
     }
 
@@ -42,15 +48,9 @@ public class ExamQuestionsController {
         return ApiResponseUtil.handleResponse(HttpStatus.OK, examQuestionsDTOs, "Exam questions fetched successfully");
     }
 
-    @GetMapping("/exam/{examId}/detailed")
-    public ResponseEntity<ApiResponse<List<AllExamQuestionDTO>>> getAllExamQuestions(@PathVariable UUID examId) {
-        List<AllExamQuestionDTO> examQuestionsDTOs = examQuestionsService.getAllExamQuestions(examId);
-        return ApiResponseUtil.handleResponse(HttpStatus.OK, examQuestionsDTOs, "Detailed exam questions fetched successfully");
-    }
-
-    @DeleteMapping
-    public ResponseEntity<ApiResponse<String>> removeQuestion(@RequestBody @Valid List<UUID> examQuestionIds) {
-        examQuestionsService.removeQuestion(examQuestionIds);
-        return ApiResponseUtil.handleResponse(HttpStatus.OK, "Exam question deleted successfully");
+    @GetMapping("/exam/{examId}/full")
+    public ResponseEntity<ApiResponse<List<FullExamQuestionDTO>>> getFullExamQuestionsByExamId(@PathVariable UUID examId) {
+        List<FullExamQuestionDTO> examQuestionsDTOs = examQuestionsService.getFullExamQuestionsByExamId(examId);
+        return ApiResponseUtil.handleResponse(HttpStatus.OK, examQuestionsDTOs, "Full exam questions fetched successfully");
     }
 }

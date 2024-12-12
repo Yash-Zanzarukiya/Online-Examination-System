@@ -8,5 +8,6 @@ import java.util.UUID;
 
 public interface McqOptionRepository extends JpaRepository<McqOption, UUID> {
     List<McqOption> findAllByQuestionId(UUID questionId);
+    List<McqOption> findAllByQuestionIdIn(List<UUID> questionIds);
     void deleteAllByQuestionId(UUID questionId);
 }

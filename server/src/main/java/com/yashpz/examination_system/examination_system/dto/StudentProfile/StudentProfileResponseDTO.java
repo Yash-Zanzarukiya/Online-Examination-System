@@ -1,4 +1,4 @@
-package com.yashpz.examination_system.examination_system.dto.User;
+package com.yashpz.examination_system.examination_system.dto.StudentProfile;
 
 import com.yashpz.examination_system.examination_system.dto.CollegeDTO;
 import lombok.AllArgsConstructor;

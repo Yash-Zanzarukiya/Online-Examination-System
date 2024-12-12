@@ -22,7 +22,7 @@ public class Question {
    private UUID id;
 
    @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)
+   @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = true)
    private Category category;
 
    @Enumerated(EnumType.STRING)
@@ -34,9 +34,7 @@ public class Question {
    @Column(nullable = false)
    private String questionText;
 
-   private String image;
+   private Integer marks;
 
-   @OneToOne
-   @JoinColumn(name = "correct_answer_id", nullable = true)
-   private McqOption correctAnswer;
+   private String image;
 }

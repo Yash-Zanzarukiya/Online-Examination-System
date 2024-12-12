@@ -28,12 +28,8 @@ public class McqOption {
    @Column(nullable = false)
    private String optionText;
 
-   private String image;
+   @Column(nullable = false)
+   private Boolean isCorrect;
 
-   @PreRemove
-   private void preRemove() {
-      if (question != null && question.getCorrectAnswer() != null && question.getCorrectAnswer().equals(this)) {
-         question.setCorrectAnswer(null);
-      }
-   }
+   private String image;
 }

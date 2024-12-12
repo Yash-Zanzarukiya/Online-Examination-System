@@ -1,7 +1,7 @@
 package com.yashpz.examination_system.examination_system.controller;
 
-import com.yashpz.examination_system.examination_system.dto.User.StudentProfileRequestDTO;
-import com.yashpz.examination_system.examination_system.dto.User.StudentProfileResponseDTO;
+import com.yashpz.examination_system.examination_system.dto.StudentProfile.StudentProfileRequestDTO;
+import com.yashpz.examination_system.examination_system.dto.StudentProfile.StudentProfileResponseDTO;
 import com.yashpz.examination_system.examination_system.service.StudentProfileService;
 import com.yashpz.examination_system.examination_system.utils.ApiResponse;
 import com.yashpz.examination_system.examination_system.utils.ApiResponseUtil;

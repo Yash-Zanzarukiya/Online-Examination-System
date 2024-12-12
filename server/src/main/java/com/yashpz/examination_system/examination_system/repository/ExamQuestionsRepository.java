@@ -14,8 +14,6 @@ import java.util.UUID;
 public interface ExamQuestionsRepository extends JpaRepository<ExamQuestions, UUID> {
     List<ExamQuestions> findByExamId(UUID examId);
 
-    boolean existsByExamIdAndQuestionId(UUID examId, UUID questionId);
-
     @Query("SELECT eq FROM ExamQuestions eq JOIN FETCH eq.exam JOIN FETCH eq.question WHERE eq.exam.id = :examId")
     List<ExamQuestions> findByExamIdWithFetch(UUID examId);
 
@@ -25,7 +23,7 @@ public interface ExamQuestionsRepository extends JpaRepository<ExamQuestions, UU
     @Modifying
     @Transactional
     @Query("DELETE FROM ExamQuestions eq WHERE eq.id IN :examQuestionIds")
-    int deleteByQuestionIdIn(@Param("examQuestionIds") List<UUID> examQuestionIds);
+    int deleteByExamQuestionIds(@Param("examQuestionIds") List<UUID> examQuestionIds);
 
     @Query(value = """
         SELECT
