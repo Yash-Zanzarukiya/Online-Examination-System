@@ -1,24 +1,22 @@
 package com.yashpz.examination_system.examination_system.mappers;
 
-import com.yashpz.examination_system.examination_system.dto.Exam.AllExamQuestionDTO;
+import com.yashpz.examination_system.examination_system.dto.ExamQuestions.FullExamQuestionDTO;
 import com.yashpz.examination_system.examination_system.dto.Question.QuestionResponseDTO;
 import com.yashpz.examination_system.examination_system.model.ExamQuestions;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
-public class AllExamQuestionsMapper {
+public class FullExamQuestionMapper {
 
-    public AllExamQuestionDTO toDTO(ExamQuestions examQuestions) {
-        AllExamQuestionDTO dto = new AllExamQuestionDTO();
+    public static FullExamQuestionDTO toDTO(ExamQuestions examQuestions) {
+        FullExamQuestionDTO dto = new FullExamQuestionDTO();
         dto.setId(examQuestions.getId());
         QuestionResponseDTO questionDTO = QuestionMapper.toResponseDTO(examQuestions.getQuestion());
         dto.setQuestion(questionDTO);
         return dto;
     }
 
-    public List<AllExamQuestionDTO> toDTO(List<ExamQuestions> examQuestions) {
-        return examQuestions.stream().map(this::toDTO).toList();
+    public static List<FullExamQuestionDTO> toDTO(List<ExamQuestions> examQuestions) {
+        return examQuestions.stream().map(FullExamQuestionMapper::toDTO).toList();
     }
 }

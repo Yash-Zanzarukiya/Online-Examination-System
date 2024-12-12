@@ -2,15 +2,14 @@ package com.yashpz.examination_system.examination_system.service;
 
 import com.yashpz.examination_system.examination_system.dto.CollegeDTO;
 import com.yashpz.examination_system.examination_system.exception.ApiError;
+import com.yashpz.examination_system.examination_system.mappers.CollegeMapper;
 import com.yashpz.examination_system.examination_system.model.College;
 import com.yashpz.examination_system.examination_system.repository.CollegeRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class CollegeService {
@@ -22,40 +21,39 @@ public class CollegeService {
     }
 
     public CollegeDTO createCollege(CollegeDTO collegeDTO) {
-        College college = new College();
-        college.setName(collegeDTO.getName());
-
-        College savedCollege = collegeRepository.save(college);
-
-        return new CollegeDTO(college.getId(),savedCollege.getName());
+        College college = CollegeMapper.toEntity(collegeDTO);
+        collegeRepository.save(college);
+        return CollegeMapper.toDTO(college);
     }
 
     public CollegeDTO getCollegeById(UUID id) {
-        Optional<College> collegeOpt = collegeRepository.findById(id);
-        College college = collegeOpt.orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "College Not Found"));
-
-        return new CollegeDTO(college.getId(), college.getName());
+        College college = fetchCollegeById(id);
+        return CollegeMapper.toDTO(college);
     }
 
     public List<CollegeDTO> getAllColleges() {
-        return collegeRepository.findAll().stream()
-                .map(college -> new CollegeDTO(college.getId(), college.getName()))
-                .collect(Collectors.toList());
+        List<College> colleges = collegeRepository.findAll();
+        return CollegeMapper.toDTO(colleges);
     }
 
     public CollegeDTO updateCollege(UUID id, CollegeDTO collegeDTO) {
-        Optional<College> collegeOpt = collegeRepository.findById(id);
-        College existingCollege = collegeOpt.orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "College Not Found"));
+        College college = fetchCollegeById(id);
 
-        existingCollege.setName(collegeDTO.getName());
-        College updatedCollege = collegeRepository.save(existingCollege);
+        CollegeMapper.updateEntity(college, collegeDTO);
+        collegeRepository.save(college);
 
-        return new CollegeDTO(updatedCollege.getId(), updatedCollege.getName());
+        return CollegeMapper.toDTO(college);
     }
 
     public void deleteCollege(UUID id) {
         if (!collegeRepository.existsById(id))
             throw new ApiError(HttpStatus.NOT_FOUND, "College Not Found");
         collegeRepository.deleteById(id);
+    }
+
+    // <--------------- Helpers --------------->
+
+    public College fetchCollegeById(UUID id) {
+        return collegeRepository.findById(id).orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "College Not Found"));
     }
 }

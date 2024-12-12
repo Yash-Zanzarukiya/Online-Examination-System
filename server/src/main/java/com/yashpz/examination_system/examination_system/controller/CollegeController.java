@@ -23,9 +23,9 @@ public class CollegeController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<CollegeDTO>> addCollege(@Valid @RequestBody CollegeDTO collegeDTO) {
+    public ResponseEntity<ApiResponse<CollegeDTO>> createCollege(@Valid @RequestBody CollegeDTO collegeDTO) {
         CollegeDTO newCollege = collegeService.createCollege(collegeDTO);
-        return ApiResponseUtil.handleResponse(HttpStatus.CREATED, newCollege, "College added successfully");
+        return ApiResponseUtil.handleResponse(HttpStatus.CREATED, newCollege, "College created successfully");
     }
 
     @GetMapping("/{id}")

@@ -6,11 +6,13 @@ import com.yashpz.examination_system.examination_system.service.ExamService;
 import com.yashpz.examination_system.examination_system.utils.ApiResponse;
 import com.yashpz.examination_system.examination_system.utils.ApiResponseUtil;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.UUID;
 
 @RestController
@@ -25,27 +27,30 @@ public class ExamController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<ExamResponseDTO>> createExam(@Valid @RequestBody ExamRequestDTO dto) {
-        return ApiResponseUtil.handleResponse(HttpStatus.CREATED, examService.createExam(dto), "Exam Created Successfully");
+        ExamResponseDTO exam = examService.createExam(dto);
+        return ApiResponseUtil.handleResponse(HttpStatus.CREATED, exam, "Exam Created Successfully");
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<ExamResponseDTO>> getExamById(@PathVariable UUID id) {
-        return ApiResponseUtil.handleResponse(HttpStatus.OK, examService.getExamById(id), "Exam Retrieved Successfully");
+        ExamResponseDTO exam = examService.getExamById(id);
+        return ApiResponseUtil.handleResponse(HttpStatus.OK, exam, "Exam Retrieved Successfully");
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<Iterable<ExamResponseDTO>>> getAllExams() {
-        return ApiResponseUtil.handleResponse(HttpStatus.OK, examService.getAllExams(), "Exams Retrieved Successfully");
+    public ResponseEntity<ApiResponse<Page<ExamResponseDTO>>> getAllExams(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ExamResponseDTO> paginatedExams = examService.getAllExams(pageable);
+        return ApiResponseUtil.handleResponse(HttpStatus.OK, paginatedExams, "Exams Retrieved Successfully");
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse<ExamResponseDTO>> updateExam(@PathVariable UUID id, @Valid @RequestBody ExamRequestDTO dto) {
-        return ApiResponseUtil.handleResponse(HttpStatus.OK, examService.updateExam(id, dto), "Exam Updated Successfully");
-    }
-
-    @PatchMapping("/{id}/schedule")
-    public ResponseEntity<ApiResponse<ExamResponseDTO>> updateExamSchedule(@PathVariable UUID id, @Valid @RequestBody Date startDate) {
-        return ApiResponseUtil.handleResponse(HttpStatus.OK, examService.updateExam(id, startDate), "Exam Schedule Updated Successfully");
+        ExamResponseDTO exam = examService.updateExam(id, dto);
+        return ApiResponseUtil.handleResponse(HttpStatus.OK, exam, "Exam Updated Successfully");
     }
 
     @DeleteMapping("/{id}")

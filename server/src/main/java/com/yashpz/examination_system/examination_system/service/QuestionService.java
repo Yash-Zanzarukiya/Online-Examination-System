@@ -110,15 +110,6 @@ public class QuestionService {
         if (question.getImage() != null)
             cloudinaryService.deleteImageByURL(question.getImage());
 
-        //  TODO : Check if it is working or not
-
-//        List<McqOption> options = mcqOptionRepository.findAllByQuestionId(questionId);
-//
-//        options.forEach((option) -> {
-//            cloudinaryService.deleteImageByURL(option.getImage());
-//            mcqOptionRepository.deleteById(option.getId());
-//        });
-
         questionRepository.deleteById(questionId);
     }
 

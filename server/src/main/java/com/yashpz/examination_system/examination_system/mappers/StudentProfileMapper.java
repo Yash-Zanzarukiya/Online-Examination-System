@@ -6,19 +6,22 @@ import com.yashpz.examination_system.examination_system.dto.StudentProfile.Stude
 import com.yashpz.examination_system.examination_system.dto.StudentProfile.StudentProfileResponseDTO;
 import com.yashpz.examination_system.examination_system.model.StudentProfile;
 import com.yashpz.examination_system.examination_system.model.College;
-import com.yashpz.examination_system.examination_system.model.User;
+
+import java.util.List;
 
 public class StudentProfileMapper {
 
-    public static StudentProfile toEntity(StudentProfileRequestDTO requestDTO, User user, College college) {
+    public static StudentProfile toEntity(StudentProfileRequestDTO requestDTO) {
         StudentProfile studentProfile = new StudentProfile();
-        studentProfile.setUser(user);
         studentProfile.setFullName(requestDTO.getFullName());
-        studentProfile.setCollege(college);
         studentProfile.setBranch(requestDTO.getBranch());
         studentProfile.setPhone(requestDTO.getPhone());
         studentProfile.setPassout(requestDTO.getPassout());
         return studentProfile;
+    }
+
+    public static List<StudentProfile> toEntity(List<StudentProfileRequestDTO> requestDTOs) {
+        return requestDTOs.stream().map(StudentProfileMapper::toEntity).toList();
     }
 
     public static StudentProfileResponseDTO toResponseDTO(StudentProfile studentProfile) {
@@ -34,5 +37,17 @@ public class StudentProfileMapper {
                 studentProfile.getCreatedAt(),
                 studentProfile.getUpdatedAt()
         );
+    }
+
+    public static List<StudentProfileResponseDTO> toResponseDTO(List<StudentProfile> studentProfiles) {
+        return studentProfiles.stream().map(StudentProfileMapper::toResponseDTO).toList();
+    }
+
+    public static StudentProfile updateEntity(StudentProfile studentProfile, StudentProfileRequestDTO requestDTO) {
+        studentProfile.setFullName(requestDTO.getFullName());
+        studentProfile.setBranch(requestDTO.getBranch());
+        studentProfile.setPhone(requestDTO.getPhone());
+        studentProfile.setPassout(requestDTO.getPassout());
+        return studentProfile;
     }
 }

@@ -8,8 +8,6 @@ import com.yashpz.examination_system.examination_system.model.StudentProfile;
 import com.yashpz.examination_system.examination_system.model.User;
 import com.yashpz.examination_system.examination_system.model.College;
 import com.yashpz.examination_system.examination_system.repository.StudentProfileRepository;
-import com.yashpz.examination_system.examination_system.repository.UserRepository;
-import com.yashpz.examination_system.examination_system.repository.CollegeRepository;
 import com.yashpz.examination_system.examination_system.utils.ResourceAccessUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,29 +18,29 @@ import java.util.UUID;
 public class StudentProfileService {
 
     private final StudentProfileRepository studentProfileRepository;
-    private final UserRepository userRepository;
-    private final CollegeRepository collegeRepository;
+    private final UserService userService;
+    private final CollegeService collegeService;
     private final ResourceAccessUtil resourceAccessUtil;
 
-    public StudentProfileService(StudentProfileRepository studentProfileRepository, UserRepository userRepository, CollegeRepository collegeRepository, ResourceAccessUtil resourceAccessUtil) {
+    public StudentProfileService(StudentProfileRepository studentProfileRepository, UserService userService, CollegeService collegeService, ResourceAccessUtil resourceAccessUtil) {
         this.studentProfileRepository = studentProfileRepository;
-        this.userRepository = userRepository;
-        this.collegeRepository = collegeRepository;
+        this.userService = userService;
+        this.collegeService = collegeService;
         this.resourceAccessUtil = resourceAccessUtil;
     }
 
     public StudentProfileResponseDTO createStudentProfile(StudentProfileRequestDTO studentProfileDTO) {
-        User user = userRepository.findById(studentProfileDTO.getUserId())
-                .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "User Not Found"));
+        StudentProfile existingProfile = studentProfileRepository.findByUserId(studentProfileDTO.getUserId());
 
-        College college = collegeRepository.findById(studentProfileDTO.getCollegeId())
-                .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "College Not Found"));
-
-        StudentProfile existingProfile = studentProfileRepository.findByUserId(user.getId());
         if (existingProfile!=null)
             throw new ApiError(HttpStatus.BAD_REQUEST, "Student Profile Already Exists");
 
-        StudentProfile studentProfile = StudentProfileMapper.toEntity(studentProfileDTO, user, college);
+        User user = userService.fetchUserById(studentProfileDTO.getUserId());
+        College college = collegeService.fetchCollegeById(studentProfileDTO.getCollegeId());
+
+        StudentProfile studentProfile = StudentProfileMapper.toEntity(studentProfileDTO);
+        studentProfile.setUser(user);
+        studentProfile.setCollege(college);
 
         studentProfileRepository.save(studentProfile);
 
@@ -51,6 +49,7 @@ public class StudentProfileService {
 
     public StudentProfileResponseDTO getStudentProfileByUserId(UUID userId) {
         StudentProfile studentProfile = studentProfileRepository.findByUserId(userId);
+
         if (studentProfile==null)
             throw new ApiError(HttpStatus.NOT_FOUND, "Student Profile Not Found");
 
@@ -58,42 +57,37 @@ public class StudentProfileService {
     }
 
     public StudentProfileResponseDTO getStudentProfileById(UUID profileId) {
-        StudentProfile studentProfile = studentProfileRepository.findById(profileId)
-                .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "Student Profile Not Found"));
+        StudentProfile studentProfile = fetchStudentProfileById(profileId);
         return StudentProfileMapper.toResponseDTO(studentProfile);
     }
 
     public StudentProfileResponseDTO updateStudentProfile(UUID profileId, StudentProfileRequestDTO studentProfileDTO) {
-        StudentProfile existingProfile = studentProfileRepository.findById(profileId)
-                .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "Student Profile Not Found"));
+        StudentProfile existingProfile = fetchStudentProfileById(profileId);
 
         resourceAccessUtil.AdminOrOwnerAccess(existingProfile.getUser().getAuth().getId());
 
-        User user = userRepository.findById(studentProfileDTO.getUserId())
-                .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "User Not Found"));
+        College college = collegeService.fetchCollegeById(studentProfileDTO.getCollegeId());
 
-        College college = collegeRepository.findById(studentProfileDTO.getCollegeId())
-                .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "College Not Found"));
-
-        existingProfile.setUser(user);
-        existingProfile.setFullName(studentProfileDTO.getFullName());
+        StudentProfileMapper.updateEntity(existingProfile, studentProfileDTO);
         existingProfile.setCollege(college);
-        existingProfile.setBranch(studentProfileDTO.getBranch());
-        existingProfile.setPhone(studentProfileDTO.getPhone());
-        existingProfile.setPassout(studentProfileDTO.getPassout());
 
-        StudentProfile updatedProfile = studentProfileRepository.save(existingProfile);
+        studentProfileRepository.save(existingProfile);
 
-        return StudentProfileMapper.toResponseDTO(updatedProfile);
+        return StudentProfileMapper.toResponseDTO(existingProfile);
     }
 
     public void deleteStudentProfile(UUID userId) {
-        StudentProfile existingProfile = studentProfileRepository.findById(userId)
-                .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "Student Profile Not Found"));
+        StudentProfile existingProfile = fetchStudentProfileById(userId);
 
         resourceAccessUtil.AdminOrOwnerAccess(existingProfile.getUser().getAuth().getId());
 
         studentProfileRepository.deleteById(userId);
     }
 
+    // <--------------- Helpers --------------->
+
+    public StudentProfile fetchStudentProfileById(UUID id) {
+        return studentProfileRepository.findById(id)
+                .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "Student Profile Not Found"));
+    }
 }
