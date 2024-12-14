@@ -13,7 +13,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -25,11 +24,11 @@ import java.util.UUID;
 public class ExamAttempt {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "exam_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "scheduled_exam_id", referencedColumnName = "id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private ScheduleExam exam;
 
@@ -38,15 +37,18 @@ public class ExamAttempt {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "varchar(255) default 'PENDING'")
     private ExamAttemptStatus status;
 
-    @Column(nullable = false)
-    private Date startTime;
+    private LocalDateTime startTime;
 
-    private Date endTime;
+    private LocalDateTime endTime;
 
+    @Column(nullable = false, columnDefinition = "int default 0")
     private Integer score;
 
+    @Column(nullable = false, columnDefinition = "bit default 0")
     private Boolean isPassed;
 
     @CreatedDate

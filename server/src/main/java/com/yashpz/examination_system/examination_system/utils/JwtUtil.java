@@ -32,10 +32,7 @@ public class JwtUtil {
         return createToken(claims, username);
     }
 
-    public String generateToken(String username, String fullName, String role) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("role", role);
-        claims.put("fullName", fullName);
+    public String generateToken(String username, Map<String, Object> claims) {
         return createToken(claims, username);
     }
 
@@ -64,14 +61,8 @@ public class JwtUtil {
 
     public Map<String, Object> getPayloadData(String token) {
         Claims claims = extractAllClaims(token);
-        Map<String, Object> payloadData = new HashMap<>();
-
-        payloadData.put("role", claims.get("role"));
-        payloadData.put("fullName", claims.get("fullName"));
-
-        return payloadData;
+        return new HashMap<>(claims);
     }
-
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(ACCESS_TOKEN_SECRET.getBytes());
@@ -90,7 +81,6 @@ public class JwtUtil {
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
-        System.out.println();
         return Jwts.builder()
                 .addClaims(claims)
                 .setSubject(subject)

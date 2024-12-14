@@ -1,28 +1,29 @@
 package com.yashpz.examination_system.examination_system.dto.ExamResponse;
 
 import com.yashpz.examination_system.examination_system.constants.ExamAttemptStatus;
+import com.yashpz.examination_system.examination_system.constants.ValidationGroups;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ExamAttemptRequestDTO {
-    @NotNull
+    @NotNull(groups = ValidationGroups.Create.class)
+    private String visitorId;
+
+    @NotNull(groups = ValidationGroups.Create.class)
     private UUID examId;
 
-    @NotNull
-    private UUID userId;
-
-    @NotNull
+    @NotNull(groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
     private ExamAttemptStatus status;
 
-    private Date startTime;
+    private LocalDateTime startTime;
 
-    private Date endTime;
+    private LocalDateTime endTime;
 }
