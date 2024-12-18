@@ -1,4 +1,4 @@
-package com.yashpz.examination_system.examination_system.dto.ExamResponse;
+package com.yashpz.examination_system.examination_system.dto.ActiveExam;
 
 import com.yashpz.examination_system.examination_system.constants.ExamAttemptStatus;
 import com.yashpz.examination_system.examination_system.constants.ValidationGroups;

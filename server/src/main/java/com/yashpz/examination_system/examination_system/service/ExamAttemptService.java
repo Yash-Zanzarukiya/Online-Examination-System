@@ -2,7 +2,7 @@ package com.yashpz.examination_system.examination_system.service;
 
 import com.yashpz.examination_system.examination_system.constants.ExamAttemptStatus;
 import com.yashpz.examination_system.examination_system.contexts.ExamSessionContext;
-import com.yashpz.examination_system.examination_system.dto.ExamResponse.ExamAttemptRequestDTO;
+import com.yashpz.examination_system.examination_system.dto.ActiveExam.ExamAttemptRequestDTO;
 import com.yashpz.examination_system.examination_system.exception.ApiError;
 import com.yashpz.examination_system.examination_system.mappers.ExamAttemptMapper;
 import com.yashpz.examination_system.examination_system.model.*;

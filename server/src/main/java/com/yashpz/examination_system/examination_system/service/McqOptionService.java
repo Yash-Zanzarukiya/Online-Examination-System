@@ -35,7 +35,7 @@ public class McqOptionService {
     public McqOptionResponseDTO createMcqOption(McqOptionRequestDTO mcqOptionRequestDTO){
         McqOption option = McqOptionMapper.toEntity(mcqOptionRequestDTO);
 
-        Question question = questionService.getQuestionEntityById(mcqOptionRequestDTO.getQuestionId());
+        Question question = questionService.fetchQuestionById(mcqOptionRequestDTO.getQuestionId());
         option.setQuestion(question);
 
         if (mcqOptionRequestDTO.getImageFile() != null) {
@@ -54,7 +54,7 @@ public class McqOptionService {
 
         for (McqOptionRequestDTO mcqOptionRequestDTO : mcqOptionRequestDTOList) {
             McqOption option = McqOptionMapper.toEntity(mcqOptionRequestDTO);
-            Question question = questionService.getQuestionEntityById(mcqOptionRequestDTO.getQuestionId());
+            Question question = questionService.fetchQuestionById(mcqOptionRequestDTO.getQuestionId());
             option.setQuestion(question);
             if (mcqOptionRequestDTO.getImageFile() != null) {
                 String imageUrl = cloudinaryService.uploadImage(mcqOptionRequestDTO.getImageFile());
@@ -152,7 +152,7 @@ public class McqOptionService {
 
     // <----------- Helpers ----------->
 
-    private McqOption fetchOptionById(UUID optionId) {
+    public McqOption fetchOptionById(UUID optionId) {
         return mcqOptionRepository.findById(optionId)
                 .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND,"Option not found"));
     }

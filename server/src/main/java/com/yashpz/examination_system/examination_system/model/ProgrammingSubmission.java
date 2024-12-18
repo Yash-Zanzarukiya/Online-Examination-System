@@ -32,8 +32,12 @@ public class ProgrammingSubmission {
     @JoinColumn(name = "question_id", nullable = false)
     private Question question;
 
+    @Lob
     @Column(nullable = false)
     private String submittedCode;
+
+    @Column(nullable = false)
+    private String programmingLanguage;
 
     @Column(nullable = false)
     private Integer timeSpent;

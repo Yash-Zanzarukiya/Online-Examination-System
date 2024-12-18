@@ -12,7 +12,7 @@ public class DisconnectionScheduler {
         this.examSessionService = examSessionService;
     }
 
-    @Scheduled(fixedRate = 60000)
+//    @Scheduled(fixedRate = 60000)
     public void detectDisconnectedSessions() {
         examSessionService.detectDisconnections();
     }

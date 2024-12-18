@@ -1,7 +1,7 @@
 package com.yashpz.examination_system.examination_system.controller;
 
 import com.yashpz.examination_system.examination_system.constants.ValidationGroups;
-import com.yashpz.examination_system.examination_system.dto.ExamResponse.ExamAttemptRequestDTO;
+import com.yashpz.examination_system.examination_system.dto.ActiveExam.ExamAttemptRequestDTO;
 import com.yashpz.examination_system.examination_system.service.ExamAttemptService;
 import com.yashpz.examination_system.examination_system.utils.ApiResponse;
 import com.yashpz.examination_system.examination_system.utils.ApiResponseUtil;

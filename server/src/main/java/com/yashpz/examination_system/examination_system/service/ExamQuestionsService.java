@@ -83,4 +83,15 @@ public class ExamQuestionsService {
         List<ExamQuestions> examQuestions = examQuestionsRepository.findByExamIdWithFetch(examId);
         return FullExamQuestionMapper.toDTO(examQuestions);
     }
+
+    // <--------------- Helpers --------------->
+
+    public ExamQuestions fetchExamQuestionById(UUID id) {
+        return examQuestionsRepository.findById(id)
+                .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "Exam question not found"));
+    }
+
+    public Boolean isExistsByExamIdAndQuestionId(UUID examId, UUID questionId) {
+         return examQuestionsRepository.existsByExamIdAndQuestionId(examId, questionId);
+    }
 }

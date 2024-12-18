@@ -27,7 +27,8 @@ public class SessionValidationFilter extends OncePerRequestFilter {
 
     private static final List<String> FILTER_PATHS = List.of(
             "/exam-session/ping", "/exam-session/resume",
-            "/exam-attempt/update", "/exam-attempt/submit"
+            "/exam-attempt/update", "/exam-attempt/submit",
+            "/exam-responses/mcq", "/exam-responses/programming", "/exam-responses/time-spent"
     );
 
     @Override

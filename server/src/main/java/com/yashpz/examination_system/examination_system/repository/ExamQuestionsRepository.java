@@ -20,6 +20,8 @@ public interface ExamQuestionsRepository extends JpaRepository<ExamQuestions, UU
     @Query("SELECT eq.question.id FROM ExamQuestions eq WHERE eq.exam.id = :examId AND eq.question.id IN :questionIds")
     List<UUID> findExistingQuestionIdsByExamIdAndQuestionIds(@Param("examId") UUID examId, @Param("questionIds") List<UUID> questionIds);
 
+    Boolean existsByExamIdAndQuestionId(UUID examId, UUID questionId);
+
     @Modifying
     @Transactional
     @Query("DELETE FROM ExamQuestions eq WHERE eq.id IN :examQuestionIds")

@@ -1,6 +1,6 @@
 package com.yashpz.examination_system.examination_system.mappers;
 
-import com.yashpz.examination_system.examination_system.dto.ExamResponse.ExamAttemptRequestDTO;
+import com.yashpz.examination_system.examination_system.dto.ActiveExam.ExamAttemptRequestDTO;
 import com.yashpz.examination_system.examination_system.model.ExamAttempt;
 import com.yashpz.examination_system.examination_system.model.ScheduleExam;
 import com.yashpz.examination_system.examination_system.model.User;
