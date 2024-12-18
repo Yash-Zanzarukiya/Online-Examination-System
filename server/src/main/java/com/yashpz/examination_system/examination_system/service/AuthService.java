@@ -16,10 +16,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
@@ -38,6 +40,7 @@ public class AuthService {
         this.userService = userService;
     }
 
+    @Transactional
     public void registerUser(AuthDTO user) {
         if(!isUsernameAvailable(user.getUsername()))
             throw new ApiError(HttpStatus.BAD_REQUEST, "Username Already Taken");
@@ -81,6 +84,7 @@ public class AuthService {
         return AuthDataMapper.toUserDataDTO(auth);
     }
 
+    @Transactional
     public void verifyUser(String token) {
         Auth auth = jwtUtil.validateUserFromToken(token);
         if(auth == null)
@@ -103,6 +107,7 @@ public class AuthService {
         userService.saveUser(user);
     }
 
+    @Transactional
     public boolean isUsernameAvailable(String username) {
         Auth authByUsername = getAuthByUsername(username);
 
@@ -123,19 +128,20 @@ public class AuthService {
     }
 
     public UserDataDTO getCurrentUser(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        Auth auth = getAuthByUsername(username);
-        if (auth == null)
-            throw new ApiError(HttpStatus.UNAUTHORIZED, "User Not Logged In");
-
+        Auth auth = fetchCurrentAuth();
         return AuthDataMapper.toUserDataDTO(auth);
     }
 
-    public Auth getAuthByUsernameOrEmail(String username, String email) {
-            return authRepository.findByUsernameOrEmail(username,email);
-        }
+    // <--------------- Helpers --------------->
+
+    public Auth fetchCurrentAuth() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Auth auth = getAuthByUsername(username);
+        if (auth == null)
+            throw new ApiError(HttpStatus.UNAUTHORIZED, "User Not Logged In");
+        return auth;
+    }
 
     public Auth getAuthByUsername(String username) {
         return authRepository.findByUsername(username);
@@ -145,12 +151,16 @@ public class AuthService {
         return authRepository.findByEmail(email);
     }
 
-    public Auth saveAuth(Auth auth) {
-        return authRepository.save(auth);
+    public void saveAuth(Auth auth) {
+        authRepository.save(auth);
     }
 
     public void sendVerificationEmail(Auth auth, String fullName, String role) {
-        String token = jwtUtil.generateToken(auth.getUsername(), fullName, role);
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", role);
+        claims.put("fullName", fullName);
+        String token = jwtUtil.generateToken(auth.getUsername(), claims);
+
         emailService.sendMail(auth.getEmail(), "Verification Email", "Click on the link to verify your email: http://localhost:8080/auth/verify?token=" + token);
         auth.setVerificationEmailSentAt(LocalDateTime.now());
         saveAuth(auth);

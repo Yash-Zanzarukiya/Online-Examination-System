@@ -11,11 +11,10 @@ import java.util.UUID;
 
 @Repository
 public interface ExamAttemptRepository extends JpaRepository<ExamAttempt, UUID> {
-//    List<ExamAttempt> findByExamId(UUID examId);
-//    List<ExamAttempt> findByUserId(UUID userId);
-//    ExamAttempt findByUserIdAndExamId(UUID userId, UUID examId);
-//    ExamAttempt findByUserIdAndExamIdAndAttemptStatus(UUID userId, UUID examId, ExamAttemptStatus attemptStatus);
-//    List<ExamAttempt> findByExamIdAndAttemptStatus(UUID examId, ExamAttemptStatus attemptStatus);
-//    List<ExamAttempt> findByAttemptStatus(ExamAttemptStatus attemptStatus);
-//    List<ExamAttempt> findByStartTimeBetween(LocalDateTime start, LocalDateTime end);
+   List<ExamAttempt> findByUserId(UUID userId);
+   ExamAttempt findByUserIdAndExamId(UUID userId, UUID examId);
+   ExamAttempt findByUserIdAndExamIdAndStatus(UUID userId, UUID examId, ExamAttemptStatus status);
+   List<ExamAttempt> findByExamIdAndStatus(UUID examId, ExamAttemptStatus status);
+   List<ExamAttempt> findByStatus(ExamAttemptStatus status);
+   List<ExamAttempt> findByStartTimeBetween(LocalDateTime start, LocalDateTime end);
 }

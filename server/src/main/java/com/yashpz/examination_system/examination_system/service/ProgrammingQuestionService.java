@@ -35,7 +35,7 @@ public class ProgrammingQuestionService {
 
         ProgrammingQuestion programmingQuestion = ProgrammingQuestionMapper.toEntity(programmingQuestionRequestDTO);
 
-        programmingQuestion.setQuestion(questionService.getQuestionEntityById(questionResponseDTO.getId()));
+        programmingQuestion.setQuestion(questionService.fetchQuestionById(questionResponseDTO.getId()));
 
         ProgrammingQuestion programmingQuestionEntity = programmingQuestionRepository.save(programmingQuestion);
 
@@ -52,7 +52,7 @@ public class ProgrammingQuestionService {
         List<ProgrammingQuestion> programmingQuestions = ProgrammingQuestionMapper.toEntity(programmingQuestionRequestDTOs);
 
         for (int i = 0; i < programmingQuestions.size(); i++) {
-            Question question = questionService.getQuestionEntityById(questionResponseDTOs.get(i).getId());
+            Question question = questionService.fetchQuestionById(questionResponseDTOs.get(i).getId());
             programmingQuestions.get(i).setQuestion(question);
         }
 

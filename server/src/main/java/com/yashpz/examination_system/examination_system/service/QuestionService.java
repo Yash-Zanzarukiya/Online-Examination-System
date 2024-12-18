@@ -71,10 +71,6 @@ public class QuestionService {
         return QuestionMapper.toResponseDTO(questionsEntities);
     }
 
-    public Question getQuestionEntityById(UUID questionId) {
-        return fetchQuestionById(questionId);
-    }
-
     public QuestionResponseDTO getQuestionById(UUID questionId) {
         Question question = fetchQuestionById(questionId);
         return QuestionMapper.toResponseDTO(question);
@@ -126,15 +122,15 @@ public class QuestionService {
 
     // <----------- Helpers ----------->
 
+    public Question fetchQuestionById(UUID questionId) {
+        return questionRepository.findById(questionId)
+                .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND,"Question not found"));
+    }
+
     private void updateCategory(Question question, UUID categoryId) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ApiError(HttpStatus.BAD_REQUEST,"Invalid category ID"));
         question.setCategory(category);
-    }
-
-    private Question fetchQuestionById(UUID questionId) {
-        return questionRepository.findById(questionId)
-                .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND,"Question not found"));
     }
 
     private void handleImageUpdate(Question question, MultipartFile imageFile) {

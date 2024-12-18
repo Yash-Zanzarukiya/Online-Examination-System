@@ -1,6 +1,5 @@
 package com.yashpz.examination_system.examination_system.model;
 
-import com.yashpz.examination_system.examination_system.constants.ExamAttemptStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,35 +20,35 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExamAttempt {
+public class ExamSession {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "scheduled_exam_id", referencedColumnName = "id", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "exam_attempt_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private ScheduleExam exam;
+    private ExamAttempt examAttempt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_id", referencedColumnName = "id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private User user;
+    @Lob
+    @Column(nullable = true)
+    private String sessionToken;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "varchar(255) default 'PENDING'")
-    private ExamAttemptStatus status;
+    @Column(nullable = false)
+    private String visitorId;
 
-    private LocalDateTime startTime;
+    @Column(nullable = false)
+    private LocalDateTime lastPing;
 
-    private LocalDateTime endTime;
+    @Column(nullable = true, columnDefinition = "bit default 0")
+    private Boolean isDisconnected;
 
-    @Column(nullable = false, columnDefinition = "int default 0")
-    private Integer score;
+    @Column(nullable = true, columnDefinition = "int default 0")
+    private Integer disconnectCount;
 
-    @Column(nullable = false, columnDefinition = "bit default 0")
-    private Boolean isPassed;
+    @Column(nullable = false)
+    private Long remainingTime;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
