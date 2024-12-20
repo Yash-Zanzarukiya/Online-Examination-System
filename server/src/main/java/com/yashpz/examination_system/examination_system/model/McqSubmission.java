@@ -36,9 +36,7 @@ public class McqSubmission {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private ExamAttempt examAttempt;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "selected_option_id", nullable = false)
-    private McqOption selectedOption;
+    private UUID selectedOptionId;
 
     @Column(nullable = false)
     private Integer timeSpent;

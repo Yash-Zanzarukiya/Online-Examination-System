@@ -1,8 +1,8 @@
 package com.yashpz.examination_system.examination_system.service;
 
 import com.yashpz.examination_system.examination_system.constants.QuestionType;
-import com.yashpz.examination_system.examination_system.dto.ExamResponse.McqSubmissionDTO;
-import com.yashpz.examination_system.examination_system.dto.ExamResponse.ProgrammingSubmissionDTO;
+import com.yashpz.examination_system.examination_system.dto.ExamResponse.McqSubmissionRequestDTO;
+import com.yashpz.examination_system.examination_system.dto.ExamResponse.ProgrammingSubmissionRequestDTO;
 import com.yashpz.examination_system.examination_system.exception.ApiError;
 import com.yashpz.examination_system.examination_system.mappers.McqSubmissionMapper;
 import com.yashpz.examination_system.examination_system.mappers.ProgrammingSubmissionMapper;
@@ -38,35 +38,35 @@ public class ExamResponseService {
     }
 
     @Transactional
-    public void saveMcqResponse(McqSubmissionDTO mcqSubmissionDTO) {
+    public void saveMcqResponse(McqSubmissionRequestDTO mcqSubmissionRequestDTO) {
         ExamAttempt examAttempt = examAttemptService.fetchCurrentExamAttempt();
 
-        UUID questionId = mcqSubmissionDTO.getQuestionId();
+        UUID questionId = mcqSubmissionRequestDTO.getQuestionId();
 
         validateQuestionBelongsToExam(questionId, examAttempt);
 
         McqSubmission mcqSubmission = mcqSubmissionRepository.findByExamAttemptIdAndQuestionId(examAttempt.getId(), questionId);
 
         if (mcqSubmission == null)
-            CreateMcqSubmission(mcqSubmissionDTO, examAttempt);
+            CreateMcqSubmission(mcqSubmissionRequestDTO, examAttempt);
         else
-            UpdateMcqSubmission(mcqSubmission, mcqSubmissionDTO);
+            UpdateMcqSubmission(mcqSubmission, mcqSubmissionRequestDTO);
     }
 
     @Transactional
-    public void saveProgrammingResponse(ProgrammingSubmissionDTO programmingSubmissionDTO) {
+    public void saveProgrammingResponse(ProgrammingSubmissionRequestDTO programmingSubmissionRequestDTO) {
         ExamAttempt examAttempt = examAttemptService.fetchCurrentExamAttempt();
 
-        UUID questionId = programmingSubmissionDTO.getQuestionId();
+        UUID questionId = programmingSubmissionRequestDTO.getQuestionId();
 
         validateQuestionBelongsToExam(questionId, examAttempt);
 
         ProgrammingSubmission programmingSubmission = programmingSubmissionRepository.findByExamAttemptIdAndQuestionId(examAttempt.getId(), questionId);
 
         if (programmingSubmission == null)
-            CreateProgrammingSubmission(programmingSubmissionDTO, examAttempt);
+            CreateProgrammingSubmission(programmingSubmissionRequestDTO, examAttempt);
         else
-            UpdateProgrammingSubmission(programmingSubmission, programmingSubmissionDTO);
+            UpdateProgrammingSubmission(programmingSubmission, programmingSubmissionRequestDTO);
     }
 
     @Transactional
@@ -75,6 +75,16 @@ public class ExamResponseService {
         Question question = questionService.fetchQuestionById(questionId);
 
         validateQuestionBelongsToExam(questionId, examAttempt);
+
+        Boolean exists = mcqSubmissionRepository.existsByExamAttemptIdAndQuestionId(examAttempt.getId(), questionId);
+        if (!exists){
+            McqSubmission mcqSubmission = new McqSubmission();
+            mcqSubmission.setQuestion(question);
+            mcqSubmission.setTimeSpent(timeSpent);
+            mcqSubmission.setExamAttempt(examAttempt);
+            mcqSubmissionRepository.save(mcqSubmission);
+            return;
+        }
 
         if (question.getType()== QuestionType.MCQ)
             mcqSubmissionRepository.updateTimeSpentOnQuestion(examAttempt.getId(), questionId, timeSpent);
@@ -90,47 +100,47 @@ public class ExamResponseService {
             throw new ApiError(HttpStatus.BAD_REQUEST, "Question does not belong to the exam");
     }
 
-    private void CreateMcqSubmission(McqSubmissionDTO mcqSubmissionDTO, ExamAttempt examAttempt) {
-        UUID questionId = mcqSubmissionDTO.getQuestionId();
+    private void CreateMcqSubmission(McqSubmissionRequestDTO mcqSubmissionRequestDTO, ExamAttempt examAttempt) {
+        UUID questionId = mcqSubmissionRequestDTO.getQuestionId();
         Question question = questionService.fetchQuestionById(questionId);
 
         if (question.getType() != QuestionType.MCQ)
             throw new ApiError(HttpStatus.BAD_REQUEST, "Question is not MCQ type");
 
-        UUID selectedOptionId = mcqSubmissionDTO.getSelectedOptionId();
+        UUID selectedOptionId = mcqSubmissionRequestDTO.getSelectedOptionId();
         McqOption mcqOption = mcqOptionService.fetchOptionById(selectedOptionId);
 
         if (mcqOption.getQuestion().getId() != questionId)
             throw new ApiError(HttpStatus.BAD_REQUEST, "Option is not valid for the question");
 
-        McqSubmission mcqSubmission = McqSubmissionMapper.toEntity(mcqSubmissionDTO, examAttempt, question, mcqOption);
+        McqSubmission mcqSubmission = McqSubmissionMapper.toEntity(mcqSubmissionRequestDTO, examAttempt, question);
         mcqSubmissionRepository.save(mcqSubmission);
     }
 
-    private void UpdateMcqSubmission(McqSubmission mcqSubmission, McqSubmissionDTO mcqSubmissionDTO) {
-        UUID selectedOptionId = mcqSubmissionDTO.getSelectedOptionId();
+    private void UpdateMcqSubmission(McqSubmission mcqSubmission, McqSubmissionRequestDTO mcqSubmissionRequestDTO) {
+        UUID selectedOptionId = mcqSubmissionRequestDTO.getSelectedOptionId();
         McqOption mcqOption = mcqOptionService.fetchOptionById(selectedOptionId);
 
         if (mcqOption.getQuestion().getId() != mcqSubmission.getQuestion().getId())
             throw new ApiError(HttpStatus.BAD_REQUEST, "Option is not valid for the question");
 
-        McqSubmissionMapper.updateEntity(mcqSubmission, mcqSubmissionDTO, mcqOption);
+        McqSubmissionMapper.updateEntity(mcqSubmission, mcqSubmissionRequestDTO);
         mcqSubmissionRepository.save(mcqSubmission);
     }
 
-    private void CreateProgrammingSubmission(ProgrammingSubmissionDTO programmingSubmissionDTO, ExamAttempt examAttempt) {
-        UUID questionId = programmingSubmissionDTO.getQuestionId();
+    private void CreateProgrammingSubmission(ProgrammingSubmissionRequestDTO programmingSubmissionRequestDTO, ExamAttempt examAttempt) {
+        UUID questionId = programmingSubmissionRequestDTO.getQuestionId();
         Question question = questionService.fetchQuestionById(questionId);
 
         if (question.getType() != QuestionType.PROGRAMMING)
             throw new ApiError(HttpStatus.BAD_REQUEST, "Question is not Programming type");
 
-        ProgrammingSubmission programmingSubmission = ProgrammingSubmissionMapper.toEntity(programmingSubmissionDTO, examAttempt, question);
+        ProgrammingSubmission programmingSubmission = ProgrammingSubmissionMapper.toEntity(programmingSubmissionRequestDTO, examAttempt, question);
         programmingSubmissionRepository.save(programmingSubmission);
     }
 
-    private void UpdateProgrammingSubmission(ProgrammingSubmission programmingSubmission, ProgrammingSubmissionDTO programmingSubmissionDTO) {
-        ProgrammingSubmissionMapper.updateEntity(programmingSubmission, programmingSubmissionDTO);
+    private void UpdateProgrammingSubmission(ProgrammingSubmission programmingSubmission, ProgrammingSubmissionRequestDTO programmingSubmissionRequestDTO) {
+        ProgrammingSubmissionMapper.updateEntity(programmingSubmission, programmingSubmissionRequestDTO);
         programmingSubmissionRepository.save(programmingSubmission);
     }
 }

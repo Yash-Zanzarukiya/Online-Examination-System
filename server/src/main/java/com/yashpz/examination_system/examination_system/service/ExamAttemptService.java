@@ -5,8 +5,10 @@ import com.yashpz.examination_system.examination_system.contexts.ExamSessionCont
 import com.yashpz.examination_system.examination_system.dto.ActiveExam.ExamAttemptRequestDTO;
 import com.yashpz.examination_system.examination_system.exception.ApiError;
 import com.yashpz.examination_system.examination_system.mappers.ExamAttemptMapper;
+import com.yashpz.examination_system.examination_system.messaging.producer.MarksCalculationProducer;
 import com.yashpz.examination_system.examination_system.model.*;
 import com.yashpz.examination_system.examination_system.repository.ExamAttemptRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,19 +17,15 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class ExamAttemptService {
 
     private final ExamAttemptRepository examAttemptRepository;
     private final ScheduleExamService examScheduleService;
+    private final ExamEvolutionService examEvolutionService;
     private final ExamSessionService examSessionService;
     private final AuthService authService;
-
-    public ExamAttemptService(ExamAttemptRepository examAttemptRepository, ScheduleExamService examScheduleService, ExamSessionService examSessionService, AuthService authService) {
-        this.examSessionService = examSessionService;
-        this.examAttemptRepository = examAttemptRepository;
-        this.examScheduleService = examScheduleService;
-        this.authService = authService;
-    }
+    private final MarksCalculationProducer marksCalculationProducer;
 
     @Transactional
     public String createExamAttempt(ExamAttemptRequestDTO examAttemptRequestDTO) {
@@ -60,11 +58,19 @@ public class ExamAttemptService {
         examAttemptRepository.save(examAttempt);
     }
 
+    public void updateExamAttemptStatus(UUID examAttemptId, ExamAttemptStatus status) {
+        ExamAttempt examAttempt = examAttemptRepository.findById(examAttemptId)
+                .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "Exam Attempt not found"));
+        examAttempt.setStatus(status);
+        examAttemptRepository.save(examAttempt);
+    }
+
     @Transactional
     public void submitExam(ExamAttemptRequestDTO examAttemptRequestDTO) {
         ExamAttempt examAttempt = fetchCurrentExamAttempt();
         ExamAttemptMapper.updateEntity(examAttempt, examAttemptRequestDTO);
         examAttemptRepository.save(examAttempt);
+        marksCalculationProducer.publishMarksCalculationRequest(examAttempt.getId());
     }
 
     // <--------------- Helpers --------------->
@@ -73,5 +79,9 @@ public class ExamAttemptService {
         UUID examAttemptId = Objects.requireNonNull(ExamSessionContext.getExamSession()).getExamAttempt().getId();
         return examAttemptRepository.findById(examAttemptId)
                 .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "Exam Attempt not found"));
+    }
+
+    public void updateProgrammingMarks(UUID programmingSubmissionId, int marks) {
+        examEvolutionService.updateProgrammingMarks(programmingSubmissionId, marks);
     }
 }
