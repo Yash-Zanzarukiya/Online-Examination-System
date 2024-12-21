@@ -81,6 +81,20 @@ public class ExamAttemptService {
                 .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "Exam Attempt not found"));
     }
 
+    public UUID getExamIdFromExamAttemptId(UUID examAttemptId) {
+        UUID id = examAttemptRepository.getExamIdFromExamAttemptId(examAttemptId);
+        if (id == null)
+            throw new ApiError(HttpStatus.NOT_FOUND, "Invalid Exam Attempt Id");
+        return id;
+    }
+
+    public UUID getScheduledExamIdFromExamAttemptId(UUID examAttemptId) {
+        UUID id = examAttemptRepository.getScheduledExamIdFromExamAttemptId(examAttemptId);
+        if (id == null)
+            throw new ApiError(HttpStatus.NOT_FOUND, "Invalid Exam Attempt Id");
+        return id;
+    }
+
     public void updateProgrammingMarks(UUID programmingSubmissionId, int marks) {
         examEvolutionService.updateProgrammingMarks(programmingSubmissionId, marks);
     }

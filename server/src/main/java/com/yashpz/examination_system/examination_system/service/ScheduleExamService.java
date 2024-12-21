@@ -82,4 +82,8 @@ public class ScheduleExamService {
         return scheduleExamRepository.findById(id)
                 .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "Schedule exam not found"));
     }
+
+    public UUID getExamIdByScheduledExamId(UUID scheduledExamId) {
+        return scheduleExamRepository.getExamIdByScheduledExamId(scheduledExamId);
+    }
 }

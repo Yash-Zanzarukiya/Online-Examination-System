@@ -16,4 +16,7 @@ public interface ScheduleExamRepository extends JpaRepository<ScheduleExam, UUID
             "AND (:collegeId IS NULL OR se.college.id = :collegeId) " +
             "AND (:upcoming = FALSE OR se.startingAt > CURRENT_TIMESTAMP)")
     List<ScheduleExam> findSchedulesByFilters(@Param("examId") UUID examId, @Param("collegeId") UUID collegeId, @Param("upcoming") boolean upcoming);
+
+    @Query("SELECT se.exam.id FROM ScheduleExam se WHERE se.id = :scheduledExamId")
+    UUID getExamIdByScheduledExamId(UUID scheduledExamId);
 }

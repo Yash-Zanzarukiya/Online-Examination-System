@@ -18,4 +18,10 @@ public interface ExamAttemptRepository extends JpaRepository<ExamAttempt, UUID> 
 
    @Query("SELECT new com.yashpz.examination_system.examination_system.dto.CandidateEvaluation.CandidateStateDTO(ea.id, ea.user.id, ea.user.auth.email, ea.user.fullName, ea.status, ea.score, :totalExamMarks, ea.startTime, ea.endTime) FROM ExamAttempt ea WHERE ea.id = :examAttemptId")
    CandidateStateDTO getCandidateState(UUID examAttemptId, int totalExamMarks);
+
+   @Query("SELECT ea.exam.exam.id FROM ExamAttempt ea WHERE ea.id = :examAttemptId")
+   UUID getExamIdFromExamAttemptId(UUID examAttemptId);
+
+    @Query("SELECT ea.exam.id FROM ExamAttempt ea WHERE ea.id = :examAttemptId")
+    UUID getScheduledExamIdFromExamAttemptId(UUID examAttemptId);
 }

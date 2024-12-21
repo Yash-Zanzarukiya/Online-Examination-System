@@ -1,25 +1,56 @@
 package com.yashpz.examination_system.examination_system.service;
 
 import com.yashpz.examination_system.examination_system.constants.Difficulty;
+import com.yashpz.examination_system.examination_system.constants.QuestionAttemptStatus;
 import com.yashpz.examination_system.examination_system.constants.QuestionType;
-import com.yashpz.examination_system.examination_system.dto.ActiveExam.ActiveExamMcqOption;
-import com.yashpz.examination_system.examination_system.dto.ActiveExam.ActiveExamQuestion;
-import com.yashpz.examination_system.examination_system.dto.ActiveExam.ActiveExamQuestionsDTO;
+import com.yashpz.examination_system.examination_system.dto.ActiveExam.ActiveExamQuestions.ActiveExamMcqOption;
+import com.yashpz.examination_system.examination_system.dto.ActiveExam.ActiveExamQuestions.ActiveExamQuestion;
+import com.yashpz.examination_system.examination_system.dto.ActiveExam.ActiveExamQuestions.ActiveExamQuestionsDTO;
+import com.yashpz.examination_system.examination_system.dto.ActiveExam.ActiveExamState.ActiveExamQuestionsState;
+import com.yashpz.examination_system.examination_system.dto.ActiveExam.ActiveExamState.ActiveExamStateDTO;
 import com.yashpz.examination_system.examination_system.repository.ExamQuestionsRepository;
+import com.yashpz.examination_system.examination_system.repository.McqSubmissionRepository;
+import com.yashpz.examination_system.examination_system.repository.ProgrammingSubmissionRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class ActiveExamService {
 
     private final ExamQuestionsRepository examQuestionsRepository;
+    private final McqSubmissionRepository mcqSubmissionRepository;
+    private final ProgrammingSubmissionRepository programmingSubmissionRepository;
+    private final ExamAttemptService examAttemptService;
+    private final ScheduleExamService scheduleExamService;
 
-    public ActiveExamService(ExamQuestionsRepository examQuestionsRepository) {
-        this.examQuestionsRepository = examQuestionsRepository;
+    public ActiveExamStateDTO getActiveExamState(UUID examAttemptId) {
+        List<ActiveExamQuestionsState> mcqQuestionState = mcqSubmissionRepository.getMcqSubmissionStateByExamAttemptId(examAttemptId);
+        List<ActiveExamQuestionsState> programmingQuestionState = programmingSubmissionRepository.getProgrammingSubmissionStateByExamAttemptId(examAttemptId);
+
+        Map<UUID, ActiveExamQuestionsState> questionsState = new LinkedHashMap<>();
+        for (ActiveExamQuestionsState state : mcqQuestionState) {
+            QuestionAttemptStatus attemptStatus = state.getSelectedOptionId() == null ? QuestionAttemptStatus.VISITED : QuestionAttemptStatus.ANSWERED;
+            state.setStatus(attemptStatus);
+            questionsState.put(state.getQuestionId(), state);
+        }
+
+        for (ActiveExamQuestionsState state : programmingQuestionState) {
+            QuestionAttemptStatus attemptStatus = state.getSubmittedCode() == null ? QuestionAttemptStatus.VISITED : QuestionAttemptStatus.ANSWERED;
+            state.setStatus(attemptStatus);
+            questionsState.put(state.getQuestionId(), state);
+        }
+
+        UUID scheduledExamId = examAttemptService.getScheduledExamIdFromExamAttemptId(examAttemptId);
+        List<ActiveExamQuestionsDTO> questions = getActiveExamQuestions(scheduledExamId);
+
+        return new ActiveExamStateDTO(questions, questionsState);
     }
 
-    public List<ActiveExamQuestionsDTO> getQuestionsForExam(UUID examId) {
+    public List<ActiveExamQuestionsDTO> getActiveExamQuestions(UUID scheduledExamId) {
+        UUID examId = scheduleExamService.getExamIdByScheduledExamId(scheduledExamId);
         List<Map<String, Object>> results = examQuestionsRepository.findActiveExamQuestionsByExamId(examId);
 
         Map<UUID, ActiveExamQuestionsDTO> questionsMap = new LinkedHashMap<>();

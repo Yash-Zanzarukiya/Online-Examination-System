@@ -1,5 +1,6 @@
 package com.yashpz.examination_system.examination_system.repository;
 
+import com.yashpz.examination_system.examination_system.dto.ActiveExam.ActiveExamState.ActiveExamQuestionsState;
 import com.yashpz.examination_system.examination_system.model.McqSubmission;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -16,6 +17,11 @@ public interface McqSubmissionRepository extends JpaRepository<McqSubmission, UU
     void updateTimeSpentOnQuestion(UUID examAttemptId, UUID questionId, int timeSpent);
 
     List<McqSubmission> findAllByExamAttemptId(UUID examAttemptId);
+
+    @Query("select new com.yashpz.examination_system.examination_system.dto.ActiveExam.ActiveExamState.ActiveExamQuestionsState(" +
+            "ms.question.id, 'VISITED', ms.selectedOptionId) " +
+            "from McqSubmission ms where ms.examAttempt.id = ?1")
+    List<ActiveExamQuestionsState> getMcqSubmissionStateByExamAttemptId(UUID examAttemptId);
 
     @Query("select sum(ms.marks) from McqSubmission ms where ms.examAttempt.id = ?1")
     int getMcqSubmissionScoreByExamAttemptId(UUID examAttemptId);
