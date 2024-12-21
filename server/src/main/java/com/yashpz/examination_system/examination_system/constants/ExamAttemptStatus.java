@@ -4,5 +4,9 @@ public enum ExamAttemptStatus {
     PENDING,
     IN_PROGRESS,
     SUBMITTED,
-    INTERRUPTED
+    INTERRUPTED,
+    TO_EVALUATE,
+    PASSED,
+    FAILED,
+    QUALIFIED,
 }

@@ -94,6 +94,16 @@
 			<version>12.2.0.jre8</version>
 		</dependency>
 
+		<!-- RabbitMQ -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+
 		<!-- For Excel File Processing -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>

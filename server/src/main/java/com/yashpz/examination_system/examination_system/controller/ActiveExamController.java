@@ -1,6 +1,7 @@
 package com.yashpz.examination_system.examination_system.controller;
 
-import com.yashpz.examination_system.examination_system.dto.ActiveExam.ActiveExamQuestionsDTO;
+import com.yashpz.examination_system.examination_system.dto.ActiveExam.ActiveExamQuestions.ActiveExamQuestionsDTO;
+import com.yashpz.examination_system.examination_system.dto.ActiveExam.ActiveExamState.ActiveExamStateDTO;
 import com.yashpz.examination_system.examination_system.service.ActiveExamService;
 import com.yashpz.examination_system.examination_system.utils.ApiResponse;
 import com.yashpz.examination_system.examination_system.utils.ApiResponseUtil;
@@ -23,9 +24,15 @@ public class ActiveExamController {
         this.activeExamService = activeExamService;
     }
 
-    @GetMapping("/{examId}/questions")
-    public ResponseEntity<ApiResponse<List<ActiveExamQuestionsDTO>>> getQuestionsForExam(@PathVariable UUID examId) {
-        List<ActiveExamQuestionsDTO> questionsForExam = activeExamService.getQuestionsForExam(examId);
+    @GetMapping("/questions/{scheduledExamId}")
+    public ResponseEntity<ApiResponse<List<ActiveExamQuestionsDTO>>> getQuestionsForExam(@PathVariable UUID scheduledExamId) {
+        List<ActiveExamQuestionsDTO> questionsForExam = activeExamService.getActiveExamQuestions(scheduledExamId);
        return ApiResponseUtil.handleResponse(HttpStatus.OK,questionsForExam, "Questions for exam fetched successfully");
+    }
+
+    @GetMapping("/state/{examAttemptId}")
+    public ResponseEntity<ApiResponse<ActiveExamStateDTO>> getActiveExamState(@PathVariable UUID examAttemptId) {
+        ActiveExamStateDTO activeExamState = activeExamService.getActiveExamState(examAttemptId);
+        return ApiResponseUtil.handleResponse(HttpStatus.OK, activeExamState, "Questions for exam fetched successfully");
     }
 }

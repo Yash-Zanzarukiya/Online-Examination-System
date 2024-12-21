@@ -1,4 +1,4 @@
-package com.yashpz.examination_system.examination_system.dto.ActiveExam;
+package com.yashpz.examination_system.examination_system.dto.ActiveExam.ActiveExamQuestions;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

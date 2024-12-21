@@ -8,17 +8,15 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class ProgrammingSubmissionDTO {
+@AllArgsConstructor
+public class McqSubmissionRequestDTO {
     @NotNull
     private UUID questionId;
 
     @NotNull
-    private String submittedCode;
+    private UUID selectedOptionId;
 
     @NotNull
-    private String programmingLanguage;
-
     private int timeSpent;
 }

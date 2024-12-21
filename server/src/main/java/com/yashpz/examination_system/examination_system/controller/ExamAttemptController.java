@@ -1,5 +1,6 @@
 package com.yashpz.examination_system.examination_system.controller;
 
+import com.yashpz.examination_system.examination_system.constants.ExamAttemptStatus;
 import com.yashpz.examination_system.examination_system.constants.ValidationGroups;
 import com.yashpz.examination_system.examination_system.dto.ActiveExam.ExamAttemptRequestDTO;
 import com.yashpz.examination_system.examination_system.service.ExamAttemptService;
@@ -11,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/exam-attempt")
@@ -48,5 +51,17 @@ public class ExamAttemptController {
         examAttemptService.submitExam(examAttemptRequestDTO);
         ApiResponseUtil.deleteCookie(response, "session_token");
         return ApiResponseUtil.handleResponse(HttpStatus.OK, "Exam attempt submitted successfully");
+    }
+
+    @PatchMapping("/status")
+    public ResponseEntity<ApiResponse<String>> updateExamAttemptStatus(@RequestParam("examAttemptId") UUID examAttemptId, @RequestParam("status") ExamAttemptStatus status) {
+        examAttemptService.updateExamAttemptStatus(examAttemptId, status);
+        return ApiResponseUtil.handleResponse(HttpStatus.OK, "Exam attempt status updated successfully");
+    }
+
+    @PatchMapping("/programming-marks")
+    public ResponseEntity<ApiResponse<String>> updateProgrammingMarks(@RequestParam("programmingSubmissionId") UUID programmingSubmissionId, @RequestParam("marks") int marks) {
+        examAttemptService.updateProgrammingMarks(programmingSubmissionId, marks);
+        return ApiResponseUtil.handleResponse(HttpStatus.OK, "Programming marks updated successfully");
     }
 }

@@ -22,10 +22,8 @@ public interface ExamQuestionsRepository extends JpaRepository<ExamQuestions, UU
 
     Boolean existsByExamIdAndQuestionId(UUID examId, UUID questionId);
 
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM ExamQuestions eq WHERE eq.id IN :examQuestionIds")
-    int deleteByExamQuestionIds(@Param("examQuestionIds") List<UUID> examQuestionIds);
+    @Query("SELECT SUM(q.marks) FROM ExamQuestions eq JOIN eq.question q WHERE eq.exam.id = :examId")
+    int getTotalExamMarks(UUID examId);
 
     @Query(value = """
         SELECT
@@ -43,5 +41,10 @@ public interface ExamQuestionsRepository extends JpaRepository<ExamQuestions, UU
         WHERE eq.exam_id = :examId
     """, nativeQuery = true)
     List<Map<String, Object>> findActiveExamQuestionsByExamId(@Param("examId") UUID examId);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM ExamQuestions eq WHERE eq.id IN :examQuestionIds")
+    int deleteByExamQuestionIds(@Param("examQuestionIds") List<UUID> examQuestionIds);
 
 }

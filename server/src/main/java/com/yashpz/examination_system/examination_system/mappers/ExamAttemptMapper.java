@@ -13,7 +13,6 @@ public class ExamAttemptMapper {
         examAttempt.setUser(user);
         examAttempt.setStatus(examAttemptRequestDTO.getStatus());
         examAttempt.setScore(0);
-        examAttempt.setIsPassed(false);
         if (examAttemptRequestDTO.getStartTime() != null)
             examAttempt.setStartTime(examAttemptRequestDTO.getStartTime());
         return examAttempt;

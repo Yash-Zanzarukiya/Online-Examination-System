@@ -1,4 +1,4 @@
-package com.yashpz.examination_system.examination_system.dto.ActiveExam;
+package com.yashpz.examination_system.examination_system.dto.ActiveExam.ActiveExamQuestions;
 
 import com.yashpz.examination_system.examination_system.constants.Difficulty;
 import com.yashpz.examination_system.examination_system.constants.QuestionType;

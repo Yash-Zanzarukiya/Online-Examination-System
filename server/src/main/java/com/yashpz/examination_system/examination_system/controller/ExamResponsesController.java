@@ -1,7 +1,7 @@
 package com.yashpz.examination_system.examination_system.controller;
 
-import com.yashpz.examination_system.examination_system.dto.ExamResponse.McqSubmissionDTO;
-import com.yashpz.examination_system.examination_system.dto.ExamResponse.ProgrammingSubmissionDTO;
+import com.yashpz.examination_system.examination_system.dto.ExamResponse.McqSubmissionRequestDTO;
+import com.yashpz.examination_system.examination_system.dto.ExamResponse.ProgrammingSubmissionRequestDTO;
 import com.yashpz.examination_system.examination_system.service.ExamResponseService;
 import com.yashpz.examination_system.examination_system.utils.ApiResponse;
 import com.yashpz.examination_system.examination_system.utils.ApiResponseUtil;
@@ -23,14 +23,14 @@ public class ExamResponsesController {
     }
 
     @PostMapping("/mcq")
-    public ResponseEntity<ApiResponse<Object>> saveMcqResponse(@RequestBody @Valid McqSubmissionDTO mcqSubmissionDTO) {
-         examResponseService.saveMcqResponse(mcqSubmissionDTO);
+    public ResponseEntity<ApiResponse<Object>> saveMcqResponse(@RequestBody @Valid McqSubmissionRequestDTO mcqSubmissionRequestDTO) {
+         examResponseService.saveMcqResponse(mcqSubmissionRequestDTO);
          return ApiResponseUtil.handleResponse(HttpStatus.OK,"Response saved successfully");
     }
 
     @PostMapping("/programming")
-    public ResponseEntity<ApiResponse<Object>>  saveProgrammingResponse(@RequestBody @Valid ProgrammingSubmissionDTO programmingSubmissionDTO) {
-         examResponseService.saveProgrammingResponse(programmingSubmissionDTO);
+    public ResponseEntity<ApiResponse<Object>>  saveProgrammingResponse(@RequestBody @Valid ProgrammingSubmissionRequestDTO programmingSubmissionRequestDTO) {
+         examResponseService.saveProgrammingResponse(programmingSubmissionRequestDTO);
             return ApiResponseUtil.handleResponse(HttpStatus.OK,"Response saved successfully");
     }
 

@@ -48,9 +48,6 @@ public class ExamAttempt {
     @Column(nullable = false, columnDefinition = "int default 0")
     private Integer score;
 
-    @Column(nullable = false, columnDefinition = "bit default 0")
-    private Boolean isPassed;
-
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
