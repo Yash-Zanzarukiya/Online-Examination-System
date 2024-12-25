@@ -1,5 +1,6 @@
 package com.yashpz.examination_system.examination_system.service;
 
+import com.yashpz.examination_system.examination_system.constants.ScheduledExamStatus;
 import com.yashpz.examination_system.examination_system.dto.ScheduleExam.ScheduleExamRequestDTO;
 import com.yashpz.examination_system.examination_system.dto.ScheduleExam.ScheduleExamResponseDTO;
 import com.yashpz.examination_system.examination_system.exception.ApiError;
@@ -65,6 +66,12 @@ public class ScheduleExamService {
         scheduleExam.setStartingAt(dto.getStartingAt());
         scheduleExamRepository.save(scheduleExam);
 
+        return ScheduleExamMapper.toResponseDTO(scheduleExam);
+    }
+
+    @Transactional
+    public ScheduleExamResponseDTO updateScheduleExamStatus(UUID scheduledExamId, ScheduledExamStatus status){
+        ScheduleExam scheduleExam = scheduleExamRepository.updateScheduleExamStatus(scheduledExamId, status);
         return ScheduleExamMapper.toResponseDTO(scheduleExam);
     }
 

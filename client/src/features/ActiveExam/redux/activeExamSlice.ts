@@ -1,15 +1,21 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ActiveExamState } from "../types";
-import { getQuestionsForExam } from "./activeExamThunks";
+import {
+  ActiveExamQuestionsResponse,
+  ActiveExamState,
+  ConnectionResponse,
+  QuestionAttemptStatus,
+} from "../types";
+import { UUID } from "crypto";
 
 const initialState: ActiveExamState = {
+  sessionType: null,
+  activeExamData: null,
   examQuestions: [],
+  examQuestionsState: {},
+  questionStartTimes: {},
   isFetchingQuestions: false,
   currentQuestionIndex: 0,
-  answers: {},
-  questionStates: {},
   timeRemaining: 60 * 60,
-  isInstructionsAgreed: false,
   isExamStarted: false,
   isExamSubmitted: false,
 };
@@ -20,38 +26,88 @@ const activeExamSlice = createSlice({
   reducers: {
     startExam: (state) => {
       state.isExamStarted = true;
-      state.questionStates = {};
-    },
-    setAnswer: (state, action: PayloadAction<{ questionId: string; answerId: string }>) => {
-      const { questionId, answerId } = action.payload;
-      state.answers[questionId] = answerId;
-      state.questionStates[questionId] = "answered";
-    },
-    navigateQuestion: (state, action: PayloadAction<number>) => {
-      state.currentQuestionIndex = action.payload;
-    },
-    decrementTime: (state) => {
-      state.timeRemaining -= 1;
+      const currentQuestionId = state.examQuestions[0]?.question.id;
+      if (!state.examQuestionsState[currentQuestionId]) {
+        state.examQuestionsState[currentQuestionId] = {
+          questionId: currentQuestionId,
+          status: QuestionAttemptStatus.VISITED,
+          selectedOptionId: null,
+          submittedCode: null,
+        };
+        state.questionStartTimes[currentQuestionId] = Date.now();
+      }
     },
     submitExam: (state) => {
       state.isExamSubmitted = true;
     },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(getQuestionsForExam.pending, (state, _) => {
-      state.isFetchingQuestions = true;
-    });
-    builder.addCase(getQuestionsForExam.fulfilled, (state, action) => {
+    setAnswer: (state, action: PayloadAction<{ questionId: UUID; selectedOptionId: UUID }>) => {
+      const { questionId, selectedOptionId } = action.payload;
+      state.examQuestionsState[questionId] = {
+        ...state.examQuestionsState[questionId],
+        questionId,
+        selectedOptionId,
+        status: QuestionAttemptStatus.ANSWERED,
+      };
+    },
+    setCode: (state, action: PayloadAction<{ questionId: UUID; code: string }>) => {
+      const { questionId, code } = action.payload;
+      state.examQuestionsState[questionId] = {
+        ...state.examQuestionsState[questionId],
+        questionId,
+        submittedCode: code,
+        status: QuestionAttemptStatus.ANSWERED,
+      };
+    },
+    navigateQuestion: (state, action: PayloadAction<number>) => {
+      const newIndex = action.payload;
+      const newQuestionId = state.examQuestions[newIndex].question.id;
+
+      state.currentQuestionIndex = action.payload;
+      const currentQuestionId = state.examQuestions[action.payload].question.id;
+
+      if (!state.examQuestionsState[currentQuestionId]) {
+        state.examQuestionsState[currentQuestionId] = {
+          questionId: currentQuestionId,
+          status: QuestionAttemptStatus.VISITED,
+          selectedOptionId: null,
+          submittedCode: null,
+        };
+      } else if (
+        state.examQuestionsState[currentQuestionId].status === QuestionAttemptStatus.NOT_VISITED
+      ) {
+        state.examQuestionsState[currentQuestionId].status = QuestionAttemptStatus.VISITED;
+      }
+
+      state.questionStartTimes[newQuestionId] = Date.now();
+    },
+    decrementTime: (state) => {
+      state.timeRemaining -= 1;
+    },
+    saveConnectionResponse: (state, action: PayloadAction<ConnectionResponse>) => {
+      state.sessionType = action.payload.sessionType;
+      state.activeExamData = action.payload.activeExamData;
+    },
+    setExamQuestions: (state, action: PayloadAction<ActiveExamQuestionsResponse>) => {
+      state.examQuestions = action.payload.questions;
+      state.examQuestionsState = action.payload.questionsState;
       state.isFetchingQuestions = false;
-      if (action.payload) state.examQuestions = action.payload;
-    });
-    builder.addCase(getQuestionsForExam.rejected, (state, _) => {
-      state.isFetchingQuestions = false;
-    });
+    },
+    setFetchingQuestions: (state, action: PayloadAction<boolean>) => {
+      state.isFetchingQuestions = action.payload;
+    },
   },
 });
 
-export const { startExam, setAnswer, navigateQuestion, decrementTime, submitExam } =
-  activeExamSlice.actions;
+export const {
+  startExam,
+  setAnswer,
+  setCode,
+  navigateQuestion,
+  decrementTime,
+  submitExam,
+  saveConnectionResponse,
+  setExamQuestions,
+  setFetchingQuestions,
+} = activeExamSlice.actions;
 
 export default activeExamSlice.reducer;

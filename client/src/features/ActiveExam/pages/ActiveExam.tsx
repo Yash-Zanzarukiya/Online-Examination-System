@@ -1,11 +1,11 @@
 import React from "react";
 import { ExamInstructions, ExamInterface } from "../components";
 import { useAppSelector } from "@/app/hooks";
-import { useActiveExamQuestions } from "../hooks";
 
 const ActiveExam: React.FC = () => {
-  const { isExamStarted, isExamSubmitted } = useAppSelector(({ activeExam }) => activeExam);
-  const { isFetchingQuestions } = useActiveExamQuestions();
+  const { isExamStarted, isExamSubmitted, isFetchingQuestions } = useAppSelector(
+    ({ activeExam }) => activeExam
+  );
 
   if (!isExamStarted) return <ExamInstructions />;
 

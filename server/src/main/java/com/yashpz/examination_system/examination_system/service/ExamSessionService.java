@@ -1,137 +1,178 @@
 package com.yashpz.examination_system.examination_system.service;
 
-import com.yashpz.examination_system.examination_system.contexts.ExamSessionContext;
 import com.yashpz.examination_system.examination_system.constants.ExamAttemptStatus;
+import com.yashpz.examination_system.examination_system.constants.ExamSessionStatus;
+import com.yashpz.examination_system.examination_system.constants.ExamSessionType;
 import com.yashpz.examination_system.examination_system.exception.ApiError;
 import com.yashpz.examination_system.examination_system.model.ExamAttempt;
 import com.yashpz.examination_system.examination_system.model.ExamSession;
+import com.yashpz.examination_system.examination_system.repository.ExamAttemptRepository;
 import com.yashpz.examination_system.examination_system.repository.ExamSessionRepository;
+import com.yashpz.examination_system.examination_system.socket.handlers.WebSocketMessageSender;
+import com.yashpz.examination_system.examination_system.socket.utils.WebSocketSessionUtil;
 import com.yashpz.examination_system.examination_system.utils.JwtUtil;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class ExamSessionService {
+
+    @Value("${EXAM_SESSION_TIMEOUT}")
+    private Integer EXAM_SESSION_TIMEOUT_MINS;
+
+    @Value("${EXAM_SESSION_MAX_DISCONNECTION}")
+    private Integer EXAM_SESSION_MAX_DISCONNECTION;
+
     private final ExamSessionRepository examSessionRepository;
+    private final ExamAttemptRepository examAttemptRepository;
     private final JwtUtil jwtUtil;
 
-    @Value("${EXAM_SESSION.PING_THRESHOLD_MINUTES}")
-    private int pingThresholdMinutes;
-
-    public ExamSessionService(ExamSessionRepository examSessionRepository, JwtUtil jwtUtil) {
-        this.examSessionRepository = examSessionRepository;
-        this.jwtUtil = jwtUtil;
-    }
-
-    @Transactional
-    public ExamSession createSession(ExamAttempt examAttempt, String visitorId) {
-        ExamSession session = new ExamSession();
-        session.setExamAttempt(examAttempt);
-        session.setVisitorId(visitorId);
-        session.setDisconnectCount(0);
-        session.setIsDisconnected(false);
-        session.setLastPing(LocalDateTime.now());
-
-        long remainingTime = examAttempt.getExam().getExam().getTimeLimit() * 60;
-        session.setRemainingTime(remainingTime);
-
-        examSessionRepository.save(session);
-
-        Map<String, Object> payloadData = Map.of(
-                "sessionId", session.getId().toString(),
-                "visitorId", visitorId,
-                "examAttemptId", examAttempt.getId().toString()
-        );
-        String token = jwtUtil.generateToken("session", payloadData);
-        session.setSessionToken(token);
-
-        return examSessionRepository.save(session);
-    }
-
-    @Transactional
-    public void handleSessionPing(Long remainingTime) {
-        ExamSession session = getCurrentExamSession();
-        session.setLastPing(LocalDateTime.now());
-        session.setRemainingTime(remainingTime);
-        examSessionRepository.save(session);
-    }
-
-    // TODO : Fetch and Return Saved Exam State
-    @Transactional
-    public void handleResumingSession() {
-        ExamSession session = fetchExamSessionById(getCurrentExamSession().getId());
-
-        if (session.getRemainingTime() <= 0 )
-            throw new ApiError(HttpStatus.BAD_REQUEST, "Session Expired");
-
-        if (session.getExamAttempt().getStatus() == ExamAttemptStatus.SUBMITTED)
-            throw new ApiError(HttpStatus.BAD_REQUEST, "Exam Attempt already completed");
-
-        if (!session.getIsDisconnected() && session.getLastPing().isAfter(LocalDateTime.now().minusMinutes(pingThresholdMinutes)))
-            throw new ApiError(HttpStatus.BAD_REQUEST, "Session is already active");
-
-        session.setLastPing(LocalDateTime.now());
-        session.setIsDisconnected(false);
-        session.getExamAttempt().setStatus(ExamAttemptStatus.IN_PROGRESS);
-        examSessionRepository.save(session);
-    }
-
-    @Transactional
-    public void detectDisconnections() {
-        LocalDateTime threshold = LocalDateTime.now().minusMinutes(pingThresholdMinutes);
-        System.out.println("Threshold : " + threshold);
-
-        List<ExamSession> disconnectedSessions = examSessionRepository.findByLastPingBeforeAndExamAttemptStatus(threshold, ExamAttemptStatus.IN_PROGRESS);
-
-        for (ExamSession session : disconnectedSessions) {
-            session.setIsDisconnected(true);
-            session.setDisconnectCount(session.getDisconnectCount() + 1);
-            session.getExamAttempt().setStatus(ExamAttemptStatus.INTERRUPTED);
-        }
-
-        examSessionRepository.saveAll(disconnectedSessions);
-        System.out.println("Disconnected Sessions : " + disconnectedSessions.size());
-    }
-
-    public ExamSession validateSessionToken(String sessionToken, String visitorId) {
-        Boolean isValid = jwtUtil.validateToken(sessionToken);
-        if (!isValid)
+    public ExamSession validateSessionToken(String sessionToken) {
+        Boolean isValidToken = jwtUtil.validateToken(sessionToken);
+        if (!isValidToken)
             throw new ApiError(HttpStatus.UNAUTHORIZED, "Invalid Session Token or Expired");
 
         Map<String, Object> payloadData = jwtUtil.getPayloadData(sessionToken);
         UUID sessionId = UUID.fromString((String) payloadData.get("sessionId"));
 
+        return fetchExamSessionById(sessionId);
+    }
+
+    @Transactional
+    public ExamSession createSession(UUID examAttemptId, UUID userId, UUID scheduledExamId, Integer examTime) {
+        boolean isExists = examSessionRepository.existsByUserIdAndScheduledExamId(userId, scheduledExamId);
+        if (isExists)
+            throw new ApiError(HttpStatus.BAD_REQUEST, "Session already present...");
+
+        ExamSession session = new ExamSession();
+        session.setUserId(userId);
+        session.setScheduledExamId(scheduledExamId);
+        session.setExamAttemptId(examAttemptId);
+        session.setStatus(ExamSessionStatus.NOT_STARTED);
+        session.setRemainingTime(examTime);
+        session.setDisconnectCount(0);
+        examSessionRepository.save(session);
+
+        Map<String, Object> payloadData = Map.of(
+                "sessionId", session.getId().toString(),
+                "examAttemptId", examAttemptId.toString(),
+                "userId", userId.toString(),
+                "scheduledExamId", scheduledExamId.toString(),
+                "createdAt", LocalDateTime.now().toString());
+
+        String token = jwtUtil.generateToken("session", payloadData);
+
+        session.setSessionToken(token);
+
+        return examSessionRepository.save(session);
+    }
+
+    public void handleSessionConnection(){
+        // implement if socket handler afterConnectionEstablished method business logic can be simplified
+    }
+
+    @Transactional
+    public void handleSessionStart(UUID sessionId) {
         ExamSession session = fetchExamSessionById(sessionId);
+        session.setStatus(ExamSessionStatus.CONNECTED);
+        examSessionRepository.save(session);
+    }
 
-        if (!session.getSessionToken().equals(sessionToken)) {
-            throw new ApiError(HttpStatus.UNAUTHORIZED, "Session Token Mismatch Detected");
+    @Transactional
+    public synchronized boolean handleResumingSession(UUID sessionId) {
+        ExamSession session = fetchExamSessionById(sessionId);
+        UUID examAttemptId = session.getExamAttemptId();
+        ExamAttemptStatus examAttemptStatus = examAttemptRepository.getStatusById(examAttemptId);
+
+        if (session.getStatus() == ExamSessionStatus.COMPLETED || session.getStatus() == ExamSessionStatus.TERMINATED) {
+            return false;
+        }
+        else if (session.getStatus() == ExamSessionStatus.DISCONNECTED && examAttemptStatus != ExamAttemptStatus.NOT_STARTED) {
+            Boolean isTimeOut = LocalDateTime.now().minusMinutes(EXAM_SESSION_TIMEOUT_MINS)
+                    .isAfter(session.getLastDisconnect());
+            Boolean isMaxDisconnect = session.getDisconnectCount() >= EXAM_SESSION_MAX_DISCONNECTION;
+
+            if (isMaxDisconnect || isTimeOut) {
+                session.setStatus(ExamSessionStatus.TERMINATED);
+                examAttemptRepository.updateStatus(examAttemptId, ExamAttemptStatus.TERMINATED);
+                examSessionRepository.save(session);
+                return false;
+            }
         }
 
-        if (!session.getVisitorId().equals(visitorId)) {
-            throw new ApiError(HttpStatus.UNAUTHORIZED, "Device Mismatch Detected");
+        session.setStatus(ExamSessionStatus.CONNECTED);
+        examSessionRepository.save(session);
+
+        if (examAttemptStatus != ExamAttemptStatus.NOT_STARTED)
+            examAttemptRepository.updateStatus(examAttemptId, ExamAttemptStatus.IN_PROGRESS);
+
+        return true;
+    }
+
+    @Transactional
+    public void handleSessionPing(UUID sessionId, Integer remainingTime) {
+        ExamSession session = fetchExamSessionById(sessionId);
+        session.setRemainingTime(remainingTime);
+        examSessionRepository.save(session);
+    }
+
+    @Transactional
+    public synchronized void handleSessionDisconnect(String sessionToken) {
+        ExamSession session = examSessionRepository.findBySessionToken(sessionToken);
+        ExamAttempt examAttempt = fetchExamAttemptById(session.getExamAttemptId());
+
+        if (session.getStatus() != ExamSessionStatus.CONNECTED) return;
+
+        session.setStatus(ExamSessionStatus.DISCONNECTED);
+
+        if (examAttempt.getStatus()!=ExamAttemptStatus.NOT_STARTED) {
+            session.setDisconnectCount(session.getDisconnectCount() + 1);
+            session.setLastDisconnect(LocalDateTime.now());
         }
 
-        return session;
+        examSessionRepository.save(session);
+
+        if (examAttempt.getStatus() == ExamAttemptStatus.IN_PROGRESS)
+            examAttempt.setStatus(ExamAttemptStatus.INTERRUPTED);
+
+        examAttemptRepository.save(examAttempt);
+    }
+
+    @Transactional
+    public void handleSubmitExam(UUID examAttemptId) {
+        ExamSession session = examSessionRepository.findByExamAttemptId(examAttemptId);
+        session.setStatus(ExamSessionStatus.COMPLETED);
+        examSessionRepository.save(session);
+    }
+
+    public ExamSessionType getSessionType(UUID examAttemptId) {
+        ExamAttemptStatus status = examAttemptRepository.getStatusById(examAttemptId);
+        return status == ExamAttemptStatus.NOT_STARTED ? ExamSessionType.NORMAL : ExamSessionType.RESUMED;
     }
 
     // <--------------- Helpers --------------->
 
     public ExamSession fetchExamSessionById(UUID sessionId) {
         return examSessionRepository.findById(sessionId)
-                .orElseThrow(() -> new ApiError(HttpStatus.UNAUTHORIZED,"Session not found"));
+                .orElseThrow(() -> new ApiError(HttpStatus.UNAUTHORIZED, "Session not found"));
     }
 
-    public ExamSession getCurrentExamSession() {
-        ExamSession session = ExamSessionContext.getExamSession();
-        if (session == null)
-            throw new ApiError(HttpStatus.UNAUTHORIZED, "No valid session found.");
-        return session;
+    public ExamAttempt fetchExamAttemptById(UUID examAttemptId) {
+        return examAttemptRepository.findById(examAttemptId)
+                .orElseThrow(() -> new ApiError(HttpStatus.UNAUTHORIZED, "Exam Attempt not found"));
+    }
+
+    public String getSessionTokenFromExamAttemptId(UUID examAttemptId) {
+        return examSessionRepository.getSessionTokenFromExamAttemptId(examAttemptId);
     }
 }

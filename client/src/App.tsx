@@ -23,6 +23,8 @@ import {
 } from "./features/Exam/pages";
 import ActiveExam from "./features/ActiveExam/pages/ActiveExam";
 import AdminLayout from "./components/layout/Admin/AdminLayout";
+import ExamAuthPage from "./features/ExamSetup/pages/ExamAuthPage";
+import ExamSetup from "./features/ExamSetup/pages/ExamSetup";
 
 function App() {
   const { toast } = useToast();
@@ -45,6 +47,8 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/exam/auth/:examId" element={<ExamAuthPage />} />
+        <Route path="/exam/set-up/:examId" element={<ExamSetup />} />
 
         {/* Protected Routes */}
 
@@ -77,7 +81,7 @@ function App() {
         </Route>
 
         {/* Exam Routes */}
-        <Route path="/active-exam" element={<AuthLayout authentication />}>
+        <Route path="/active-exam" element={<AuthLayout authentication={false} />}>
           <Route path=":examId" element={<ActiveExam />} />
         </Route>
 

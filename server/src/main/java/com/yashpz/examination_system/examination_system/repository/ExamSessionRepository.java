@@ -13,6 +13,14 @@ import java.util.UUID;
 public interface ExamSessionRepository extends JpaRepository<ExamSession, UUID> {
     ExamSession findByExamAttemptId(UUID examAttemptId);
 
-    @Query("SELECT e FROM ExamSession e WHERE e.lastPing < :threshold AND e.examAttempt.status = :status")
-    List<ExamSession> findByLastPingBeforeAndExamAttemptStatus(@Param("threshold") LocalDateTime threshold, @Param("status") ExamAttemptStatus status);
+    @Query("SELECT e FROM ExamSession e WHERE e.lastDisconnect < :threshold AND e.status = :status")
+    List<ExamSession> findByLastDisconnectBeforeAndExamAttemptStatus(@Param("threshold") LocalDateTime threshold,
+            @Param("status") ExamAttemptStatus status);
+
+    @Query("SELECT e.sessionToken FROM ExamSession e WHERE e.examAttemptId = :examAttemptId")
+    String getSessionTokenFromExamAttemptId(UUID examAttemptId);
+
+    ExamSession findBySessionToken(String sessionToken);
+
+    boolean existsByUserIdAndScheduledExamId(UUID userId, UUID scheduledExamId);
 }

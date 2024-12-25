@@ -22,24 +22,24 @@ public class ExamResponsesController {
         this.examResponseService = examResponseService;
     }
 
-    @PostMapping("/mcq")
-    public ResponseEntity<ApiResponse<Object>> saveMcqResponse(@RequestBody @Valid McqSubmissionRequestDTO mcqSubmissionRequestDTO) {
-         examResponseService.saveMcqResponse(mcqSubmissionRequestDTO);
-         return ApiResponseUtil.handleResponse(HttpStatus.OK,"Response saved successfully");
-    }
-
-    @PostMapping("/programming")
-    public ResponseEntity<ApiResponse<Object>>  saveProgrammingResponse(@RequestBody @Valid ProgrammingSubmissionRequestDTO programmingSubmissionRequestDTO) {
-         examResponseService.saveProgrammingResponse(programmingSubmissionRequestDTO);
-            return ApiResponseUtil.handleResponse(HttpStatus.OK,"Response saved successfully");
-    }
-
-    @PatchMapping("/time-spent")
-    public ResponseEntity<ApiResponse<Object>>  updateTimeSpentOnQuestion(
-            @RequestParam("question") @Valid UUID questionId,
-            @RequestParam("timeSpent") @Valid int timeSpent
-    ) {
-         examResponseService.updateTimeSpentOnQuestion(questionId, timeSpent);
-         return ApiResponseUtil.handleResponse(HttpStatus.OK,"Time spent updated successfully");
-    }
+//    @PostMapping("/mcq")
+//    public ResponseEntity<ApiResponse<Object>> saveMcqResponse(@RequestBody @Valid McqSubmissionRequestDTO mcqSubmissionRequestDTO) {
+//         examResponseService.saveMcqResponse(mcqSubmissionRequestDTO);
+//         return ApiResponseUtil.handleResponse(HttpStatus.OK,"Response saved successfully");
+//    }
+//
+//    @PostMapping("/programming")
+//    public ResponseEntity<ApiResponse<Object>>  saveProgrammingResponse(@RequestBody @Valid ProgrammingSubmissionRequestDTO programmingSubmissionRequestDTO) {
+//         examResponseService.saveProgrammingResponse(programmingSubmissionRequestDTO);
+//            return ApiResponseUtil.handleResponse(HttpStatus.OK,"Response saved successfully");
+//    }
+//
+//    @PatchMapping("/time-spent")
+//    public ResponseEntity<ApiResponse<Object>>  updateTimeSpentOnQuestion(
+//            @RequestParam("question") @Valid UUID questionId,
+//            @RequestParam("timeSpent") @Valid int timeSpent
+//    ) {
+//         examResponseService.updateTimeSpentOnQuestion(questionId, timeSpent);
+//         return ApiResponseUtil.handleResponse(HttpStatus.OK,"Time spent updated successfully");
+//    }
 }

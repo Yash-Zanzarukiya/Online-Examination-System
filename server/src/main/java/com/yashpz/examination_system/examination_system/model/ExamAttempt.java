@@ -33,19 +33,21 @@ public class ExamAttempt {
     private ScheduleExam exam;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "varchar(255) default 'PENDING'")
+    @Column(nullable = false)
     private ExamAttemptStatus status;
 
+    @Column(nullable = true)
     private LocalDateTime startTime;
 
+    @Column(nullable = true)
     private LocalDateTime endTime;
 
-    @Column(nullable = false, columnDefinition = "int default 0")
+    @Column(nullable = false)
     private Integer score;
 
     @CreatedDate

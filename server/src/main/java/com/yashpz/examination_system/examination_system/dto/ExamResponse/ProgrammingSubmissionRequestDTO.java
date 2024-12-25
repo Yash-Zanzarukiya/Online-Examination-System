@@ -17,8 +17,5 @@ public class ProgrammingSubmissionRequestDTO {
     @NotNull
     private String submittedCode;
 
-    @NotNull
     private String programmingLanguage;
-
-    private int timeSpent;
 }

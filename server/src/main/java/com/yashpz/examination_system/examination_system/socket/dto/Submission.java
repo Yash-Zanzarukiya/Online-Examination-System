@@ -1,0 +1,11 @@
+package com.yashpz.examination_system.examination_system.socket.dto;
+
+public enum Submission {
+    MULTIPLE_CHOICE_SUBMISSION,
+    MULTIPLE_CHOICE_SUBMISSION_RES,
+    PROGRAMMING_SUBMISSION,
+    PROGRAMMING_SUBMISSION_RES,
+    UPDATE_TIME_SPENT,
+    UNKNOWN_SUBMISSION,
+    ERROR_PROCESSING_REQUEST
+}
