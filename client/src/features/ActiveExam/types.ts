@@ -66,6 +66,8 @@ export interface Option {
 export interface ConnectionResponse {
   sessionType: SessionType;
   activeExamData: ActiveExamData;
+  timeRemaining: number;
+  message: string;
 }
 
 export interface ActiveExamQuestionsResponse {

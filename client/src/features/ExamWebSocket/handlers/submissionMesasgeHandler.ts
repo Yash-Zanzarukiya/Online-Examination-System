@@ -23,25 +23,25 @@ export const handleSubmission = (
 };
 
 function handleMultipleChoiceSubmissionRes(
-  client: WebSocketClient,
-  message: WebSocketMessage,
-  dispatch: Dispatch<Action>
+  _client: WebSocketClient,
+  _message: WebSocketMessage,
+  _dispatch: Dispatch<Action>
 ) {
   toastMessage("MCQ Answer Saved");
 }
 
 function handleProgrammingSubmissionRes(
-  client: WebSocketClient,
-  message: WebSocketMessage,
-  dispatch: Dispatch<Action>
+  _client: WebSocketClient,
+  _message: WebSocketMessage,
+  _dispatch: Dispatch<Action>
 ) {
   toastMessage("Programming question saved");
 }
 
 function handleErrorProcessingRequest(
-  client: WebSocketClient,
+  _client: WebSocketClient,
   message: WebSocketMessage,
-  dispatch: Dispatch<Action>
+  _dispatch: Dispatch<Action>
 ) {
   toastMessage("Error Processing Request of type: Submission", message.payload);
 }

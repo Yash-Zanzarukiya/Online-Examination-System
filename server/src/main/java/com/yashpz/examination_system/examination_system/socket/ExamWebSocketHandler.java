@@ -77,8 +77,7 @@ public class ExamWebSocketHandler extends TextWebSocketHandler {
         ExamSessionType sessionType = examSessionService.getSessionType(examSession.getExamAttemptId());
         ScheduleExam scheduleExam = scheduleExamService.fetchScheduleExamById(examSession.getScheduledExamId());
         ActiveExamData activeExamData = new ActiveExamData(scheduleExam.getStatus(), scheduleExam.getStartingAt());
-
-        SocketConnectionDTO connectionDTO = new SocketConnectionDTO(sessionType, activeExamData,"");
+        SocketConnectionDTO connectionDTO = new SocketConnectionDTO(sessionType, activeExamData, examSession.getRemainingTime(), "");
 
         webSocketMessageSender.sendMessage(session, MessageType.EXAM_EVENT, ExamEvent.CONNECT_RES, connectionDTO);
     }

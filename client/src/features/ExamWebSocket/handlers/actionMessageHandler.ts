@@ -29,7 +29,7 @@ const eventHandlers: Record<
 };
 
 function handleExamQuestionRes(
-  _: WebSocketClient,
+  _client: WebSocketClient,
   message: WebSocketMessage,
   dispatch: Dispatch<Action>
 ) {
@@ -39,16 +39,16 @@ function handleExamQuestionRes(
 }
 
 function handleStartExamRes(
-  client: WebSocketClient,
+  _client: WebSocketClient,
   message: WebSocketMessage,
-  dispatch: Dispatch<Action>
+  _dispatch: Dispatch<Action>
 ) {
   toastMessage("Exam Started", message.payload);
 }
 
 function handleSubmitExamRes(
-  client: WebSocketClient,
-  message: WebSocketMessage,
+  _client: WebSocketClient,
+  _message: WebSocketMessage,
   dispatch: Dispatch<Action>
 ) {
   toastMessage("Exam submitted successfully:");
@@ -56,17 +56,17 @@ function handleSubmitExamRes(
 }
 
 function handlePong(
-  client: WebSocketClient,
+  _client: WebSocketClient,
   message: WebSocketMessage,
-  dispatch: Dispatch<Action>
+  _dispatch: Dispatch<Action>
 ) {
-  toastMessage("Ping received, sending Pong", message.payload);
+  toastMessage("time saved", message.payload);
 }
 
 function handleForceLogout(
-  client: WebSocketClient,
-  message: WebSocketMessage,
-  dispatch: Dispatch<Action>
+  _client: WebSocketClient,
+  _message: WebSocketMessage,
+  _dispatch: Dispatch<Action>
 ) {
   toastMessage("Forced logout received");
 }
@@ -75,6 +75,6 @@ function handleErrorProcessingRequest() {
   toastMessage("Error Processing Request of type: Action");
 }
 
-function handleUnknownAction(_: WebSocketClient, message: WebSocketMessage) {
+function handleUnknownAction(_client: WebSocketClient, message: WebSocketMessage) {
   toastMessage("Unknown action subtype:", message.subtype);
 }

@@ -3,7 +3,7 @@ import { ActionType, ExamEventType, MessageType } from "../types/message-types";
 import { WebSocketMessage } from "../types/types";
 import { WebSocketClient } from "../WebSocketClient";
 import { Action, Dispatch } from "@reduxjs/toolkit";
-import { ConnectionResponse, ScheduledExamStatus, SessionType } from "@/features/ActiveExam/types";
+import { ConnectionResponse, ScheduledExamStatus } from "@/features/ActiveExam/types";
 import {
   saveConnectionResponse,
   setFetchingQuestions,
@@ -47,22 +47,26 @@ function handleConnectRes(
 }
 
 function handleTabSwitchRes(
-  client: WebSocketClient,
+  _client: WebSocketClient,
   message: WebSocketMessage,
-  dispatch: Dispatch<Action>
+  _dispatch: Dispatch<Action>
 ) {
   toastMessage("TAB_SWITCH_RES", message.payload);
 }
 
 function handleLogoutRes(
-  client: WebSocketClient,
+  _client: WebSocketClient,
   message: WebSocketMessage,
-  dispatch: Dispatch<Action>
+  _dispatch: Dispatch<Action>
 ) {
   toastMessage("LOGOUT_RES", message.payload);
 }
 
-function handleErrorProcessingRequest() {
+function handleErrorProcessingRequest(
+  _client: WebSocketClient,
+  _message: WebSocketMessage,
+  _dispatch: Dispatch<Action>
+) {
   toastMessage("Error Processing Request of type: ExamEvent");
 }
 

@@ -1,10 +1,9 @@
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useRef } from "react";
 import {
   navigateQuestion,
   setAnswer,
   setCode,
   decrementTime,
-  submitExam,
   startExam,
 } from "../redux/activeExamSlice";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
@@ -17,27 +16,67 @@ import {
   SubmissionType,
 } from "@/features/ExamWebSocket/types/message-types";
 
+let timer: NodeJS.Timeout | null = null;
+let pingInterval: NodeJS.Timeout | null = null;
+
 export const useActiveExam = () => {
   const client = useWebSocket();
   const dispatch = useAppDispatch();
   const examState = useAppSelector(({ activeExam }) => activeExam);
+  const timeRemainingRef = useRef(examState.timeRemaining);
 
+  useEffect(() => {
+    timeRemainingRef.current = examState.timeRemaining;
+  }, [examState.timeRemaining]);
+
+  // Ping logic
   useEffect(() => {
     if (examState.isExamStarted && !examState.isExamSubmitted) {
-      const timer = setInterval(() => {
+      if (!pingInterval) {
+        pingInterval = setInterval(() => {
+          client.send({
+            type: MessageType.ACTION,
+            subtype: ActionType.PING,
+            payload: timeRemainingRef.current,
+          });
+          console.log("Ping sent with remaining time:", timeRemainingRef.current);
+        }, 5000);
+      }
+    }
+
+    return () => {
+      if (pingInterval) {
+        clearInterval(pingInterval);
+        pingInterval = null;
+      }
+    };
+  }, [examState.isExamStarted, examState.isExamSubmitted, client]);
+
+  // Timer logic
+  useEffect(() => {
+    if (examState.isExamStarted && !examState.isExamSubmitted) {
+      if (timer) clearInterval(timer);
+      timer = setInterval(() => {
         dispatch(decrementTime());
       }, 1000);
-
-      return () => clearInterval(timer);
     }
+
+    return () => {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    };
   }, [examState.isExamStarted, examState.isExamSubmitted, dispatch]);
 
+  // Submit the exam when the time runs out
   useEffect(() => {
     if (examState.timeRemaining === 0) {
-      dispatch(submitExam());
+      handleExamSubmit();
     }
   }, [examState.timeRemaining, dispatch]);
 
+  // Handle the change in multiple choice question answer
   const handleAnswerChange = useCallback(
     (questionId: UUID, selectedOptionId: UUID) => {
       dispatch(setAnswer({ questionId, selectedOptionId }));
@@ -50,6 +89,7 @@ export const useActiveExam = () => {
     [dispatch]
   );
 
+  // Handle the change in the programming question code
   const handleCodeChange = useCallback(
     (questionId: UUID, submittedCode: string) => {
       dispatch(setCode({ questionId, code: submittedCode }));
@@ -62,13 +102,13 @@ export const useActiveExam = () => {
     [dispatch]
   );
 
+  // Handle the navigation between questions and send the time spent on the question to the server
   const handleQuestionNavigation = useCallback(
     (index: number) => {
       const previousQuestionId =
         examState.examQuestions[examState.currentQuestionIndex].question.id;
-      const timeSpent = Math.floor(
-        (Date.now() - (examState.questionStartTimes[previousQuestionId] || Date.now())) / 1000
-      );
+      const timeSpent =
+        Date.now() - (examState.questionStartTimes[previousQuestionId] || Date.now());
 
       dispatch(navigateQuestion(index));
 
@@ -89,6 +129,7 @@ export const useActiveExam = () => {
     ]
   );
 
+  // Handle the exam submission
   const handleExamSubmit = useCallback(() => {
     // Send the time spent on the last un-navigated question to the server
     const previousQuestionId = examState.examQuestions[examState.currentQuestionIndex].question.id;
@@ -108,22 +149,26 @@ export const useActiveExam = () => {
     });
   }, [dispatch]);
 
+  // Handle the exam start
   const handleStartExam = useCallback(() => {
     dispatch(startExam());
   }, [dispatch]);
 
+  // Handle the navigation to the next question
   const handleNext = useCallback(() => {
     if (examState.currentQuestionIndex < examState.examQuestions.length - 1) {
       handleQuestionNavigation(examState.currentQuestionIndex + 1);
     }
   }, [examState.examQuestions, examState.currentQuestionIndex, handleQuestionNavigation]);
 
+  // Handle the navigation to the previous question
   const handlePrevious = useCallback(() => {
     if (examState.currentQuestionIndex > 0) {
       handleQuestionNavigation(examState.currentQuestionIndex - 1);
     }
   }, [examState.examQuestions, examState.currentQuestionIndex, handleQuestionNavigation]);
 
+  // Holds current question and null if there is no question
   const currentQuestion = (
     examState.examQuestions.length ? examState.examQuestions[examState.currentQuestionIndex] : null
   ) as ActiveExamQuestion;

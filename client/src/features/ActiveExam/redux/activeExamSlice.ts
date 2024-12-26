@@ -15,7 +15,7 @@ const initialState: ActiveExamState = {
   questionStartTimes: {},
   isFetchingQuestions: false,
   currentQuestionIndex: 0,
-  timeRemaining: 60 * 60,
+  timeRemaining: 0,
   isExamStarted: false,
   isExamSubmitted: false,
 };
@@ -59,23 +59,24 @@ const activeExamSlice = createSlice({
       };
     },
     navigateQuestion: (state, action: PayloadAction<number>) => {
+      // this logic is tightly coupled with action dispatcher function
+
       const newIndex = action.payload;
       const newQuestionId = state.examQuestions[newIndex].question.id;
 
-      state.currentQuestionIndex = action.payload;
-      const currentQuestionId = state.examQuestions[action.payload].question.id;
+      state.currentQuestionIndex = newIndex;
 
-      if (!state.examQuestionsState[currentQuestionId]) {
-        state.examQuestionsState[currentQuestionId] = {
-          questionId: currentQuestionId,
+      if (!state.examQuestionsState[newQuestionId]) {
+        state.examQuestionsState[newQuestionId] = {
+          questionId: newQuestionId,
           status: QuestionAttemptStatus.VISITED,
           selectedOptionId: null,
           submittedCode: null,
         };
       } else if (
-        state.examQuestionsState[currentQuestionId].status === QuestionAttemptStatus.NOT_VISITED
+        state.examQuestionsState[newQuestionId].status === QuestionAttemptStatus.NOT_VISITED
       ) {
-        state.examQuestionsState[currentQuestionId].status = QuestionAttemptStatus.VISITED;
+        state.examQuestionsState[newQuestionId].status = QuestionAttemptStatus.VISITED;
       }
 
       state.questionStartTimes[newQuestionId] = Date.now();
@@ -86,6 +87,7 @@ const activeExamSlice = createSlice({
     saveConnectionResponse: (state, action: PayloadAction<ConnectionResponse>) => {
       state.sessionType = action.payload.sessionType;
       state.activeExamData = action.payload.activeExamData;
+      state.timeRemaining = action.payload.timeRemaining;
     },
     setExamQuestions: (state, action: PayloadAction<ActiveExamQuestionsResponse>) => {
       state.examQuestions = action.payload.questions;

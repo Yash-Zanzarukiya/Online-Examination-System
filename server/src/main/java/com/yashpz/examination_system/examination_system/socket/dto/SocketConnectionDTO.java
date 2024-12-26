@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 public class SocketConnectionDTO {
     private ExamSessionType sessionType;
     private ActiveExamData activeExamData;
+    private Integer timeRemaining;
     private String message;
 }

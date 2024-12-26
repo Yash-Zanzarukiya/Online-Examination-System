@@ -61,7 +61,7 @@ public class ExamAttemptService {
         examAttemptRepository.save(examAttempt);
 
         ExamSession session = examSessionService.createSession(examAttempt.getId(), user.getId(), scheduledExam.getId(),
-                scheduledExam.getExam().getTimeLimit());
+                scheduledExam.getExam().getTimeLimit() * 60);
 
         return session.getSessionToken();
     }
