@@ -1,5 +1,6 @@
 package com.yashpz.examination_system.examination_system.model;
 
+import com.yashpz.examination_system.examination_system.constants.ScheduledExamStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,6 +34,10 @@ public class ScheduleExam {
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "college_id", nullable = true)
     private College college;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "varchar(255) default 'SCHEDULED'")
+    private ScheduledExamStatus status;
 
     @Column(nullable = false)
     private LocalDateTime startingAt;

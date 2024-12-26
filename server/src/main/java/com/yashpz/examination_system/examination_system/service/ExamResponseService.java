@@ -13,6 +13,7 @@ import com.yashpz.examination_system.examination_system.model.ProgrammingSubmiss
 import com.yashpz.examination_system.examination_system.model.Question;
 import com.yashpz.examination_system.examination_system.repository.McqSubmissionRepository;
 import com.yashpz.examination_system.examination_system.repository.ProgrammingSubmissionRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class ExamResponseService {
     private final McqSubmissionRepository mcqSubmissionRepository;
     private final ProgrammingSubmissionRepository programmingSubmissionRepository;
@@ -28,18 +30,9 @@ public class ExamResponseService {
     private final QuestionService questionService;
     private final McqOptionService mcqOptionService;
 
-    public ExamResponseService(McqSubmissionRepository mcqSubmissionRepository, ProgrammingSubmissionRepository programmingSubmissionRepository, QuestionService questionService, ExamAttemptService examAttemptService, McqOptionService mcqOptionService, ExamQuestionsService examQuestionsService) {
-        this.mcqSubmissionRepository = mcqSubmissionRepository;
-        this.programmingSubmissionRepository = programmingSubmissionRepository;
-        this.questionService = questionService;
-        this.examQuestionsService = examQuestionsService;
-        this.examAttemptService = examAttemptService;
-        this.mcqOptionService = mcqOptionService;
-    }
-
     @Transactional
-    public void saveMcqResponse(McqSubmissionRequestDTO mcqSubmissionRequestDTO) {
-        ExamAttempt examAttempt = examAttemptService.fetchCurrentExamAttempt();
+    public void saveMcqResponse(McqSubmissionRequestDTO mcqSubmissionRequestDTO, UUID examAttemptId) {
+        ExamAttempt examAttempt = examAttemptService.fetchExamAttemptById(examAttemptId);
 
         UUID questionId = mcqSubmissionRequestDTO.getQuestionId();
 
@@ -54,8 +47,8 @@ public class ExamResponseService {
     }
 
     @Transactional
-    public void saveProgrammingResponse(ProgrammingSubmissionRequestDTO programmingSubmissionRequestDTO) {
-        ExamAttempt examAttempt = examAttemptService.fetchCurrentExamAttempt();
+    public void saveProgrammingResponse(ProgrammingSubmissionRequestDTO programmingSubmissionRequestDTO, UUID examAttemptId) {
+        ExamAttempt examAttempt = examAttemptService.fetchExamAttemptById(examAttemptId);
 
         UUID questionId = programmingSubmissionRequestDTO.getQuestionId();
 
@@ -70,19 +63,27 @@ public class ExamResponseService {
     }
 
     @Transactional
-    public void updateTimeSpentOnQuestion(UUID questionId, int timeSpent) {
-        ExamAttempt examAttempt = examAttemptService.fetchCurrentExamAttempt();
+    public void updateTimeSpentOnQuestion(UUID questionId, int timeSpent, UUID examAttemptId) {
+        ExamAttempt examAttempt = examAttemptService.fetchExamAttemptById(examAttemptId);
         Question question = questionService.fetchQuestionById(questionId);
 
         validateQuestionBelongsToExam(questionId, examAttempt);
 
         Boolean exists = mcqSubmissionRepository.existsByExamAttemptIdAndQuestionId(examAttempt.getId(), questionId);
         if (!exists){
-            McqSubmission mcqSubmission = new McqSubmission();
-            mcqSubmission.setQuestion(question);
-            mcqSubmission.setTimeSpent(timeSpent);
-            mcqSubmission.setExamAttempt(examAttempt);
-            mcqSubmissionRepository.save(mcqSubmission);
+            if (question.getType() == QuestionType.MCQ){
+                McqSubmission mcqSubmission = new McqSubmission();
+                mcqSubmission.setQuestion(question);
+                mcqSubmission.setTimeSpent(timeSpent);
+                mcqSubmission.setExamAttempt(examAttempt);
+                mcqSubmissionRepository.save(mcqSubmission);
+            }else {
+                ProgrammingSubmission programmingSubmission = new ProgrammingSubmission();
+                programmingSubmission.setQuestion(question);
+                programmingSubmission.setTimeSpent(timeSpent);
+                programmingSubmission.setExamAttempt(examAttempt);
+                programmingSubmissionRepository.save(programmingSubmission);
+            }
             return;
         }
 

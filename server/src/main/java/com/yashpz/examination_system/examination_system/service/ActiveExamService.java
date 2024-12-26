@@ -1,6 +1,7 @@
 package com.yashpz.examination_system.examination_system.service;
 
 import com.yashpz.examination_system.examination_system.constants.Difficulty;
+import com.yashpz.examination_system.examination_system.constants.ExamSessionType;
 import com.yashpz.examination_system.examination_system.constants.QuestionAttemptStatus;
 import com.yashpz.examination_system.examination_system.constants.QuestionType;
 import com.yashpz.examination_system.examination_system.dto.ActiveExam.ActiveExamQuestions.ActiveExamMcqOption;
@@ -27,24 +28,19 @@ public class ActiveExamService {
     private final ScheduleExamService scheduleExamService;
 
     public ActiveExamStateDTO getActiveExamState(UUID examAttemptId) {
-        List<ActiveExamQuestionsState> mcqQuestionState = mcqSubmissionRepository.getMcqSubmissionStateByExamAttemptId(examAttemptId);
-        List<ActiveExamQuestionsState> programmingQuestionState = programmingSubmissionRepository.getProgrammingSubmissionStateByExamAttemptId(examAttemptId);
-
-        Map<UUID, ActiveExamQuestionsState> questionsState = new LinkedHashMap<>();
-        for (ActiveExamQuestionsState state : mcqQuestionState) {
-            QuestionAttemptStatus attemptStatus = state.getSelectedOptionId() == null ? QuestionAttemptStatus.VISITED : QuestionAttemptStatus.ANSWERED;
-            state.setStatus(attemptStatus);
-            questionsState.put(state.getQuestionId(), state);
-        }
-
-        for (ActiveExamQuestionsState state : programmingQuestionState) {
-            QuestionAttemptStatus attemptStatus = state.getSubmittedCode() == null ? QuestionAttemptStatus.VISITED : QuestionAttemptStatus.ANSWERED;
-            state.setStatus(attemptStatus);
-            questionsState.put(state.getQuestionId(), state);
-        }
-
+        Map<UUID, ActiveExamQuestionsState> questionsState = getActiveExamQuestionsState(examAttemptId);
         UUID scheduledExamId = examAttemptService.getScheduledExamIdFromExamAttemptId(examAttemptId);
         List<ActiveExamQuestionsDTO> questions = getActiveExamQuestions(scheduledExamId);
+        return new ActiveExamStateDTO(questions, questionsState);
+    }
+
+    public ActiveExamStateDTO getActiveExamState(UUID examAttemptId, ExamSessionType examSessionType){
+        UUID scheduledExamId = examAttemptService.getScheduledExamIdFromExamAttemptId(examAttemptId);
+        List<ActiveExamQuestionsDTO> questions = getActiveExamQuestions(scheduledExamId);
+
+        Map<UUID, ActiveExamQuestionsState> questionsState = new LinkedHashMap<>();
+        if (examSessionType == ExamSessionType.RESUMED)
+            questionsState = getActiveExamQuestionsState(examAttemptId);
 
         return new ActiveExamStateDTO(questions, questionsState);
     }
@@ -90,6 +86,26 @@ public class ActiveExamService {
         }
 
         return new ArrayList<>(questionsMap.values());
+    }
+
+    public Map<UUID, ActiveExamQuestionsState> getActiveExamQuestionsState(UUID examAttemptId) {
+        List<ActiveExamQuestionsState> mcqQuestionState = mcqSubmissionRepository.getMcqSubmissionStateByExamAttemptId(examAttemptId);
+        List<ActiveExamQuestionsState> programmingQuestionState = programmingSubmissionRepository.getProgrammingSubmissionStateByExamAttemptId(examAttemptId);
+
+        Map<UUID, ActiveExamQuestionsState> questionsState = new LinkedHashMap<>();
+        for (ActiveExamQuestionsState state : mcqQuestionState) {
+            QuestionAttemptStatus attemptStatus = state.getSelectedOptionId() == null ? QuestionAttemptStatus.VISITED : QuestionAttemptStatus.ANSWERED;
+            state.setStatus(attemptStatus);
+            questionsState.put(state.getQuestionId(), state);
+        }
+
+        for (ActiveExamQuestionsState state : programmingQuestionState) {
+            QuestionAttemptStatus attemptStatus = state.getSubmittedCode() == null ? QuestionAttemptStatus.VISITED : QuestionAttemptStatus.ANSWERED;
+            state.setStatus(attemptStatus);
+            questionsState.put(state.getQuestionId(), state);
+        }
+
+        return questionsState;
     }
 
     private UUID convertToUUID(Object uuidObject) {

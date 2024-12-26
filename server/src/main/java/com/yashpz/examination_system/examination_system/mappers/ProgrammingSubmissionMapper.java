@@ -12,16 +12,14 @@ public class ProgrammingSubmissionMapper {
         programmingSubmission.setExamAttempt(examAttempt);
         programmingSubmission.setQuestion(question);
         programmingSubmission.setSubmittedCode(DTO.getSubmittedCode());
+        programmingSubmission.setTimeSpent(0);
         programmingSubmission.setProgrammingLanguage(DTO.getProgrammingLanguage());
-        programmingSubmission.setTimeSpent(DTO.getTimeSpent());
         return programmingSubmission;
     }
 
     public static ProgrammingSubmission updateEntity(ProgrammingSubmission programmingSubmission, ProgrammingSubmissionRequestDTO DTO) {
         programmingSubmission.setSubmittedCode(DTO.getSubmittedCode());
         programmingSubmission.setProgrammingLanguage(DTO.getProgrammingLanguage());
-        if (DTO.getTimeSpent() > 0)
-            programmingSubmission.setTimeSpent(DTO.getTimeSpent() + programmingSubmission.getTimeSpent());
         return programmingSubmission;
     }
 }

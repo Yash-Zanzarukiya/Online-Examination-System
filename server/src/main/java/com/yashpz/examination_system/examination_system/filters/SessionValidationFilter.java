@@ -55,7 +55,7 @@ public class SessionValidationFilter extends OncePerRequestFilter {
             if (sessionToken.isEmpty() || visitorId == null)
                 throw new ApiError(HttpStatus.UNAUTHORIZED, "Session token or visitor-id missing.");
 
-            ExamSession examSession = examSessionService.validateSessionToken(sessionToken, visitorId);
+            ExamSession examSession = examSessionService.validateSessionToken(sessionToken);
 
             ExamSessionContext.setExamSession(examSession);
         } catch (ApiError e) {

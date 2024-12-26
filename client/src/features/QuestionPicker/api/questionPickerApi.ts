@@ -13,7 +13,7 @@ class QuestionPickerApi {
   async getExamQuestions(
     examId: string
   ): Promise<ApiResponse<{ data: getExamQuestionsResponse[] }>> {
-    return await axiosInstance.get(`/exam-questions/exam/${examId}/detailed`);
+    return await axiosInstance.get(`/exam-questions/exam/${examId}/full`);
   }
 
   async addExamQuestions(

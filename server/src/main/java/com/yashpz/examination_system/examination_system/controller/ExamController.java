@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -38,13 +39,12 @@ public class ExamController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<ExamResponseDTO>>> getAllExams(
+    public ResponseEntity<ApiResponse<List<ExamResponseDTO> >> getAllExams(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<ExamResponseDTO> paginatedExams = examService.getAllExams(pageable);
-        return ApiResponseUtil.handleResponse(HttpStatus.OK, paginatedExams, "Exams Retrieved Successfully");
+        List<ExamResponseDTO> exams = examService.getAllExams();
+        return ApiResponseUtil.handleResponse(HttpStatus.OK, exams, "Exams Retrieved Successfully");
     }
 
     @PatchMapping("/{id}")

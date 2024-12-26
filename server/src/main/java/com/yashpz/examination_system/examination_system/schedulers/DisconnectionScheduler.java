@@ -13,7 +13,5 @@ public class DisconnectionScheduler {
     }
 
 //    @Scheduled(fixedRate = 60000)
-    public void detectDisconnectedSessions() {
-        examSessionService.detectDisconnections();
-    }
+    public void detectDisconnectedSessions() {}
 }

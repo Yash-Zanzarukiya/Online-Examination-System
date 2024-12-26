@@ -1,5 +1,6 @@
 package com.yashpz.examination_system.examination_system.controller;
 
+import com.yashpz.examination_system.examination_system.constants.ScheduledExamStatus;
 import com.yashpz.examination_system.examination_system.constants.ValidationGroups;
 import com.yashpz.examination_system.examination_system.dto.ScheduleExam.ScheduleExamRequestDTO;
 import com.yashpz.examination_system.examination_system.dto.ScheduleExam.ScheduleExamResponseDTO;
@@ -53,6 +54,15 @@ public class ScheduleExamController {
     ) {
         ScheduleExamResponseDTO rescheduledExam = scheduleExamService.rescheduleExam(id, dto);
         return ApiResponseUtil.handleResponse(HttpStatus.OK, rescheduledExam, "Exam rescheduled successfully");
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<ApiResponse<ScheduleExamResponseDTO>> updateScheduleExamStatus(
+            @PathVariable UUID id,
+            @RequestParam ScheduledExamStatus status
+    ) {
+        ScheduleExamResponseDTO updatedScheduleExam = scheduleExamService.updateScheduleExamStatus(id, status);
+        return ApiResponseUtil.handleResponse(HttpStatus.OK, updatedScheduleExam, "Exam schedule status updated successfully");
     }
 
     @DeleteMapping("/{id}")

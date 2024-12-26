@@ -1,5 +1,6 @@
 package com.yashpz.examination_system.examination_system.mappers;
 
+import com.yashpz.examination_system.examination_system.constants.ScheduledExamStatus;
 import com.yashpz.examination_system.examination_system.dto.ScheduleExam.ScheduleExamRequestDTO;
 import com.yashpz.examination_system.examination_system.dto.ScheduleExam.ScheduleExamResponseDTO;
 import com.yashpz.examination_system.examination_system.model.College;
@@ -13,6 +14,7 @@ public class ScheduleExamMapper {
         ScheduleExam scheduleExam = new ScheduleExam();
         scheduleExam.setExam(exam);
         scheduleExam.setCollege(college);
+        scheduleExam.setStatus(ScheduledExamStatus.SCHEDULED);
         scheduleExam.setStartingAt(scheduleExamRequestDTO.getStartingAt());
         return scheduleExam;
     }
@@ -22,6 +24,7 @@ public class ScheduleExamMapper {
         scheduleExamResponseDTO.setId(scheduleExam.getId());
         scheduleExamResponseDTO.setExamId(scheduleExam.getExam().getId());
         scheduleExamResponseDTO.setCollegeId(scheduleExam.getCollege().getId());
+        scheduleExamResponseDTO.setStatus(scheduleExam.getStatus());
         scheduleExamResponseDTO.setStartingAt(scheduleExam.getStartingAt().toString());
         scheduleExamResponseDTO.setCreatedAt(scheduleExam.getCreatedAt().toString());
         scheduleExamResponseDTO.setUpdatedAt(scheduleExam.getUpdatedAt().toString());

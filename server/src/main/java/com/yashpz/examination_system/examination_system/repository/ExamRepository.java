@@ -10,6 +10,6 @@ import java.util.UUID;
 
 @Repository
 public interface ExamRepository extends JpaRepository<Exam, UUID> {
-    Page<Exam> findAll(Pageable pageable);
+//    Page<Exam> findAll(Pageable pageable);
 }
 

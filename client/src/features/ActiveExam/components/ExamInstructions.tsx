@@ -3,13 +3,17 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAppDispatch } from "@/app/hooks";
 import { startExam } from "../redux/activeExamSlice";
+import { useWebSocket } from "@/hooks";
+import { ActionType, MessageType } from "@/features/ExamWebSocket/types/message-types";
 
 const ExamInstructions: React.FC = () => {
   const dispatch = useAppDispatch();
+  const client = useWebSocket();
 
   const [isAgreed, setIsAgreed] = useState(false);
 
   const onStart = useCallback(() => {
+    client.send({ type: MessageType.ACTION, subtype: ActionType.START_EXAM_REQ, payload: {} });
     dispatch(startExam());
   }, [dispatch]);
 

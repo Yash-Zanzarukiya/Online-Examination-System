@@ -1,7 +1,9 @@
 package com.yashpz.examination_system.examination_system.repository;
 
+import com.yashpz.examination_system.examination_system.constants.ScheduledExamStatus;
 import com.yashpz.examination_system.examination_system.model.ScheduleExam;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -19,4 +21,8 @@ public interface ScheduleExamRepository extends JpaRepository<ScheduleExam, UUID
 
     @Query("SELECT se.exam.id FROM ScheduleExam se WHERE se.id = :scheduledExamId")
     UUID getExamIdByScheduledExamId(UUID scheduledExamId);
+
+    @Modifying
+    @Query("UPDATE ScheduleExam se SET se.status = :status WHERE se.id = :scheduledExamId")
+    ScheduleExam updateScheduleExamStatus(@Param("scheduledExamId") UUID scheduledExamId, @Param("status") ScheduledExamStatus status);
 }

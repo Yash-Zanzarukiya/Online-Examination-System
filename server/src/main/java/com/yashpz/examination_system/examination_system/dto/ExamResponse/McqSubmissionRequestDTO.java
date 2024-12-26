@@ -16,7 +16,4 @@ public class McqSubmissionRequestDTO {
 
     @NotNull
     private UUID selectedOptionId;
-
-    @NotNull
-    private int timeSpent;
 }

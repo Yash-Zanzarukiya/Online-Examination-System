@@ -11,6 +11,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.yashpz.examination_system.examination_system.constants.ExamSessionStatus;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -26,29 +28,31 @@ public class ExamSession {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "exam_attempt_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private ExamAttempt examAttempt;
+    @Column(nullable = false)
+    private UUID userId;
+
+    @Column(nullable = false)
+    private UUID scheduledExamId;
+
+    @Column(nullable = false)
+    private UUID examAttemptId;
 
     @Lob
     @Column(nullable = true)
     private String sessionToken;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String visitorId;
+    private ExamSessionStatus status;
+
+    @Column(nullable = true)
+    private LocalDateTime lastDisconnect;
 
     @Column(nullable = false)
-    private LocalDateTime lastPing;
-
-    @Column(nullable = true, columnDefinition = "bit default 0")
-    private Boolean isDisconnected;
-
-    @Column(nullable = true, columnDefinition = "int default 0")
     private Integer disconnectCount;
 
     @Column(nullable = false)
-    private Long remainingTime;
+    private Integer remainingTime;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

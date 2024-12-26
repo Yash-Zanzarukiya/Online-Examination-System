@@ -35,6 +35,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/public/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/ws/exam/**","/exam-attempt/make-attempt").permitAll()
                         .requestMatchers("/categories/**").hasRole(Roles.ADMIN.name())
                         .requestMatchers("/questions/**").hasRole(Roles.ADMIN.name())
                         .requestMatchers("/mcq-questions/**").hasRole(Roles.ADMIN.name())

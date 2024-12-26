@@ -3,6 +3,8 @@ package com.yashpz.examination_system.examination_system.service;
 import com.yashpz.examination_system.examination_system.constants.ExamAttemptStatus;
 import com.yashpz.examination_system.examination_system.contexts.ExamSessionContext;
 import com.yashpz.examination_system.examination_system.dto.ActiveExam.ExamAttemptRequestDTO;
+import com.yashpz.examination_system.examination_system.dto.Auth.LoginDTO;
+import com.yashpz.examination_system.examination_system.dto.Auth.UserDataDTO;
 import com.yashpz.examination_system.examination_system.exception.ApiError;
 import com.yashpz.examination_system.examination_system.mappers.ExamAttemptMapper;
 import com.yashpz.examination_system.examination_system.messaging.producer.MarksCalculationProducer;
@@ -13,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.EnumSet;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -24,59 +28,85 @@ public class ExamAttemptService {
     private final ScheduleExamService examScheduleService;
     private final ExamEvolutionService examEvolutionService;
     private final ExamSessionService examSessionService;
-    private final AuthService authService;
+    private final ExamAuthService examAuthService;
     private final MarksCalculationProducer marksCalculationProducer;
 
     @Transactional
     public String createExamAttempt(ExamAttemptRequestDTO examAttemptRequestDTO) {
-        User user = authService.fetchCurrentAuth().getUser();
+        LoginDTO loginDTO = new LoginDTO(examAttemptRequestDTO.getIdentifier(), examAttemptRequestDTO.getPassword());
+        User user = examAuthService.authenticateUser(loginDTO);
 
-        ExamAttempt existingExamAttempt = examAttemptRepository.findByUserIdAndExamId(user.getId(), examAttemptRequestDTO.getExamId());
+        ExamAttempt existingExamAttempt = examAttemptRepository.findByUserIdAndExamId(user.getId(),
+                examAttemptRequestDTO.getScheduledExamId());
 
         if (existingExamAttempt != null) {
-            if (existingExamAttempt.getStatus() == ExamAttemptStatus.INTERRUPTED) {
-                throw new ApiError(HttpStatus.BAD_REQUEST, "Your previous attempt was interrupted. Please resume the exam", existingExamAttempt.getId());
+            boolean notSubmitted = EnumSet
+                    .of(ExamAttemptStatus.NOT_STARTED, ExamAttemptStatus.IN_PROGRESS, ExamAttemptStatus.INTERRUPTED)
+                    .contains(existingExamAttempt.getStatus());
+
+            if (notSubmitted) {
+                return examSessionService
+                        .getSessionTokenFromExamAttemptId(existingExamAttempt.getId());
+            } else if (existingExamAttempt.getStatus() == ExamAttemptStatus.TERMINATED) {
+                throw new ApiError(HttpStatus.BAD_REQUEST, "Examination is Terminated...");
             } else {
-                throw new ApiError(HttpStatus.BAD_REQUEST, "Exam Attempt already exists");
+                throw new ApiError(HttpStatus.BAD_REQUEST, "Already Submitted...");
             }
         }
 
-        ScheduleExam exam = examScheduleService.fetchScheduleExamById(examAttemptRequestDTO.getExamId());
+        ScheduleExam scheduledExam = examScheduleService
+                .fetchScheduleExamById(examAttemptRequestDTO.getScheduledExamId());
 
-        ExamAttempt examAttempt = ExamAttemptMapper.toEntity(examAttemptRequestDTO, exam, user);
+        ExamAttempt examAttempt = ExamAttemptMapper.toEntity(scheduledExam, user);
         examAttemptRepository.save(examAttempt);
 
-        ExamSession session = examSessionService.createSession(examAttempt, examAttemptRequestDTO.getVisitorId());
+        ExamSession session = examSessionService.createSession(examAttempt.getId(), user.getId(), scheduledExam.getId(),
+                scheduledExam.getExam().getTimeLimit() * 60);
 
         return session.getSessionToken();
     }
 
-    @Transactional
-    public void updateExamAttempt(ExamAttemptRequestDTO examAttemptRequestDTO) {
-        ExamAttempt examAttempt = fetchCurrentExamAttempt();
-        ExamAttemptMapper.updateEntity(examAttempt, examAttemptRequestDTO);
-        examAttemptRepository.save(examAttempt);
-    }
-
-    public void updateExamAttemptStatus(UUID examAttemptId, ExamAttemptStatus status) {
-        ExamAttempt examAttempt = examAttemptRepository.findById(examAttemptId)
-                .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "Exam Attempt not found"));
-        examAttempt.setStatus(status);
-        examAttemptRepository.save(examAttempt);
+    public void startExam(UUID examAttemptId, LocalDateTime startTime) {
+        ExamAttempt examAttempt = fetchExamAttemptById(examAttemptId);
+        if (examAttempt.getStatus() == ExamAttemptStatus.NOT_STARTED) {
+            examAttempt.setStatus(ExamAttemptStatus.IN_PROGRESS);
+            examAttempt.setStartTime(startTime);
+            examAttemptRepository.save(examAttempt);
+        }
+//        else {
+//            throw new ApiError(HttpStatus.BAD_REQUEST, "Exam already started...");
+//        }
     }
 
     @Transactional
-    public void submitExam(ExamAttemptRequestDTO examAttemptRequestDTO) {
-        ExamAttempt examAttempt = fetchCurrentExamAttempt();
-        ExamAttemptMapper.updateEntity(examAttempt, examAttemptRequestDTO);
+    public void submitExam(UUID examAttemptId, LocalDateTime submissionTime) {
+        ExamAttempt examAttempt = fetchExamAttemptById(examAttemptId);
+        examAttempt.setStatus(ExamAttemptStatus.SUBMITTED);
+        examAttempt.setEndTime(submissionTime);
         examAttemptRepository.save(examAttempt);
+
+        examSessionService.handleSubmitExam(examAttemptId);
+
         marksCalculationProducer.publishMarksCalculationRequest(examAttempt.getId());
+    }
+
+    @Transactional
+    public void updateExamAttemptStatus(UUID examAttemptId, ExamAttemptStatus status) {
+        examAttemptRepository.updateStatus(examAttemptId, status);
+    }
+
+    public void updateProgrammingMarks(UUID programmingSubmissionId, int marks) {
+        examEvolutionService.updateProgrammingMarks(programmingSubmissionId, marks);
+    }
+
+    public boolean isNormalAttempt(UUID examAttemptId) {
+        ExamAttempt examAttempt = fetchExamAttemptById(examAttemptId);
+        return examAttempt.getStatus() == ExamAttemptStatus.NOT_STARTED;
     }
 
     // <--------------- Helpers --------------->
 
-    public ExamAttempt fetchCurrentExamAttempt() {
-        UUID examAttemptId = Objects.requireNonNull(ExamSessionContext.getExamSession()).getExamAttempt().getId();
+    public ExamAttempt fetchExamAttemptById(UUID examAttemptId) {
         return examAttemptRepository.findById(examAttemptId)
                 .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "Exam Attempt not found"));
     }
@@ -95,7 +125,7 @@ public class ExamAttemptService {
         return id;
     }
 
-    public void updateProgrammingMarks(UUID programmingSubmissionId, int marks) {
-        examEvolutionService.updateProgrammingMarks(programmingSubmissionId, marks);
+    public ExamAttempt fetchCurrentExamAttempt() {
+        return null;
     }
 }

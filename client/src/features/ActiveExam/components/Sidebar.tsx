@@ -1,13 +1,20 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { useActiveExam } from "../hooks";
+import { useActiveExam } from "../hooks/useActiveExam";
+import { QuestionAttemptStatus } from "../types";
+import { QuestionType } from "@/types/QuestionType";
 
 const Sidebar: React.FC = () => {
   const { examState, questions, handleQuestionNavigation } = useActiveExam();
 
-  const remainingQuestions = Object.values(examState.questionStates).filter(
-    (state) => state !== "answered"
-  ).length;
+  const remainingQuestions = useMemo(() => {
+    return (
+      questions.length -
+      Object.values(examState.examQuestionsState).filter(
+        (state) => state.status === QuestionAttemptStatus.ANSWERED
+      ).length
+    );
+  }, [questions, examState.examQuestionsState]);
 
   return (
     <div className="w-64 bg-white shadow-md">
@@ -16,21 +23,21 @@ const Sidebar: React.FC = () => {
           <h2 className="text-lg font-semibold mb-4">Questions</h2>
           <div className="grid grid-cols-5 gap-2">
             {questions.map((question, index) => {
-              const state = examState.questionStates[question.question.id];
+              const state = examState.examQuestionsState[question.question.id];
               return (
                 <Button
                   key={index}
                   variant="outline"
                   className={`w-10 h-10 ${
-                    state === "answered"
+                    state?.status === QuestionAttemptStatus.ANSWERED
                       ? "bg-green-500 text-white"
-                      : state === "attempted"
+                      : state?.status === QuestionAttemptStatus.VISITED
                       ? "bg-yellow-500 text-white"
                       : "bg-gray-300"
                   } ${index === examState.currentQuestionIndex ? "ring-2 ring-blue-500" : ""}`}
                   onClick={() => handleQuestionNavigation(index)}
                 >
-                  {index + 1}
+                  {question.question.type === QuestionType.MCQ ? "M" : "P"}
                 </Button>
               );
             })}
@@ -42,11 +49,11 @@ const Sidebar: React.FC = () => {
             </div>
             <div className="flex items-center">
               <div className="w-4 h-4 bg-yellow-500 rounded-full mr-2"></div>
-              <span>Attempted</span>
+              <span>Visited</span>
             </div>
             <div className="flex items-center">
               <div className="w-4 h-4 bg-gray-300 rounded-full mr-2"></div>
-              <span>Not Attempted</span>
+              <span>Not Visited</span>
             </div>
           </div>
           <div className="mt-6 p-4 bg-blue-100 rounded-lg">

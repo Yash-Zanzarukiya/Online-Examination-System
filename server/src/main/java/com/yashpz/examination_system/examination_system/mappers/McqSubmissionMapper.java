@@ -11,15 +11,13 @@ public class McqSubmissionMapper {
         McqSubmission mcqSubmission = new McqSubmission();
         mcqSubmission.setExamAttempt(examAttempt);
         mcqSubmission.setQuestion(question);
+        mcqSubmission.setTimeSpent(0);
         mcqSubmission.setSelectedOptionId(DTO.getSelectedOptionId());
-        mcqSubmission.setTimeSpent(DTO.getTimeSpent());
         return mcqSubmission;
     }
 
     public static McqSubmission updateEntity(McqSubmission mcqSubmission, McqSubmissionRequestDTO DTO) {
         mcqSubmission.setSelectedOptionId(DTO.getSelectedOptionId());
-        if (DTO.getTimeSpent() > 0)
-            mcqSubmission.setTimeSpent(DTO.getTimeSpent() + mcqSubmission.getTimeSpent());
         return mcqSubmission;
     }
 }

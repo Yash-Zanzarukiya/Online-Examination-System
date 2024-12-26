@@ -104,6 +104,12 @@
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
 
+		<!-- Spring Boot Websocket -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+
 		<!-- For Excel File Processing -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>

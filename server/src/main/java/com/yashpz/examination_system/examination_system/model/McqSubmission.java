@@ -38,7 +38,6 @@ public class McqSubmission {
 
     private UUID selectedOptionId;
 
-    @Column(nullable = false)
     private Integer timeSpent;
 
     private Integer marks;
