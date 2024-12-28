@@ -76,9 +76,9 @@ public class QuestionService {
         return QuestionMapper.toResponseDTO(question);
     }
 
-    public List<QuestionResponseDTO> getAllQuestions(UUID categoryId, Difficulty difficulty, QuestionType type) {
-        UUID category = QuestionType.MCQ.equals(type) ? categoryId : null;
-        List<Question> questions = questionRepository.findAllByFilters(category, difficulty, type);
+    public List<QuestionResponseDTO> getAllQuestions(UUID categoryId, Difficulty difficulty, QuestionType type, Integer marks) {
+        UUID category = type == QuestionType.PROGRAMMING  ? null : categoryId;
+        List<Question> questions = questionRepository.findAllByFilters(category, difficulty, type, marks);
         return QuestionMapper.toResponseDTO(questions);
     }
 

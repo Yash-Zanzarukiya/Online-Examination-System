@@ -11,7 +11,7 @@ import { QuestionCreatePayload } from "../types";
 import { QuestionType } from "@/types/QuestionType";
 import { Difficulty } from "@/types/Difficulty";
 import { CategoryDTO } from "@/types/Category";
-import { useCategory } from "../hooks/useCategory";
+import { useCategory } from "../../Question/hooks/useCategory";
 
 interface QuestionTypeSelectorProps {
   control: Control<QuestionCreatePayload>;

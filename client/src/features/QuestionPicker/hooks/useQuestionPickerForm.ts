@@ -1,6 +1,5 @@
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { Question, QuestionFilter } from "@/features/QuestionBuilder/types";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   addExamQuestions,
   fetchAllQuestions,
@@ -10,6 +9,7 @@ import {
 import { setExamId } from "../redux/questionPickerSlice";
 import { UUID } from "crypto";
 import { useParams } from "react-router-dom";
+import { Question, QuestionFilter } from "@/features/Question/types/question-types";
 
 function useQuestionPickerForm() {
   const dispatch = useAppDispatch();
@@ -41,26 +41,26 @@ function useQuestionPickerForm() {
     dispatch(setExamId(examIdParam as UUID));
   }, [examIdParam]);
 
-  const loadQuestions = async (filters: QuestionFilter) => {
+  const loadQuestions = useCallback(async (filters: QuestionFilter) => {
     dispatch(fetchAllQuestions(filters));
-  };
+  }, []);
 
-  const handleAddQuestion = (sq: Question) => {
+  const handleAddQuestion = useCallback((sq: Question) => {
     setSelectedQuestions((prev) => [sq, ...prev]);
     setAvailableQuestions((prev) => prev.filter((que) => que.id !== sq.id));
-  };
+  }, []);
 
-  const handleRemoveQuestion = (rq: Question) => {
+  const handleRemoveQuestion = useCallback((rq: Question) => {
     setSelectedQuestions((prev) => prev.filter((que) => que.id !== rq.id));
     setAvailableQuestions((prev) => [...prev, rq]);
-  };
+  }, []);
 
-  const clearAllQuestions = () => {
+  const clearAllQuestions = useCallback(() => {
     setAvailableQuestions((prev) => [...selectedQuestions, ...prev]);
     setSelectedQuestions(() => []);
-  };
+  }, [selectedQuestions]);
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     setIsSubmitting(true);
     const selectedQuestionIds = selectedQuestions.map((que) => que.id);
     const newQuestionIds = selectedQuestionIds.filter((id) => !examQuestionIds.includes(id));
@@ -71,7 +71,7 @@ function useQuestionPickerForm() {
       .map((eq) => eq.id);
     if (removedExamQuestionIds.length) await dispatch(removeExamQuestion(removedExamQuestionIds));
     setIsSubmitting(false);
-  };
+  }, [selectedQuestions, examQuestions, examId]);
 
   return {
     availableQuestions,

@@ -10,9 +10,12 @@ export const examSchema = z.object({
 });
 
 export const examScheduleSchema = z.object({
+  name: z.string(),
+  collegeId: z.string().uuid().optional(),
   startDate: z.date({
     required_error: "Exam start date and time is required.",
   }),
 });
 
 export type ExamScheduleForm = z.infer<typeof examScheduleSchema>;
+export type ExamForm = z.infer<typeof examSchema>;

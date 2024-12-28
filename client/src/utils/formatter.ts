@@ -18,6 +18,27 @@ export function formatTimestamp(timestamp: string) {
   }
 }
 
+export function formatFutureTimestamp(timestamp: string) {
+  const now = new Date();
+  const date = new Date(timestamp);
+
+  const diffInSeconds = Math.floor((date.getTime() - now.getTime()) / 1000);
+
+  if (diffInSeconds < 60) {
+    return `${diffInSeconds} seconds`;
+  } else if (diffInSeconds < 3600) {
+    return `${Math.floor(diffInSeconds / 60)} minutes`;
+  } else if (diffInSeconds < 86400) {
+    return `${Math.floor(diffInSeconds / 3600)} hours`;
+  } else if (diffInSeconds < 604800) {
+    return `${Math.floor(diffInSeconds / 86400)} days`;
+  } else if (diffInSeconds < 2592000) {
+    return `${Math.floor(diffInSeconds / 604800)} weeks`;
+  } else {
+    return `${Math.floor(diffInSeconds / 2592000)} months`;
+  }
+}
+
 function formatHMSDuration(totalSecs: number) {
   let totalSeconds = Math.floor(totalSecs);
 
@@ -65,6 +86,7 @@ const formatter = {
   formatDate,
   formatScheduleDate,
   formatScheduleTime,
+  formatFutureTimestamp,
 };
 
 export default formatter;

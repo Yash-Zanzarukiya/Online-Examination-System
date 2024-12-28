@@ -1,4 +1,12 @@
-import { ChartNoAxesCombined, Grab, Layers, LayoutDashboard, MessageCircleQuestion, School, Wrench } from "lucide-react";
+import {
+  ChartNoAxesCombined,
+  Layers,
+  LayoutDashboard,
+  MessageCircleQuestion,
+  School,
+  Users,
+  Wrench,
+} from "lucide-react";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -26,11 +34,6 @@ const items = [
     icon: MessageCircleQuestion,
   },
   {
-    title: "Pick",
-    url: "questions/pick",
-    icon: Grab,
-  },
-  {
     title: "Exams",
     url: "exams",
     icon: Layers,
@@ -39,6 +42,11 @@ const items = [
     title: "Reports",
     url: "",
     icon: ChartNoAxesCombined,
+  },
+  {
+    title: "Candidates",
+    url: "candidates",
+    icon: Users,
   },
   {
     title: "Colleges",

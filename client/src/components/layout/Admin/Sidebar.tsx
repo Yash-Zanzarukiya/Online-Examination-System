@@ -5,7 +5,7 @@ import AdminSidebarHeader from "./SidebarHeader";
 
 export default function AdminSidebar() {
   return (
-    <Sidebar variant="inset" collapsible="icon">
+    <Sidebar variant="floating" collapsible="icon">
       <SidebarHeader>
         <AdminSidebarHeader />
       </SidebarHeader>

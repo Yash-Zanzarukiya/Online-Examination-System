@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TypographyH3 } from "@/components/ui/TypographyH3";
 import { Button } from "@/components/ui/button";
 import { ExamScheduleForm } from "../components";
-import { useExams } from "../hooks";
+import { useAllExams } from "../hooks";
 import { UUID } from "crypto";
 import { useMemo, useState } from "react";
 import {
@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/select";
 
 export default function ScheduleExam() {
-  const { exams } = useExams();
+  const { exams } = useAllExams();
   const [selectedExamId, setSelectedExamId] = useState<UUID | null>(null);
 
   const exam = useMemo(() => exams.find((e) => e.id === selectedExamId), [selectedExamId]);

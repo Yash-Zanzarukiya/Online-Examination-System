@@ -4,3 +4,5 @@ export interface ApiResponse<T = any> {
   message: string;
   data: T;
 }
+
+export type ApiDataResponse<T> = ApiResponse<{ data: T }>;

@@ -35,6 +35,9 @@ public class ScheduleExam {
     @JoinColumn(name = "college_id", nullable = true)
     private College college;
 
+    @Column(nullable = false, columnDefinition = "varchar(255) default 'Exam'")
+    private String name;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "varchar(255) default 'SCHEDULED'")
     private ScheduledExamStatus status;

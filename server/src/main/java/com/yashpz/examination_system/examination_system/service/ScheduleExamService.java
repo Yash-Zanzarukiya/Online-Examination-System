@@ -9,6 +9,7 @@ import com.yashpz.examination_system.examination_system.model.College;
 import com.yashpz.examination_system.examination_system.model.Exam;
 import com.yashpz.examination_system.examination_system.model.ScheduleExam;
 import com.yashpz.examination_system.examination_system.repository.ScheduleExamRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,17 +18,12 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class ScheduleExamService {
 
     private final ScheduleExamRepository scheduleExamRepository;
     private final ExamService examService;
     private final CollegeService collegeService;
-
-    public ScheduleExamService( ScheduleExamRepository scheduleExamRepository, ExamService examService, CollegeService collegeService) {
-        this.scheduleExamRepository = scheduleExamRepository;
-        this.examService = examService;
-        this.collegeService = collegeService;
-    }
 
     @Transactional
     public ScheduleExamResponseDTO scheduleExam(ScheduleExamRequestDTO dto) {
@@ -44,8 +40,8 @@ public class ScheduleExamService {
         return ScheduleExamMapper.toResponseDTO(scheduleExam);
     }
 
-    public List<ScheduleExamResponseDTO> getExamSchedules(UUID examId, UUID collegeId, Boolean upcoming) {
-        List<ScheduleExam> schedules = scheduleExamRepository.findSchedulesByFilters(examId, collegeId, upcoming);
+    public List<ScheduleExamResponseDTO> getExamSchedules(UUID examId, UUID collegeId, ScheduledExamStatus status) {
+        List<ScheduleExam> schedules = scheduleExamRepository.findSchedulesByFilters(examId, collegeId, status);
         return ScheduleExamMapper.toResponseDTO(schedules);
     }
 
@@ -55,15 +51,11 @@ public class ScheduleExamService {
     }
 
     @Transactional
-    public ScheduleExamResponseDTO rescheduleExam(UUID id, ScheduleExamRequestDTO dto) {
+    public ScheduleExamResponseDTO updateExamSchedule(UUID id, ScheduleExamRequestDTO dto) {
         ScheduleExam scheduleExam = fetchScheduleExamById(id);
 
-        College college = dto.getCollegeId() != null
-                ? collegeService.fetchCollegeById(dto.getCollegeId())
-                : null;
+        ScheduleExamMapper.updateEntity(scheduleExam, dto);
 
-        scheduleExam.setCollege(college);
-        scheduleExam.setStartingAt(dto.getStartingAt());
         scheduleExamRepository.save(scheduleExam);
 
         return ScheduleExamMapper.toResponseDTO(scheduleExam);

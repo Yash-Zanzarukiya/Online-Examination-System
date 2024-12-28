@@ -26,7 +26,6 @@ public class ProgrammingQuestionController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<ProgrammingQuestionResponseDTO>> createProgrammingQuestion(@RequestBody @Valid ProgrammingQuestionRequestDTO questionDTO) {
-         System.out.println("QuestionWithOptionsDTO: " + questionDTO);
          ProgrammingQuestionResponseDTO programmingQuestionResponseDTO = programmingQuestionService.createProgrammingQuestion(questionDTO);
          return ApiResponseUtil.handleResponse(HttpStatus.CREATED, programmingQuestionResponseDTO, "Question created successfully");
     }
