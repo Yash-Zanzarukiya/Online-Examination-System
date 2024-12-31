@@ -21,6 +21,7 @@ import AdminLayout from "./components/layout/Admin/AdminLayout";
 import ExamAuthPage from "./features/ExamSetup/pages/ExamAuthPage";
 import ExamSetup from "./features/ExamSetup/pages/ExamSetup";
 import ExamCandidates from "./features/ExamCandidates/pages/ExamCandidates";
+import QuestionLibrary from "./features/QuestionsLibrary/pages/QuestionLibrary";
 
 function App() {
   const { toast } = useToast();
@@ -67,7 +68,7 @@ function App() {
 
           <Route path="questions/build" element={<QuestionCreator />} />
 
-          <Route path="questions/all" element={<AllQuestions />} />
+          <Route path="questions/all" element={<QuestionLibrary />} />
 
           <Route path="exams/create" element={<CreateExamPage />} />
 

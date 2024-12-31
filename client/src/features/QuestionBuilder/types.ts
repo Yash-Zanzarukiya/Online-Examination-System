@@ -41,7 +41,6 @@ export interface QuestionForm {
   questionText: string;
   imageUrl?: string;
   imageFile?: File;
-  correctAnswerId?: UUID;
 }
 
 export interface McqOptionForm {

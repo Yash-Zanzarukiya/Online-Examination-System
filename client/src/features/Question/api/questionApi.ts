@@ -15,17 +15,17 @@ class QuestionApi {
     return await axiosInstance.post(`${this.basePath}/bulk`, data);
   }
 
-  async uploadQuestions(file: File): Promise<ApiDataResponse<Question[]>> {
-    const formData = new FormData();
-    formData.append("file", file);
-    return await axiosInstance.post(`${this.basePath}/upload`, formData);
+  async uploadQuestions(data: FormData): Promise<ApiDataResponse<Question[]>> {
+    return await axiosInstance.post(`${this.basePath}/upload`, data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
   }
 
   async getQuestionById(questionId: UUID): Promise<ApiDataResponse<Question>> {
     return await axiosInstance.get(`${this.basePath}/${questionId}`);
   }
 
-  async getAllQuestions(filter: QuestionFilter): Promise<ApiDataResponse<Question[]>> {
+  async getAllQuestions(filter?: QuestionFilter): Promise<ApiDataResponse<Question[]>> {
     return await axiosInstance.get(this.basePath, { params: filter });
   }
 

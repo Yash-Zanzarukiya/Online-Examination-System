@@ -1,18 +1,14 @@
 import { ApiDataResponse } from "@/types/ApiResponse";
 import { axiosInstance } from "@/utils";
-import {
-  StudentData,
-  StudentDataFilters,
-  StudentProfileData,
-  StudentProfileDTO,
-  StudentProfileResponse,
-} from "../types";
+import { StudentData, StudentDataFilters, StudentProfileData, StudentProfileDTO } from "../types";
 import { UUID } from "crypto";
 
 class StudentProfileApi {
   private readonly basePath: string = "/student-profile";
 
-  async createStudentProfile(profile: StudentProfileDTO): Promise<StudentProfileResponse> {
+  async createStudentProfile(
+    profile: StudentProfileDTO
+  ): Promise<ApiDataResponse<StudentProfileData>> {
     return await axiosInstance.post(this.basePath, profile);
   }
 

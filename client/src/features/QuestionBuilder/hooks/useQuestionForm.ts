@@ -33,7 +33,6 @@ export const useQuestionForm = (initialData?: FullQuestion) => {
             difficulty: initialData.question.difficulty,
             type: initialData.question.type,
             questionText: initialData.question.questionText,
-            correctAnswerId: initialData.question.correctAnswerId,
           },
           options: initialData.options?.map((option) => ({
             id: option.id,
