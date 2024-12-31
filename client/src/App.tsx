@@ -11,7 +11,7 @@ import { AdminDashboard } from "./features/admin/pages";
 import AuthLayout from "./routes/AuthLayout";
 import { Roles } from "./types/Roles";
 import CollegePage from "./features/college/pages/CollegePage";
-import { StudentDashboard, StudentProfile } from "./features/student/pages";
+import { AllStudents, StudentDashboard, StudentProfile } from "./features/student/pages";
 import QuestionCreator from "./features/QuestionBuilder/pages/QuestionCreator";
 import AllQuestions from "./features/QuestionBuilder/pages/AllQuestions";
 import QuestionPicker from "./features/QuestionPicker/pages/QuestionPicker";
@@ -62,6 +62,8 @@ function App() {
           <Route path="" element={<AdminDashboard />} />
 
           <Route path="colleges" element={<CollegePage />} />
+
+          <Route path="candidates" element={<AllStudents />} />
 
           <Route path="questions/build" element={<QuestionCreator />} />
 

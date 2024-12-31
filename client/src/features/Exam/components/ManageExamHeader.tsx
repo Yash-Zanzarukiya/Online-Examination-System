@@ -18,7 +18,7 @@ function ManageExamHeader({ title, examTabs }: ManageExamHeaderProps) {
               <Button variant="outline" size="sm">
                 Try Test
               </Button>
-              <Button size="sm" className="bg-green-600 hover:bg-green-700">
+              <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
                 Invite
               </Button>
             </div>

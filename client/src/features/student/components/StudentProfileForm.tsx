@@ -5,8 +5,8 @@ import { FormInput } from "@/components/custom/FormInput";
 import CollegeSelector from "./CollegeSelector";
 import { UUID } from "crypto";
 
-export function StudentProfileForm({ userId }: { userId: UUID }) {
-  const { form, onSubmit, isLoading } = useStudentProfileForm(userId);
+export function StudentProfileForm({ userId }: { userId?: UUID }) {
+  const { form, onSubmit, isLoading } = useStudentProfileForm(userId as UUID);
 
   return (
     <Form {...form}>

@@ -1,33 +1,57 @@
+import { ApiDataResponse } from "@/types/ApiResponse";
 import { axiosInstance } from "@/utils";
-import { StudentProfileDTO, StudentProfileResponse } from "../types";
+import {
+  StudentData,
+  StudentDataFilters,
+  StudentProfileData,
+  StudentProfileDTO,
+  StudentProfileResponse,
+} from "../types";
 import { UUID } from "crypto";
 
-const createStudentProfile = async (
-  profile: StudentProfileDTO
-): Promise<StudentProfileResponse> => {
-  return await axiosInstance.post("/student-profile", profile);
-};
+class StudentProfileApi {
+  private readonly basePath: string = "/student-profile";
 
-const updateStudentProfile = async (
-  userId: UUID,
-  profile: Partial<StudentProfileDTO>
-): Promise<StudentProfileResponse> => {
-  return await axiosInstance.patch(`/student-profile/${userId}`, profile);
-};
+  async createStudentProfile(profile: StudentProfileDTO): Promise<StudentProfileResponse> {
+    return await axiosInstance.post(this.basePath, profile);
+  }
 
-const getStudentProfileByUserId = async (userId: UUID): Promise<StudentProfileResponse> => {
-  return await axiosInstance.get(`/student-profile/user/${userId}`);
-};
+  async getStudentProfileById(
+    studentProfileId: UUID
+  ): Promise<ApiDataResponse<StudentProfileData>> {
+    return await axiosInstance.get(`${this.basePath}/${studentProfileId}`);
+  }
 
-const deleteStudentProfile = async (userId: UUID): Promise<StudentProfileResponse> => {
-  return await axiosInstance.delete(`/student-profile/${userId}`);
-};
+  async getStudentProfileByUserId(userId: UUID): Promise<ApiDataResponse<StudentProfileData>> {
+    return await axiosInstance.get(`${this.basePath}/user/${userId}`);
+  }
 
-const studentProfileApis = {
-  createStudentProfile,
-  updateStudentProfile,
-  getStudentProfileByUserId,
-  deleteStudentProfile,
-};
+  async updateStudentProfile(
+    userId: UUID,
+    profile: Partial<StudentProfileDTO>
+  ): Promise<ApiDataResponse<StudentProfileData>> {
+    return await axiosInstance.patch(`${this.basePath}/${userId}`, profile);
+  }
 
-export default studentProfileApis;
+  async deleteStudentProfile(studentProfileId: UUID): Promise<ApiDataResponse<StudentProfileData>> {
+    return await axiosInstance.delete(`${this.basePath}/${studentProfileId}`);
+  }
+
+  async uploadStudentData(
+    collegeId: UUID,
+    data: FormData
+  ): Promise<ApiDataResponse<StudentData[]>> {
+    return await axiosInstance.post(`${this.basePath}/upload`, data, {
+      params: { collegeId },
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+  }
+
+  async getAllStudentData(filters?: StudentDataFilters): Promise<ApiDataResponse<StudentData[]>> {
+    return await axiosInstance.get(this.basePath, { params: filters });
+  }
+}
+
+const studentProfileApi = new StudentProfileApi();
+
+export default studentProfileApi;

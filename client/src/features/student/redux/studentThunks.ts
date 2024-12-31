@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { StudentProfileDTO } from "../types";
+import { StudentDataFilters, StudentProfileDTO } from "../types";
 import studentProfileApi from "../api/studentApi";
 import { toastApiError, toastApiSuccess } from "@/utils";
 import { UUID } from "crypto";
@@ -44,13 +44,38 @@ export const getStudentProfileThunk = createAsyncThunk(
 
 export const deleteStudentProfileThunk = createAsyncThunk(
   "studentProfile/delete",
-  async (userId: UUID) => {
+  async (studentProfileId: UUID) => {
     try {
-      const apiRes = await studentProfileApi.deleteStudentProfile(userId);
+      const apiRes = await studentProfileApi.deleteStudentProfile(studentProfileId);
       toastApiSuccess("Profile Deleted Successfully", apiRes);
-      return apiRes.data.data;
+      return studentProfileId;
     } catch (error) {
       toastApiError("Failed to delete profile", error);
+    }
+  }
+);
+
+export const uploadStudentDataThunk = createAsyncThunk(
+  "studentData/upload",
+  async ({ collegeId, data }: { collegeId: UUID; data: FormData }) => {
+    try {
+      const apiRes = await studentProfileApi.uploadStudentData(collegeId, data);
+      toastApiSuccess("Data Uploaded Successfully", apiRes);
+      return apiRes.data.data;
+    } catch (error) {
+      toastApiError("Failed to upload data", error);
+    }
+  }
+);
+
+export const getAllStudentDataThunk = createAsyncThunk(
+  "studentData/getAll",
+  async (filters?: StudentDataFilters) => {
+    try {
+      const apiRes = await studentProfileApi.getAllStudentData(filters);
+      return apiRes.data.data;
+    } catch (error) {
+      toastApiError("Failed to fetch data", error);
     }
   }
 );

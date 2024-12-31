@@ -22,7 +22,7 @@ function ExamsDashboard() {
               <TypographyH4>Manage Exams</TypographyH4>
             </div>
             <div className="flex items-center gap-2">
-              <Button asChild size="sm" className="bg-green-600 hover:bg-green-700">
+              <Button asChild size="sm" className="bg-blue-600 hover:bg-blue-700">
                 <Link to="/admin/exams/create">Create Exam</Link>
               </Button>
             </div>
