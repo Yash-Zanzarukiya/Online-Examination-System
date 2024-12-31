@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { useActiveExam } from "../hooks";
+import ConfirmDialog from "@/components/custom/ConfirmDialog";
 
 const ExamNavigation: React.FC = () => {
   const { examState, handleExamSubmit } = useActiveExam();
@@ -19,13 +20,15 @@ const ExamNavigation: React.FC = () => {
           <span className="text-lg font-medium">
             Time Remaining: {formatTime(examState.timeRemaining)}
           </span>
-          <Button
-            onClick={handleExamSubmit}
-            variant="destructive"
-            className="bg-red-500 hover:bg-red-600"
+
+          <ConfirmDialog
+            onConfirm={handleExamSubmit}
+            title="Confirm Submit Exam"
+            description="Once submitted, you are no longer view or modify this exam. Are you sure you are done and want to submit the exam?"
+            confirmText="Yes, submit"
           >
-            Submit Exam
-          </Button>
+            <Button variant="destructive">Submit Exam</Button>
+          </ConfirmDialog>
         </div>
       </div>
     </nav>

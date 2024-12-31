@@ -1,12 +1,9 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { ActiveExamQuestion } from "../types";
 import { useActiveExam } from "../hooks/useActiveExam";
 import { QuestionType } from "@/types/QuestionType";
-import { UUID } from "crypto";
+import { McqOptions, ProgrammingQuestionCodeEditor } from ".";
 
 interface QuestionDisplayProps {
   question: ActiveExamQuestion;
@@ -16,38 +13,15 @@ interface QuestionDisplayProps {
 const QuestionDisplay: React.FC<QuestionDisplayProps> = ({ question, questionNumber }) => {
   const { examState, handleAnswerChange, handleCodeChange, handleNext, handlePrevious } =
     useActiveExam();
+
   const questionState = examState.examQuestionsState[question.question.id];
 
-  const renderMCQOptions = () => (
-    <RadioGroup
-      onValueChange={(value) => handleAnswerChange(question.question.id, value as UUID)}
-      value={questionState?.selectedOptionId || undefined}
-    >
-      {question.options.map((option, index) => (
-        <div key={index} className="flex items-center space-x-2 mb-4">
-          <RadioGroupItem value={option.id} id={`option-${index}`} />
-          <Label htmlFor={`option-${index}`}>
-            {option.optionText}
-            {option.image && (
-              <img src={option.image} alt="Option" className="mt-2 max-w-full h-auto rounded-lg" />
-            )}
-          </Label>
-        </div>
-      ))}
-    </RadioGroup>
-  );
-
-  const renderCodeEditor = () => (
-    <Textarea
-      value={questionState?.submittedCode || ""}
-      onChange={(e) => handleCodeChange(question.question.id, e.target.value)}
-      className="font-mono h-64"
-      placeholder="Write your code here..."
-    />
-  );
-
   return (
-    <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-8">
+    <div
+      className={`max-w-4xl ${
+        question.question.type === QuestionType.PROGRAMMING && "max-w-6xl"
+      } mx-auto rounded-lg shadow-md p-8`}
+    >
       <div className="mb-6">
         <h2 className="text-2xl font-bold">Question {questionNumber}</h2>
       </div>
@@ -59,7 +33,22 @@ const QuestionDisplay: React.FC<QuestionDisplayProps> = ({ question, questionNum
         </div>
       )}
 
-      {question.question.type === QuestionType.MCQ ? renderMCQOptions() : renderCodeEditor()}
+      {question.question.type === QuestionType.MCQ ? (
+        <McqOptions
+          key={question.question.id}
+          handleAnswerChange={handleAnswerChange}
+          options={question.options}
+          questionId={question.question.id}
+          selectedOptionId={questionState?.selectedOptionId}
+        />
+      ) : (
+        <ProgrammingQuestionCodeEditor
+          key={question.question.id}
+          questionId={question.question.id}
+          submittedCode={questionState?.submittedCode}
+          onChange={handleCodeChange}
+        />
+      )}
 
       <div className="flex justify-between mt-8">
         <Button onClick={handlePrevious} disabled={questionNumber === 1}>

@@ -13,6 +13,7 @@ public class ProgrammingSubmissionMapper {
         programmingSubmission.setQuestion(question);
         programmingSubmission.setSubmittedCode(DTO.getSubmittedCode());
         programmingSubmission.setTimeSpent(0);
+        programmingSubmission.setMarks(0);
         programmingSubmission.setProgrammingLanguage(DTO.getProgrammingLanguage());
         return programmingSubmission;
     }

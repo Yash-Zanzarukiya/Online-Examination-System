@@ -16,6 +16,7 @@ export interface Question {
   type: QuestionType;
   questionText: string;
   image: string;
+  marks: number;
   correctAnswerId: UUID;
 }
 

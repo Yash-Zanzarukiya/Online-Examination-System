@@ -1,5 +1,5 @@
-import { Question } from "@/features/QuestionBuilder/types";
 import { UUID } from "crypto";
+import { Question } from "./question-types";
 
 export interface McqQuestion {
   question: Question;

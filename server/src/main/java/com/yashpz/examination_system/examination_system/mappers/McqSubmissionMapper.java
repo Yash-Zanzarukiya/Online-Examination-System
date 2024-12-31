@@ -12,6 +12,7 @@ public class McqSubmissionMapper {
         mcqSubmission.setExamAttempt(examAttempt);
         mcqSubmission.setQuestion(question);
         mcqSubmission.setTimeSpent(0);
+        mcqSubmission.setMarks(0);
         mcqSubmission.setSelectedOptionId(DTO.getSelectedOptionId());
         return mcqSubmission;
     }

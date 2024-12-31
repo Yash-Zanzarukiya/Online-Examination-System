@@ -36,7 +36,7 @@ class ScheduleExamApi {
     examId: UUID,
     status: ScheduledExamStatus
   ): Promise<ApiDataResponse<ScheduledExam>> {
-    return await axiosInstance.patch(`${this.basePath}/${examId}/status`, {
+    return await axiosInstance.patch(`${this.basePath}/${examId}/status`, null, {
       params: { status },
     });
   }

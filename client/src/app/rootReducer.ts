@@ -7,6 +7,8 @@ import questionReducer from "@/features/QuestionBuilder/redux/questionSlice";
 import questionPickerReducer from "@/features/QuestionPicker/redux/questionPickerSlice";
 import examReducer from "@/features/Exam/redux/examSlice";
 import activeExamReducer from "@/features/ActiveExam/redux/activeExamSlice";
+import examCandidatesReducer from "@/features/ExamCandidates/redux/examCandidatesSlice";
+import candidateReportReducer from "@/features/CandidateReport/redux/candidateReportSlice";
 
 const rootReducer = combineReducers({
   public: publicReducer,
@@ -17,6 +19,8 @@ const rootReducer = combineReducers({
   questionPicker: questionPickerReducer,
   exams: examReducer,
   activeExam: activeExamReducer,
+  examCandidates: examCandidatesReducer,
+  candidateReport: candidateReportReducer,
 });
 
 export default rootReducer;

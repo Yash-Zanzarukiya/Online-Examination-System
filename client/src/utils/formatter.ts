@@ -53,6 +53,21 @@ function formatHMSDuration(totalSecs: number) {
   }
 }
 
+function formatMinSecDuration(totalMS: number) {
+  const totalSeconds = Math.floor(totalMS / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
+  const formattedMinutes = minutes < 10 ? "0" + minutes : minutes;
+  const formattedSeconds = seconds < 10 ? "0" + seconds : seconds;
+
+  if (minutes > 0) {
+    return `${formattedMinutes} min ${formattedSeconds} sec`;
+  } else {
+    return `${formattedSeconds} sec`;
+  }
+}
+
 function formatDate(timestamp: string) {
   const date = new Date(timestamp);
   const days = date.getDate();
@@ -84,6 +99,7 @@ const formatter = {
   formatTimestamp,
   formatHMSDuration,
   formatDate,
+  formatMinSecDuration,
   formatScheduleDate,
   formatScheduleTime,
   formatFutureTimestamp,

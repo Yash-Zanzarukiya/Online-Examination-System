@@ -35,7 +35,6 @@ function handleExamQuestionRes(
 ) {
   const activeExamState: ActiveExamQuestionsResponse = message.payload;
   dispatch(setExamQuestions(activeExamState));
-  toastMessage("Exam Question fetched");
 }
 
 function handleStartExamRes(
@@ -57,11 +56,9 @@ function handleSubmitExamRes(
 
 function handlePong(
   _client: WebSocketClient,
-  message: WebSocketMessage,
+  _message: WebSocketMessage,
   _dispatch: Dispatch<Action>
-) {
-  toastMessage("time saved", message.payload);
-}
+) {}
 
 function handleForceLogout(
   _client: WebSocketClient,

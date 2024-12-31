@@ -5,6 +5,7 @@ import com.yashpz.examination_system.examination_system.model.ProgrammingSubmiss
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,9 +21,11 @@ public interface ProgrammingSubmissionRepository extends JpaRepository<Programmi
     List<ActiveExamQuestionsState> getProgrammingSubmissionStateByExamAttemptId(UUID examAttemptId);
 
     @Modifying
-    @Query("update ProgrammingSubmission pq set pq.timeSpent = pq.timeSpent + ?3 where pq.examAttempt = ?1 and pq.question = ?2")
+    @Query("update ProgrammingSubmission pq set pq.timeSpent = pq.timeSpent + ?3 where pq.examAttempt.id = ?1 and pq.question.id = ?2")
     void updateTimeSpentOnQuestion(UUID examAttemptId, UUID questionId, int timeSpent);
 
     @Query("select sum(pq.marks) from ProgrammingSubmission pq where pq.examAttempt.id = ?1")
     int getProgrammingSubmissionScoreByExamAttemptId(UUID examAttemptId);
+
+    Boolean existsByExamAttemptIdAndQuestionId(UUID examAttemptId, UUID questionId);
 }

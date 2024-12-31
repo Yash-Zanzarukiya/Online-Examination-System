@@ -69,28 +69,10 @@ public class ExamResponseService {
 
         validateQuestionBelongsToExam(questionId, examAttempt);
 
-        Boolean exists = mcqSubmissionRepository.existsByExamAttemptIdAndQuestionId(examAttempt.getId(), questionId);
-        if (!exists){
-            if (question.getType() == QuestionType.MCQ){
-                McqSubmission mcqSubmission = new McqSubmission();
-                mcqSubmission.setQuestion(question);
-                mcqSubmission.setTimeSpent(timeSpent);
-                mcqSubmission.setExamAttempt(examAttempt);
-                mcqSubmissionRepository.save(mcqSubmission);
-            }else {
-                ProgrammingSubmission programmingSubmission = new ProgrammingSubmission();
-                programmingSubmission.setQuestion(question);
-                programmingSubmission.setTimeSpent(timeSpent);
-                programmingSubmission.setExamAttempt(examAttempt);
-                programmingSubmissionRepository.save(programmingSubmission);
-            }
-            return;
-        }
-
-        if (question.getType()== QuestionType.MCQ)
-            mcqSubmissionRepository.updateTimeSpentOnQuestion(examAttempt.getId(), questionId, timeSpent);
+        if (question.getType() == QuestionType.MCQ)
+            handleMcqSubmissionTimeSpent(questionId, timeSpent, examAttempt);
         else
-            programmingSubmissionRepository.updateTimeSpentOnQuestion(examAttempt.getId(), questionId, timeSpent);
+            handleProgrammingSubmissionTimeSpent(questionId, timeSpent, examAttempt);
     }
 
     // <--------------- Helpers --------------->
@@ -143,5 +125,33 @@ public class ExamResponseService {
     private void UpdateProgrammingSubmission(ProgrammingSubmission programmingSubmission, ProgrammingSubmissionRequestDTO programmingSubmissionRequestDTO) {
         ProgrammingSubmissionMapper.updateEntity(programmingSubmission, programmingSubmissionRequestDTO);
         programmingSubmissionRepository.save(programmingSubmission);
+    }
+
+    private void handleMcqSubmissionTimeSpent(UUID questionId, int timeSpent, ExamAttempt examAttempt) {
+        if (!mcqSubmissionRepository.existsByExamAttemptIdAndQuestionId(examAttempt.getId(), questionId)) {
+            Question question = questionService.fetchQuestionById(questionId);
+            McqSubmission mcqSubmission = new McqSubmission();
+            mcqSubmission.setQuestion(question);
+            mcqSubmission.setTimeSpent(timeSpent);
+            mcqSubmission.setMarks(0);
+            mcqSubmission.setExamAttempt(examAttempt);
+            mcqSubmissionRepository.save(mcqSubmission);
+        } else {
+            mcqSubmissionRepository.updateTimeSpentOnQuestion(examAttempt.getId(), questionId, timeSpent);
+        }
+    }
+
+    private void handleProgrammingSubmissionTimeSpent(UUID questionId, int timeSpent, ExamAttempt examAttempt) {
+        if (!programmingSubmissionRepository.existsByExamAttemptIdAndQuestionId(examAttempt.getId(), questionId)) {
+            Question question = questionService.fetchQuestionById(questionId);
+            ProgrammingSubmission programmingSubmission = new ProgrammingSubmission();
+            programmingSubmission.setQuestion(question);
+            programmingSubmission.setTimeSpent(timeSpent);
+            programmingSubmission.setMarks(0);
+            programmingSubmission.setExamAttempt(examAttempt);
+            programmingSubmissionRepository.save(programmingSubmission);
+        } else {
+            programmingSubmissionRepository.updateTimeSpentOnQuestion(examAttempt.getId(), questionId, timeSpent);
+        }
     }
 }
