@@ -12,7 +12,7 @@ class ScheduleExamApi {
     examId: UUID,
     examData: ExamScheduleForm
   ): Promise<ApiDataResponse<ScheduledExam>> {
-    return await axiosInstance.patch(`${this.basePath}`, { ...examData, examId });
+    return await axiosInstance.post(`${this.basePath}`, { ...examData, examId });
   }
 
   async getExamScheduleById(examId: UUID): Promise<ApiDataResponse<ScheduledExam>> {
@@ -26,23 +26,32 @@ class ScheduleExamApi {
   }
 
   async updateExamSchedule(
-    examId: UUID,
+    scheduledExamId: UUID,
     examData: ExamScheduleForm
   ): Promise<ApiDataResponse<ScheduledExam>> {
-    return await axiosInstance.patch(`${this.basePath}/${examId}/update`, examData);
+    return await axiosInstance.patch(`${this.basePath}/${scheduledExamId}/update`, examData);
   }
 
   async updateScheduleExamStatus(
-    examId: UUID,
+    scheduledExamId: UUID,
     status: ScheduledExamStatus
   ): Promise<ApiDataResponse<ScheduledExam>> {
-    return await axiosInstance.patch(`${this.basePath}/${examId}/status`, null, {
+    return await axiosInstance.patch(`${this.basePath}/${scheduledExamId}/status`, null, {
       params: { status },
     });
   }
 
-  async deleteExamSchedule(examId: UUID): Promise<ApiDataResponse<string>> {
-    return await axiosInstance.delete(`${this.basePath}/${examId}`);
+  async deleteExamSchedule(scheduledExamId: UUID): Promise<ApiDataResponse<string>> {
+    return await axiosInstance.delete(`${this.basePath}/${scheduledExamId}`);
+  }
+
+  async inviteCandidates(
+    scheduledExamId: UUID,
+    formData: FormData
+  ): Promise<ApiDataResponse<string[]>> {
+    return await axiosInstance.post(`${this.basePath}/${scheduledExamId}/invite`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
   }
 }
 

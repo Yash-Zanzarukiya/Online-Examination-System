@@ -12,8 +12,8 @@ import {
 import { Question } from "@/features/Question/types/question-types";
 import { QuestionType } from "@/types/QuestionType";
 import { Difficulty } from "@/types/Difficulty";
-import { EditDialog } from "./QuestionDialog";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
 
 export const columns: ColumnDef<Question>[] = [
   {
@@ -120,7 +120,7 @@ export const columns: ColumnDef<Question>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <EditDialog questionId={question.id} questionType={question.type} />
+              <Link to={`/admin/questions/${question.type}/${question.id}`}>Edit</Link>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => console.log("Delete question:", question.id)}>
               Delete

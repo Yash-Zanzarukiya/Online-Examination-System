@@ -1,32 +1,49 @@
 import { ExamScheduleForm as examScheduleForm, examScheduleSchema } from "../validators";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { updateExamSchedule } from "../redux/examThunks";
+import { useAppDispatch } from "@/app/hooks";
+import { scheduleExam, updateExamSchedule } from "../redux/examThunks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { UUID } from "crypto";
 import { useEffect } from "react";
+import { ScheduledExam } from "../types";
+import { format } from "date-fns";
 
-const useExamScheduleForm = (examId: UUID, startDate?: Date | null) => {
+const getFormFields = (initialData?: ScheduledExam) => {
+  return {
+    name: initialData?.name || "",
+    startingAt: initialData?.startingAt ? new Date(initialData.startingAt) : undefined,
+    collegeId: initialData?.collegeId || "",
+  };
+};
+
+const useExamScheduleForm = (examId: UUID, initialData?: ScheduledExam) => {
   const dispatch = useAppDispatch();
-
-  const { isLoading } = useAppSelector(({ exams }) => exams);
 
   const form = useForm<examScheduleForm>({
     resolver: zodResolver(examScheduleSchema),
-    defaultValues: {
-      startDate: startDate ?? undefined,
-    },
+    defaultValues: getFormFields(initialData),
   });
 
   useEffect(() => {
-    form.reset({ startDate: startDate ?? undefined });
-  }, [startDate, examId]);
+    if (initialData) form.reset(getFormFields(initialData));
+  }, [initialData]);
 
-  function onSubmit(values: examScheduleForm) {
-    dispatch(updateExamSchedule({ examId, examData: values }));
+  function onSubmit(examData: examScheduleForm) {
+    const scheduledExamId = initialData?.id;
+    const startingAt: Date = format(examData.startingAt, "yyyy-MM-dd'T'HH:mm");
+    if (scheduledExamId) {
+      dispatch(
+        updateExamSchedule({
+          scheduledExamId: initialData?.id,
+          examData: { ...examData, startingAt },
+        })
+      );
+    } else {
+      dispatch(scheduleExam({ examId, examData }));
+    }
   }
 
-  return { form, onSubmit, isLoading };
+  return { form, onSubmit };
 };
 
 export default useExamScheduleForm;

@@ -3,6 +3,7 @@ import { ApiDataResponse } from "@/types/ApiResponse";
 import { axiosInstance } from "@/utils";
 import { UUID } from "crypto";
 import {
+  CandidateExamActivity,
   McqSubmission,
   ProgrammingSubmission,
   QuestionsAnalysis,
@@ -49,6 +50,12 @@ class CandidateReportApi {
   ): Promise<ApiDataResponse<ProgrammingSubmission>> {
     return await axiosInstance.get(`${this.baseUrl}/programming-submission`, {
       params: { examAttemptId, questionId },
+    });
+  }
+
+  async getExamActivities(examAttemptId: UUID): Promise<ApiDataResponse<CandidateExamActivity[]>> {
+    return await axiosInstance.get(`${this.baseUrl}/exam-activities`, {
+      params: { examAttemptId },
     });
   }
 

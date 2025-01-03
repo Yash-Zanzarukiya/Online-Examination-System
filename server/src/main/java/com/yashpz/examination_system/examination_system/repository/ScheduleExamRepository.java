@@ -24,5 +24,5 @@ public interface ScheduleExamRepository extends JpaRepository<ScheduleExam, UUID
 
     @Modifying
     @Query("UPDATE ScheduleExam se SET se.status = :status WHERE se.id = :scheduledExamId")
-    ScheduleExam updateScheduleExamStatus(@Param("scheduledExamId") UUID scheduledExamId, @Param("status") ScheduledExamStatus status);
+    Integer updateScheduleExamStatus(@Param("scheduledExamId") UUID scheduledExamId, @Param("status") ScheduledExamStatus status);
 }

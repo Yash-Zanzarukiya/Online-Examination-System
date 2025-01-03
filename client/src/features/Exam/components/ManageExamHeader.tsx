@@ -1,13 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { TypographyH4 } from "@/components/ui/TypographyH4";
-import { NavLink, Outlet } from "react-router-dom";
+import { UUID } from "crypto";
+import { NavLink, Outlet, useParams } from "react-router-dom";
+import ExamInviteButton from "./ExamInviteButton";
+import ScheduledExamStatusSelector from "./ScheduledExamStatusSelector";
 
 interface ManageExamHeaderProps {
   title?: string;
   examTabs?: { name: string; to: string }[];
+  normal?: boolean;
 }
 
-function ManageExamHeader({ title, examTabs }: ManageExamHeaderProps) {
+function ManageExamHeader({ title, examTabs, normal }: ManageExamHeaderProps) {
+  const { scheduledExamId } = useParams();
+
   return (
     <div className="container grow mx-auto p-7 pt-1">
       <div className="border-b">
@@ -18,9 +24,8 @@ function ManageExamHeader({ title, examTabs }: ManageExamHeaderProps) {
               <Button variant="outline" size="sm">
                 Try Test
               </Button>
-              <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                Invite
-              </Button>
+              {!normal && <ExamInviteButton scheduledExamId={scheduledExamId as UUID} />}
+              {!normal && <ScheduledExamStatusSelector scheduledExamId={scheduledExamId as UUID} />}
             </div>
           </div>
           <div className="mt-4">

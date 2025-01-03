@@ -32,16 +32,3 @@ export default function ImportButton() {
     </>
   );
 }
-
-{
-  /* <Button>
-      Import Excel
-      <Input
-        id="import-file"
-        type="file"
-        accept=".xlsx, .xls"
-        className="hidden"
-        onChange={handleImport}
-      />
-    </Button> */
-}

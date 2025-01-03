@@ -28,14 +28,14 @@ function QuestionComponent({ initialData, onUpdate }: QuestionComponentProps) {
         <Card className="mb-6 relative bg-muted/20">
           <CardContent className="relative p-4">
             <QuestionTypeSelector control={form.control} />
-            <Button type="submit" disabled={isSubmitting} className="absolute right-4 top-12">
+            <Button type="submit" disabled={isSubmitting} className="absolute right-4 top-4">
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Saving...
                 </>
               ) : (
-                "Save Full Question"
+                "Save Question"
               )}
             </Button>
             <QuestionEditor form={form} />

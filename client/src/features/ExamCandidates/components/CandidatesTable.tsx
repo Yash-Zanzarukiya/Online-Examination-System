@@ -10,7 +10,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ChevronDown, ChevronsLeft, ChevronsRight, Settings2 } from "lucide-react";
+import { ChevronDown, ChevronsLeft, ChevronsRight, RefreshCcw, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -36,13 +36,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { CandidateState, ExamAttemptStatus } from "../types";
 import { columns } from "./columns-config";
+import { getStatusColor } from "../utils/candidateTableUtils";
 
 interface CandidatesTableProps {
   data: CandidateState[];
   onRowClick: (attempt: CandidateState) => void;
+  onRefetch?: () => void;
 }
 
-export function CandidatesTable({ data, onRowClick }: CandidatesTableProps) {
+export function CandidatesTable({ data, onRowClick, onRefetch }: CandidatesTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -91,7 +93,7 @@ export function CandidatesTable({ data, onRowClick }: CandidatesTableProps) {
             <SelectContent>
               <SelectItem value="all">All</SelectItem>
               {Object.values(ExamAttemptStatus).map((status) => (
-                <SelectItem key={status} value={status}>
+                <SelectItem key={status} value={status} className={getStatusColor(status)}>
                   {status.replace("_", " ")}
                 </SelectItem>
               ))}
@@ -143,6 +145,10 @@ export function CandidatesTable({ data, onRowClick }: CandidatesTableProps) {
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
+
+          <Button size="icon" variant="outline" onClick={onRefetch}>
+            <RefreshCcw />
+          </Button>
         </div>
       </div>
       <div className="rounded-md border">

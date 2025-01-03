@@ -135,6 +135,7 @@ const examSlice = createSlice({
     });
     builder.addCase(updateExamSchedule.fulfilled, (state, action) => {
       if (action.payload) state.scheduledExam = action.payload;
+      console.log(action.payload);
       state.isLoading = false;
     });
     builder.addCase(updateExamSchedule.rejected, (state) => {
@@ -145,7 +146,9 @@ const examSlice = createSlice({
       state.isLoading = true;
     });
     builder.addCase(updateScheduleExamStatus.fulfilled, (state, action) => {
-      if (action.payload) state.scheduledExam = action.payload;
+      if (action.payload && state.scheduledExam) {
+        state.scheduledExam.status = action.payload;
+      }
       state.isLoading = false;
     });
     builder.addCase(updateScheduleExamStatus.rejected, (state) => {

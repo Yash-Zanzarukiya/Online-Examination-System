@@ -6,13 +6,13 @@ import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import QuestionUploadFormat from "./QuestionUploadFormat";
 
-interface ImportQuestionDataDialog {
+interface ImportQuestionDataDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onImport: (file: File) => void;
 }
 
-function ImportQuestionDataDialog({ isOpen, onClose, onImport }: ImportQuestionDataDialog) {
+function ImportQuestionDataDialog({ isOpen, onClose, onImport }: ImportQuestionDataDialogProps) {
   const [file, setFile] = useState<File | null>(null);
   const form = useForm();
 

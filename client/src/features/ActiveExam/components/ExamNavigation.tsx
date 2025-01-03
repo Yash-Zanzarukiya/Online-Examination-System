@@ -14,9 +14,9 @@ const ExamNavigation: React.FC = () => {
 
   return (
     <nav className="bg-white shadow-md p-4">
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <h1 className="text-2xl font-bold">JEE Mock Exam</h1>
-        <div className="flex items-center space-x-4">
+      <div className="mx-auto flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Online Examination</h1>
+        <div className="flex items-center space-x-8">
           <span className="text-lg font-medium">
             Time Remaining: {formatTime(examState.timeRemaining)}
           </span>

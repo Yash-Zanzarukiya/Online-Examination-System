@@ -25,7 +25,7 @@ interface CandidateHeaderProps {
 
 function CandidateHeader({ candidateState, handleStatusChange }: CandidateHeaderProps) {
   return (
-    <div className="flex items-center justify-between p-6 border-b">
+    <div className="flex items-center justify-between p-6 py-2 border-b">
       <div className="flex items-center gap-4">
         <CircularProgress
           value={candidateState.score}

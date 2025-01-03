@@ -62,9 +62,10 @@ public class ScheduleExamService {
     }
 
     @Transactional
-    public ScheduleExamResponseDTO updateScheduleExamStatus(UUID scheduledExamId, ScheduledExamStatus status){
-        ScheduleExam scheduleExam = scheduleExamRepository.updateScheduleExamStatus(scheduledExamId, status);
-        return ScheduleExamMapper.toResponseDTO(scheduleExam);
+    public void updateScheduleExamStatus(UUID scheduledExamId, ScheduledExamStatus status){
+        Integer i = scheduleExamRepository.updateScheduleExamStatus(scheduledExamId, status);
+        if (i == 0)
+            throw new ApiError(HttpStatus.NOT_FOUND, "Schedule exam not found");
     }
 
     @Transactional

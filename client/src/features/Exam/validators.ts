@@ -12,7 +12,7 @@ export const examSchema = z.object({
 export const examScheduleSchema = z.object({
   name: z.string(),
   collegeId: z.string().uuid().optional(),
-  startDate: z.date({
+  startingAt: z.date({
     required_error: "Exam start date and time is required.",
   }),
 });

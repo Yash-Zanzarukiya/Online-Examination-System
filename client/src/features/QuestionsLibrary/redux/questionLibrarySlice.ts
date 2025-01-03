@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { QuestionLibraryState } from "../types";
-import { getAllQuestions, uploadQuestions, deleteQuestion } from "./questionThunks";
+import { getAllQuestions, uploadQuestions, deleteQuestion, updateQuestion } from "./questionThunks";
 import { getMcqQuestionById, createMcqQuestion, createBulkMcqQuestions } from "./mcqQuestionThunks";
 import {
   createProgrammingQuestion,
@@ -62,11 +62,34 @@ const questionLibrarySlice = createSlice({
       .addCase(deleteQuestion.fulfilled, (state, action) => {
         const deletedQuestionId = action.payload;
         state.questions = state.questions.filter((q) => q.id !== deletedQuestionId);
+        state.mcqQuestion = null;
+        state.programmingQuestion = null;
         state.isLoading = false;
       })
       .addCase(deleteQuestion.rejected, (state) => {
         state.isLoading = false;
       });
+
+    // update Question
+    builder
+      .addCase(updateQuestion.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateQuestion.fulfilled, (state, action) => {
+        state.isLoading = false;
+        const updatedQuestion = action.payload;
+        if (updatedQuestion) {
+          state.questions = state.questions.map((q) =>
+            q.id === updatedQuestion.id ? updatedQuestion : q
+          );
+          if (state.mcqQuestion) state.mcqQuestion.question = updatedQuestion;
+          else if (state.programmingQuestion) state.programmingQuestion.question = updatedQuestion;
+        }
+      })
+      .addCase(updateQuestion.rejected, (state) => {
+        state.isLoading = false;
+      });
+
     // Create Mcq Question
     builder
       .addCase(createMcqQuestion.pending, (state) => {
@@ -77,6 +100,7 @@ const questionLibrarySlice = createSlice({
         const mcqQuestion = action.payload;
         if (mcqQuestion) {
           state.questions.push(mcqQuestion.question);
+          state.mcqQuestion = mcqQuestion;
         }
       })
       .addCase(createMcqQuestion.rejected, (state) => {
@@ -196,5 +220,7 @@ const questionLibrarySlice = createSlice({
       });
   },
 });
+
+export const { resetMcqQuestion, resetProgrammingQuestion } = questionLibrarySlice.actions;
 
 export default questionLibrarySlice.reducer;

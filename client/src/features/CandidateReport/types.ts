@@ -7,6 +7,7 @@ export interface CandidateReportState {
   candidateState: CandidateState | null;
   scoreDistribution: ScoreDistribution | null;
   questionsAnalysis: QuestionsAnalysis[];
+  examActivities: CandidateExamActivity[];
   isLoading: boolean;
 }
 
@@ -77,4 +78,25 @@ export interface AggregatedScores {
   aptitudeMcqScore: number;
   technicalMcqScore: number;
   programmingMcqScore: number;
+}
+
+export interface CandidateExamActivity {
+  id: UUID;
+  examAttemptId: UUID;
+  name: ActiveExamActivities;
+  description: string;
+  createdAt: Date;
+}
+
+export enum ActiveExamActivities {
+  LOGIN = "LOGIN",
+  DISCONNECT = "DISCONNECT",
+  PING = "PING",
+  EXAM_START = "EXAM_START",
+  EXAM_END = "EXAM_END",
+  TAB_SWITCH = "TAB_SWITCH",
+  COPY = "COPY",
+  PASTE = "PASTE",
+  QUESTION_NAVIGATION = "QUESTION_NAVIGATION",
+  ANSWER_SUBMISSION = "ANSWER_SUBMISSION",
 }

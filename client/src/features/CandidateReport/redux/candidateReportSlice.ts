@@ -6,12 +6,14 @@ import {
   getCandidateScoreDistribution,
   getCandidateState,
   updateCandidateStatus,
+  getExamActivities,
 } from "./candidateReportThunks";
 
 const initialState: CandidateReportState = {
   candidateState: null,
   questionsAnalysis: [],
   scoreDistribution: null,
+  examActivities: [],
   isLoading: false,
 };
 
@@ -73,6 +75,19 @@ const candidateReportSlice = createSlice({
         }
       })
       .addCase(updateCandidateStatus.rejected, (state) => {
+        state.isLoading = false;
+      });
+
+    // Exam Activities
+    builder
+      .addCase(getExamActivities.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getExamActivities.fulfilled, (state, action) => {
+        if (action.payload) state.examActivities = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(getExamActivities.rejected, (state) => {
         state.isLoading = false;
       });
   },

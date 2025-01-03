@@ -12,6 +12,7 @@ import { QuestionType } from "@/types/QuestionType";
 import { Difficulty } from "@/types/Difficulty";
 import { CategoryDTO } from "@/types/Category";
 import { useCategory } from "../../Question/hooks/useCategory";
+import { Input } from "@/components/ui/input";
 
 interface QuestionTypeSelectorProps {
   control: Control<QuestionCreatePayload>;
@@ -95,6 +96,25 @@ export default function QuestionTypeSelector({ control }: QuestionTypeSelectorPr
                 ))}
               </SelectContent>
             </Select>
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={control}
+        name="question.marks"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Difficulty</FormLabel>
+            <FormControl>
+
+            <Input
+              {...field}
+              type="number"
+              className="input input-bordered"
+              placeholder="Enter marks"
+              />
+              </FormControl>
           </FormItem>
         )}
       />

@@ -3,15 +3,17 @@ import { useActiveExam } from "../hooks/useActiveExam";
 import QuestionDisplay from "./QuestionDisplay";
 import Sidebar from "./Sidebar";
 import ExamNavigation from "./ExamNavigation";
+import { useExamSecurity } from "../hooks";
 
 export const ExamInterface: React.FC = () => {
   const { examState, currentQuestion } = useActiveExam();
+  const { WarningDialogComponent } = useExamSecurity();
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
+    <div id="exam-container" className="flex flex-col h-screen bg-gray-100">
       <ExamNavigation />
       <div className="flex flex-1 overflow-hidden">
-        <div className="flex-grow p-8 overflow-auto">
+        <div id="question-container" className="flex-grow p-8 overflow-auto">
           {currentQuestion && (
             <QuestionDisplay
               question={currentQuestion}
@@ -21,6 +23,7 @@ export const ExamInterface: React.FC = () => {
         </div>
         <Sidebar />
       </div>
+      {WarningDialogComponent}
     </div>
   );
 };

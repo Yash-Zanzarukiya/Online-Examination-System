@@ -6,6 +6,7 @@ import QuestionDisplay from "./QuestionDisplay";
 import Sidebar from "./Sidebar";
 import McqOptions from "./McqOptions";
 import ProgrammingQuestionCodeEditor from "./ProgrammingQuestionCodeEditor";
+import WarningDialog from "./WarningDialog";
 
 export {
   ExamInstructions,
@@ -16,4 +17,5 @@ export {
   Sidebar,
   McqOptions,
   ProgrammingQuestionCodeEditor,
+  WarningDialog,
 };

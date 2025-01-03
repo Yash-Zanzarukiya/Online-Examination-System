@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
 import { QuestionTable } from "../components/LibraryQuestionTable";
 import ImportButton from "../components/ImportButton";
 import { useLibraryQuestions } from "../hooks";
+import { AddQuestionButton } from "../components";
 
 export default function QuestionLibrary() {
   const { questions } = useLibraryQuestions();
@@ -11,7 +11,7 @@ export default function QuestionLibrary() {
       <h1 className="text-2xl font-bold mb-3">Question Library</h1>
       <div className="flex justify-end gap-2">
         <ImportButton />
-        <Button>Add Question</Button>
+        <AddQuestionButton />
       </div>
       <QuestionTable data={questions} />
     </div>

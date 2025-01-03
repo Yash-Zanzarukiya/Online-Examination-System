@@ -73,9 +73,9 @@ export const scheduleExam = createAsyncThunk(
 
 export const getExamScheduleById = createAsyncThunk(
   "exam/schedule/getById",
-  async (examId: UUID) => {
+  async (scheduledExamId: UUID) => {
     try {
-      const apiRes = await scheduleExamApi.getExamScheduleById(examId);
+      const apiRes = await scheduleExamApi.getExamScheduleById(scheduledExamId);
       return apiRes.data.data;
     } catch (error) {
       toastApiError("Failed to Fetch Exam Schedule", error);
@@ -97,9 +97,9 @@ export const getScheduledExams = createAsyncThunk(
 
 export const updateExamSchedule = createAsyncThunk(
   "exam/schedule/update",
-  async ({ examId, examData }: { examId: UUID; examData: ExamScheduleForm }) => {
+  async ({ scheduledExamId, examData }: { scheduledExamId: UUID; examData: ExamScheduleForm }) => {
     try {
-      const apiRes = await scheduleExamApi.updateExamSchedule(examId, examData);
+      const apiRes = await scheduleExamApi.updateExamSchedule(scheduledExamId, examData);
       toastApiSuccess("Success 🙂", apiRes);
       return apiRes.data.data;
     } catch (error) {
@@ -110,23 +110,39 @@ export const updateExamSchedule = createAsyncThunk(
 
 export const updateScheduleExamStatus = createAsyncThunk(
   "exam/schedule/updateStatus",
-  async ({ examId, status }: { examId: UUID; status: ScheduledExamStatus }) => {
+  async ({ scheduledExamId, status }: { scheduledExamId: UUID; status: ScheduledExamStatus }) => {
     try {
-      const apiRes = await scheduleExamApi.updateScheduleExamStatus(examId, status);
+      const apiRes = await scheduleExamApi.updateScheduleExamStatus(scheduledExamId, status);
       toastApiSuccess("Success 🙂", apiRes);
-      return apiRes.data.data;
+      return status;
     } catch (error) {
       toastApiError("Failed to Update Exam Schedule Status", error);
     }
   }
 );
 
-export const deleteExamSchedule = createAsyncThunk("exam/schedule/delete", async (examId: UUID) => {
-  try {
-    const apiRes = await scheduleExamApi.deleteExamSchedule(examId);
-    toastApiSuccess("Success 🙂", apiRes);
-    return examId;
-  } catch (error) {
-    toastApiError("Failed to Delete Exam Schedule", error);
+export const deleteExamSchedule = createAsyncThunk(
+  "exam/schedule/delete",
+  async (scheduledExamId: UUID) => {
+    try {
+      const apiRes = await scheduleExamApi.deleteExamSchedule(scheduledExamId);
+      toastApiSuccess("Success 🙂", apiRes);
+      return scheduledExamId;
+    } catch (error) {
+      toastApiError("Failed to Delete Exam Schedule", error);
+    }
   }
-});
+);
+
+export const inviteCandidates = createAsyncThunk(
+  "exam/schedule/invite",
+  async ({ scheduledExamId, formData }: { scheduledExamId: UUID; formData: FormData }) => {
+    try {
+      const apiRes = await scheduleExamApi.inviteCandidates(scheduledExamId, formData);
+      toastApiSuccess("Success 🙂", apiRes);
+      return apiRes.data.data;
+    } catch (error) {
+      toastApiError("Failed to Invite Candidates", error);
+    }
+  }
+);

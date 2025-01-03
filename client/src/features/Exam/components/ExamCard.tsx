@@ -38,7 +38,7 @@ function ExamCard({ exam }: ExamCardProps) {
         </CardContent>
         <CardFooter className="flex justify-between items-center">
           <Button variant="outline" size="sm" asChild>
-            <Link to={`manage/${exam.id}/pick`}>Manage Questions</Link>
+            <Link to={`manage/${exam.id}`}>Manage Questions</Link>
           </Button>
           <div className="space-x-2">
             <Button size="icon" variant="outline" onClick={() => setIsDialogOpen(true)}>

@@ -17,7 +17,7 @@ export default function Header() {
           </Button>
         </div>
       </div>
-      <p className="text-muted-foreground mb-6">Build and publish your tests in no time.</p>
+      <p className="text-muted-foreground mb-6">Build questions in no time.</p>
     </>
   );
 }

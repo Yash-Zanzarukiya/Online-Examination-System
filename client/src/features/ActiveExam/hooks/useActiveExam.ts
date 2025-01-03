@@ -12,6 +12,7 @@ import { UUID } from "crypto";
 import { useWebSocket } from "@/hooks";
 import {
   ActionType,
+  ExamEventType,
   MessageType,
   SubmissionType,
 } from "@/features/ExamWebSocket/types/message-types";
@@ -40,9 +41,25 @@ export const useActiveExam = () => {
             payload: timeRemainingRef.current,
           });
           console.log("Ping sent with remaining time:", timeRemainingRef.current);
-        }, 5000);
+        }, 15000);
       }
     }
+
+    client.send({
+      type: MessageType.ExamEvent,
+      subtype: ExamEventType.TAB_SWITCH,
+      payload: {},
+    });
+    client.send({
+      type: MessageType.ExamEvent,
+      subtype: ExamEventType.COPY,
+      payload: {},
+    });
+    client.send({
+      type: MessageType.ExamEvent,
+      subtype: ExamEventType.PASTE,
+      payload: {},
+    });
 
     return () => {
       if (pingInterval) {
@@ -69,7 +86,7 @@ export const useActiveExam = () => {
     };
   }, [examState.isExamStarted, examState.isExamSubmitted, dispatch]);
 
-  // Submit the exam when the time runs out
+  // auto-Submit the exam when the time runs out
   useEffect(() => {
     if (examState.timeRemaining === 0) {
       handleExamSubmit();
@@ -83,10 +100,14 @@ export const useActiveExam = () => {
       client.send({
         type: MessageType.SUBMISSION,
         subtype: SubmissionType.MULTIPLE_CHOICE_SUBMISSION,
-        payload: { questionId, selectedOptionId },
+        payload: {
+          questionId,
+          selectedOptionId,
+          questionNumber: examState.currentQuestionIndex + 1,
+        },
       });
     },
-    [dispatch]
+    [dispatch, examState.currentQuestionIndex]
   );
 
   // Handle the change in the programming question code
@@ -111,6 +132,12 @@ export const useActiveExam = () => {
         Date.now() - (examState.questionStartTimes[previousQuestionId] || Date.now());
 
       dispatch(navigateQuestion(index));
+
+      client.send({
+        type: MessageType.ExamEvent,
+        subtype: ExamEventType.QUESTION_NAVIGATION,
+        payload: "Viewed question " + (index + 1),
+      });
 
       // Send the time spent on the previous question to the server
       if (timeSpent > 0) {

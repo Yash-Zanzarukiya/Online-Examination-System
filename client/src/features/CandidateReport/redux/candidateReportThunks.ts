@@ -102,3 +102,16 @@ export const updateProgrammingMarks = createAsyncThunk(
     }
   }
 );
+
+// getExamActivities
+export const getExamActivities = createAsyncThunk(
+  "candidateReport/getExamActivities",
+  async (examAttemptId: UUID) => {
+    try {
+      const apiRes = await candidateReportApi.getExamActivities(examAttemptId);
+      return apiRes.data.data;
+    } catch (error) {
+      toastApiError("Failed to fetch exam activities", error);
+    }
+  }
+);

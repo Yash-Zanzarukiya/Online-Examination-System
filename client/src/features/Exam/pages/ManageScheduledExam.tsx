@@ -6,7 +6,6 @@ import useScheduledExam from "../hooks/useScheduledExam";
 const tabs = [
   { name: "Candidates", to: "" },
   { name: "Questions", to: "pick" },
-  { name: "Insights", to: "insights" },
   { name: "Schedule", to: "Schedule" },
 ];
 

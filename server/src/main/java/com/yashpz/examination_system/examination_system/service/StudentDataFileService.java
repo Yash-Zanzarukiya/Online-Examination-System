@@ -15,6 +15,21 @@ import java.util.List;
 @Service
 public class StudentDataFileService {
 
+    public List<String> getEmailsFromStudentDataFile(MultipartFile file) {
+        List<String> emails = new ArrayList<>();
+        try (Workbook workbook = new XSSFWorkbook(file.getInputStream())) {
+            Sheet sheet = workbook.getSheetAt(0);
+            for (Row row : sheet) {
+                if (row.getRowNum() == 0) continue;
+                String email = getCellValueAsString(row.getCell(0));
+                emails.add(email);
+            }
+        } catch (IOException e) {
+            throw new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "Error reading file: " + e.getMessage());
+        }
+        return emails;
+    }
+
     public List<ExcelStudentData> processStudentDataFile(MultipartFile file) {
         List<ExcelStudentData> studentDataList = new ArrayList<>();
 

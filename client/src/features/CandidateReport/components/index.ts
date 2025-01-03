@@ -5,6 +5,8 @@ import ProgrammingSubmissionView from "./ProgrammingSubmissionView";
 import QuestionsTable from "./QuestionsTable";
 import ScoreDistributionSection from "./ScoreDistributionSection";
 import ScoreInput from "./ScoreInput";
+import ExamActivityTab from "./ExamActivityTab";
+import ExamActivityTable from "./ExamActivityTable";
 
 export {
   ScoreDistributionSection,
@@ -14,4 +16,6 @@ export {
   ProgrammingSubmissionView,
   QuestionsTable,
   ScoreInput,
+  ExamActivityTab,
+  ExamActivityTable,
 };

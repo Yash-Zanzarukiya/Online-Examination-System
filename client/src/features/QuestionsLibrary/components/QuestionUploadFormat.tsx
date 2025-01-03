@@ -1,12 +1,5 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function QuestionUploadFormat() {
@@ -19,9 +12,6 @@ export default function QuestionUploadFormat() {
         </TabsList>
         <TabsContent value="questions">
           <Card>
-            <CardHeader>
-              <CardTitle>Questions Format</CardTitle>
-            </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
@@ -35,35 +25,12 @@ export default function QuestionUploadFormat() {
                     <TableHead>Reference Answer</TableHead>
                   </TableRow>
                 </TableHeader>
-                <TableBody>
-                  <TableRow>
-                    <TableCell>1</TableCell>
-                    <TableCell>MCQ</TableCell>
-                    <TableCell>7946a8df...</TableCell>
-                    <TableCell>EASY</TableCell>
-                    <TableCell>What is Solidity?</TableCell>
-                    <TableCell>1</TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>2</TableCell>
-                    <TableCell>PROGRAMMING</TableCell>
-                    <TableCell></TableCell>
-                    <TableCell>MEDIUM</TableCell>
-                    <TableCell>Reverse an array.</TableCell>
-                    <TableCell>10</TableCell>
-                    <TableCell className="font-mono text-xs">void reverse(int[] num)</TableCell>
-                  </TableRow>
-                </TableBody>
               </Table>
             </CardContent>
           </Card>
         </TabsContent>
         <TabsContent value="options">
           <Card>
-            <CardHeader>
-              <CardTitle>Options Format</CardTitle>
-            </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
@@ -73,23 +40,6 @@ export default function QuestionUploadFormat() {
                     <TableHead>Is Correct</TableHead>
                   </TableRow>
                 </TableHeader>
-                <TableBody>
-                  <TableRow>
-                    <TableCell>1</TableCell>
-                    <TableCell>Language</TableCell>
-                    <TableCell>TRUE</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>1</TableCell>
-                    <TableCell>Property</TableCell>
-                    <TableCell>FALSE</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>3</TableCell>
-                    <TableCell>Quick Sort</TableCell>
-                    <TableCell>TRUE</TableCell>
-                  </TableRow>
-                </TableBody>
               </Table>
             </CardContent>
           </Card>
