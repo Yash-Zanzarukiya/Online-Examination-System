@@ -5,6 +5,7 @@ import com.yashpz.examination_system.examination_system.constants.ExamSessionTyp
 import com.yashpz.examination_system.examination_system.dto.ActiveExam.ActiveExamQuestions.ActiveExamQuestionsDTO;
 import com.yashpz.examination_system.examination_system.dto.ActiveExam.ActiveExamState.ActiveExamStateDTO;
 import com.yashpz.examination_system.examination_system.service.ActiveExamService;
+import com.yashpz.examination_system.examination_system.service.ExamActivityService;
 import com.yashpz.examination_system.examination_system.service.ExamAttemptService;
 import com.yashpz.examination_system.examination_system.service.ExamSessionService;
 import com.yashpz.examination_system.examination_system.socket.dto.Action;
@@ -31,6 +32,7 @@ public class ActionHandler {
     private final ExamAttemptService examAttemptService;
     private final ExamSessionService examSessionService;
     private final ActiveExamService activeExamService;
+    private final ExamActivityService examActivityService;
 
     private final Map<Action, BiConsumer<WebSocketSession, SocketMessageDTO>> actionHandlers = new EnumMap<>(Action.class);
 
@@ -69,6 +71,7 @@ public class ActionHandler {
     private void handleStartExam(WebSocketSession session, SocketMessageDTO socketMessageDTO) {
         UUID examAttemptId = webSocketSessionUtil.getExamAttemptId(session);
         examAttemptService.startExam(examAttemptId, LocalDateTime.now());
+        examActivityService.handleStartExam(examAttemptId);
         sendActionResponse(session, Action.START_EXAM_RES, "All the best");
         System.out.println("Start exam action");
     }
@@ -90,6 +93,7 @@ public class ActionHandler {
     private void handleSubmitExam(WebSocketSession session, SocketMessageDTO socketMessageDTO) {
         UUID examAttemptId = webSocketSessionUtil.getExamAttemptId(session);
         examAttemptService.submitExam(examAttemptId, LocalDateTime.now());
+        examActivityService.handleSubmitExam(examAttemptId);
         sendActionResponse(session, Action.SUBMIT_EXAM_RES,"Exam Submitted successfully");
         System.out.println("Submit exam action");
     }

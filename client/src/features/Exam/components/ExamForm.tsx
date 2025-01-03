@@ -2,8 +2,8 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Form } from "@/components/ui/form";
 import { FormInput } from "@/components/custom/FormInput";
 import { Loader2 } from "lucide-react";
-import { TypographyH3 } from "@/components/ui/TypographyH3";
 import { Button } from "@/components/ui/button";
+import { TypographyH2 } from "@/components/ui/TypographyH2";
 
 interface ExamFormProps {
   form: any;
@@ -20,9 +20,9 @@ function ExamForm({ form, onSubmit, isLoading, isUpdating = false }: ExamFormPro
           <CardHeader>
             <CardTitle>
               {isUpdating ? (
-                <TypographyH3>Update Exam</TypographyH3>
+                <TypographyH2>Update Exam</TypographyH2>
               ) : (
-                <TypographyH3>Create Exam</TypographyH3>
+                <TypographyH2>Create Exam</TypographyH2>
               )}
             </CardTitle>
           </CardHeader>

@@ -11,20 +11,24 @@ import { AdminDashboard } from "./features/admin/pages";
 import AuthLayout from "./routes/AuthLayout";
 import { Roles } from "./types/Roles";
 import CollegePage from "./features/college/pages/CollegePage";
-import { StudentDashboard, StudentProfile } from "./features/student/pages";
+import { AllStudents, StudentDashboard, StudentProfile } from "./features/student/pages";
 import QuestionCreator from "./features/QuestionBuilder/pages/QuestionCreator";
-import AllQuestions from "./features/QuestionBuilder/pages/AllQuestions";
 import QuestionPicker from "./features/QuestionPicker/pages/QuestionPicker";
 import {
   CreateExamPage,
   ExamsManagementPage,
+  ManageScheduledExam,
+  UpdateExamSchedule,
   ManageExam,
-  ScheduleExam,
 } from "./features/Exam/pages";
 import ActiveExam from "./features/ActiveExam/pages/ActiveExam";
 import AdminLayout from "./components/layout/Admin/AdminLayout";
 import ExamAuthPage from "./features/ExamSetup/pages/ExamAuthPage";
 import ExamSetup from "./features/ExamSetup/pages/ExamSetup";
+import ExamCandidates from "./features/ExamCandidates/pages/ExamCandidates";
+import QuestionLibrary from "./features/QuestionsLibrary/pages/QuestionLibrary";
+import CreateMcqQuestion from "./features/QuestionsLibrary/McqQuestion/pages/CreateMcqQuestion";
+import ExamSchedules from "./features/Exam/pages/ExamSchedules";
 
 function App() {
   const { toast } = useToast();
@@ -64,15 +68,32 @@ function App() {
           }
         >
           <Route path="" element={<AdminDashboard />} />
+
           <Route path="colleges" element={<CollegePage />} />
+
+          <Route path="candidates" element={<AllStudents />} />
+
           <Route path="questions/build" element={<QuestionCreator />} />
-          <Route path="questions/all" element={<AllQuestions />} />
-          <Route path="questions/pick" element={<QuestionPicker />} />
-          <Route path="exams" element={<ExamsManagementPage />} />
+
+          <Route path="questions/all" element={<QuestionLibrary />} />
+          <Route path="questions/mcq/:questionId" element={<CreateMcqQuestion />} />
+          <Route path="questions/mcq" element={<CreateMcqQuestion />} />
+
           <Route path="exams/create" element={<CreateExamPage />} />
-          <Route path="exams/manage" element={<ManageExam />} />
-          <Route path="exams/manage/:examId/pick" element={<QuestionPicker />} />
-          <Route path="exams/schedule" element={<ScheduleExam />} />
+
+          <Route path="exams" element={<ExamsManagementPage />} />
+
+          <Route path="exams/scheduled/:scheduledExamId/:examId" element={<ManageScheduledExam />}>
+            <Route path="" element={<ExamCandidates />} />
+            <Route path="pick" element={<QuestionPicker />} />
+            <Route path="insights" element={<ExamCandidates />} />
+            <Route path="Schedule" element={<UpdateExamSchedule />} />
+          </Route>
+
+          <Route path="exams/manage/:examId" element={<ManageExam />}>
+            <Route path="" element={<QuestionPicker />} />
+            <Route path="Schedule" element={<ExamSchedules />} />
+          </Route>
         </Route>
 
         <Route path="/student" element={<AuthLayout allowedRoles={[Roles.STUDENT]} />}>

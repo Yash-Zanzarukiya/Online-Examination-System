@@ -1,4 +1,4 @@
-import { Question } from "@/features/QuestionBuilder/types";
+import { Question } from "@/features/Question/types/question-types";
 import { useState } from "react";
 
 function useQuestionDialog() {

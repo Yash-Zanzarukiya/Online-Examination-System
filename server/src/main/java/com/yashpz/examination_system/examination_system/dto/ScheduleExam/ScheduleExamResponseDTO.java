@@ -13,6 +13,7 @@ import java.util.UUID;
 public class ScheduleExamResponseDTO {
     private UUID id;
     private UUID examId;
+    private String name;
     private UUID collegeId;
     private ScheduledExamStatus status;
     private String startingAt;

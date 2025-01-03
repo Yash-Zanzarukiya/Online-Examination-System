@@ -36,9 +36,16 @@ public class ExamService {
         return ExamMapper.toResponseDTO(exam);
     }
 
-    public List<ExamResponseDTO> getAllExams() {
-        List<Exam> examPage = examRepository.findAll();
-        return ExamMapper.toResponseDTO(examPage);
+    public List<ExamResponseDTO> getAllExams(boolean drafted) {
+        if (drafted) return getAllDraftedExams();
+
+        List<Exam> exams = examRepository.findAll();
+        return ExamMapper.toResponseDTO(exams);
+    }
+
+    public List<ExamResponseDTO> getAllDraftedExams() {
+        List<Exam> exams = examRepository.findAllDraftedExams();
+        return ExamMapper.toResponseDTO(exams);
     }
 
     @Transactional

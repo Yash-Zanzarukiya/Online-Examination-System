@@ -1,11 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useCategory } from "@/features/QuestionBuilder/hooks/useCategory";
+import { useCategory } from "@/features/Question/hooks/useCategory";
 import { UUID } from "crypto";
 import { Difficulty } from "@/types/Difficulty";
 import { QuestionType } from "@/types/QuestionType";
-import { Question } from "@/features/QuestionBuilder/types";
 import { useMemo } from "react";
+import { Question } from "@/features/Question/types/question-types";
 
 interface QuestionStatsProps {
   selectedQuestions: Question[] | [];
@@ -37,7 +37,7 @@ export default function QuestionStats({ selectedQuestions = [] }: QuestionStatsP
       category: {
         ...categories.reduce((acc, cat) => {
           acc[cat.name] = selectedQuestions.filter(
-            (question) => question.category.id === cat.id
+            (question) => question.category?.id === cat.id
           ).length;
           return acc;
         }, {} as Record<string, number>),
@@ -51,8 +51,8 @@ export default function QuestionStats({ selectedQuestions = [] }: QuestionStatsP
     <Card className="w-full max-w-7xl mx-auto">
       <CardContent className="p-3 px-7">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-          <DifficultySection difficulty={questionState.difficulty} />
           <TypeSection type={questionState.type} />
+          <DifficultySection difficulty={questionState.difficulty} />
           <CategorySection category={questionState.category} />
           <TotalQuestions total={totalQuestions} />
         </div>
@@ -67,7 +67,7 @@ function DifficultySection({ difficulty }: { difficulty: QuestionState["difficul
       <h4 className="text-md font-semibold text-foreground">Difficulty</h4>
       <div className="flex flex-wrap gap-2">
         {Object.entries(difficulty).map(([diff, count]) => (
-          <Badge key={diff} variant="outline" className="border-muted-foreground bg-muted">
+          <Badge key={diff} variant="outline" className="border-red-600">
             {diff}: {count}
           </Badge>
         ))}
@@ -82,7 +82,7 @@ function TypeSection({ type }: { type: QuestionState["type"] }) {
       <h4 className="text-md font-semibold text-foreground">Type</h4>
       <div className="flex flex-wrap gap-2">
         {Object.entries(type).map(([t, count]) => (
-          <Badge key={t} variant="outline" className="border-muted-foreground bg-muted">
+          <Badge key={t} variant="outline" className="border-green-600">
             {t}: {count}
           </Badge>
         ))}
@@ -97,7 +97,7 @@ function CategorySection({ category }: { category: QuestionState["category"] }) 
       <h4 className="text-md font-semibold text-foreground">Category</h4>
       <div className="flex flex-wrap gap-2">
         {Object.entries(category).map(([cat, count]) => (
-          <Badge key={cat} variant="outline" className="border-muted-foreground bg-muted">
+          <Badge key={cat} variant="outline" className="border-blue-600">
             {cat}: {count}
           </Badge>
         ))}

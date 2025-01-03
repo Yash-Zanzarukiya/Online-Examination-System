@@ -23,7 +23,7 @@ class QuestionPickerApi {
   }
 
   async removeExamQuestion(payload: UUID[]): Promise<ApiResponse<string>> {
-    return await axiosInstance.delete(`/exam-questions`, { data: payload });
+    return await axiosInstance.post(`/exam-questions`, payload);
   }
 }
 

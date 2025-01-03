@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yashpz.examination_system.examination_system.dto.ExamResponse.McqSubmissionRequestDTO;
 import com.yashpz.examination_system.examination_system.dto.ExamResponse.ProgrammingSubmissionRequestDTO;
 import com.yashpz.examination_system.examination_system.dto.ExamResponse.QuestionTimeSpentDTO;
+import com.yashpz.examination_system.examination_system.service.ExamActivityService;
 import com.yashpz.examination_system.examination_system.service.ExamResponseService;
 import com.yashpz.examination_system.examination_system.socket.dto.MessageType;
 import com.yashpz.examination_system.examination_system.socket.dto.SocketMessageDTO;
@@ -25,6 +26,7 @@ public class SubmissionHandler {
     private final WebSocketMessageSender webSocketMessageSender;
     private final WebSocketSessionUtil webSocketSessionUtil;
     private final ExamResponseService examResponseService;
+    private final ExamActivityService examActivityService;
     private final ObjectMapper objectMapper;
 
     private final Map<Submission, BiConsumer<WebSocketSession, SocketMessageDTO>> submissionHandlers = new EnumMap<>(Submission.class);
@@ -55,8 +57,8 @@ public class SubmissionHandler {
             McqSubmissionRequestDTO mcqSubmissionRequestDTO = objectMapper.convertValue(socketMessageDTO.getPayload(), McqSubmissionRequestDTO.class);
             UUID examAttemptId = webSocketSessionUtil.getExamAttemptId(session);
             examResponseService.saveMcqResponse(mcqSubmissionRequestDTO, examAttemptId);
+            examActivityService.handleAnswerSubmission(examAttemptId, mcqSubmissionRequestDTO.getQuestionNumber());
             sendSubmissionResponse(session, Submission.MULTIPLE_CHOICE_SUBMISSION_RES, "Multiple choice submission saved");
-            System.out.println("Multiple choice submission");
         } catch (Exception e) {
             sendSubmissionResponse(session, Submission.ERROR_PROCESSING_REQUEST, e.getMessage());
             System.err.println("Error processing Programming submission: " + e.getMessage());
@@ -70,7 +72,6 @@ public class SubmissionHandler {
             UUID examAttemptId = webSocketSessionUtil.getExamAttemptId(session);
             examResponseService.saveProgrammingResponse(programmingSubmissionRequestDTO, examAttemptId);
             sendSubmissionResponse(session, Submission.PROGRAMMING_SUBMISSION_RES, "Programming submission saved");
-            System.out.println("Programming submission");
         }  catch (Exception e) {
             sendSubmissionResponse(session, Submission.ERROR_PROCESSING_REQUEST, e.getMessage());
             System.err.println("Error processing Programming submission: " + e.getMessage());

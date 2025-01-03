@@ -40,7 +40,7 @@ function CollegeSelector({ control }: { control: any }) {
               ))}
             </SelectContent>
           </Select>
-          <FormDescription>Select your college from the list.</FormDescription>
+          <FormDescription>Select College from the list.</FormDescription>
           <FormMessage />
         </FormItem>
       )}

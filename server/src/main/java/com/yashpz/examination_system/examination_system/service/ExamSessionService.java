@@ -35,6 +35,7 @@ public class ExamSessionService {
 
     private final ExamSessionRepository examSessionRepository;
     private final ExamAttemptRepository examAttemptRepository;
+    private final ExamActivityService examActivityService;
     private final JwtUtil jwtUtil;
 
     public ExamSession validateSessionToken(String sessionToken) {
@@ -106,6 +107,8 @@ public class ExamSessionService {
                 session.setStatus(ExamSessionStatus.TERMINATED);
                 examAttemptRepository.updateStatus(examAttemptId, ExamAttemptStatus.TERMINATED);
                 examSessionRepository.save(session);
+                String reason = isMaxDisconnect ? "Maximum disconnection limit reached" : "Session timeout";
+                examActivityService.handleExamEnd(examAttemptId, "Exam terminated due to " + reason);
                 return false;
             }
         }
@@ -132,6 +135,8 @@ public class ExamSessionService {
         ExamAttempt examAttempt = fetchExamAttemptById(session.getExamAttemptId());
 
         if (session.getStatus() != ExamSessionStatus.CONNECTED) return;
+
+        examActivityService.handleDisconnect(examAttempt.getId());
 
         session.setStatus(ExamSessionStatus.DISCONNECTED);
 

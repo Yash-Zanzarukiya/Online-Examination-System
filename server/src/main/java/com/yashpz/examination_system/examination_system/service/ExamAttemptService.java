@@ -29,6 +29,7 @@ public class ExamAttemptService {
     private final ExamEvolutionService examEvolutionService;
     private final ExamSessionService examSessionService;
     private final ExamAuthService examAuthService;
+    private final ExamActivityService examActivityService;
     private final MarksCalculationProducer marksCalculationProducer;
 
     @Transactional
@@ -63,6 +64,8 @@ public class ExamAttemptService {
         ExamSession session = examSessionService.createSession(examAttempt.getId(), user.getId(), scheduledExam.getId(),
                 scheduledExam.getExam().getTimeLimit() * 60);
 
+        examActivityService.handleLogin(examAttempt.getId());
+
         return session.getSessionToken();
     }
 
@@ -73,9 +76,6 @@ public class ExamAttemptService {
             examAttempt.setStartTime(startTime);
             examAttemptRepository.save(examAttempt);
         }
-//        else {
-//            throw new ApiError(HttpStatus.BAD_REQUEST, "Exam already started...");
-//        }
     }
 
     @Transactional
@@ -123,9 +123,5 @@ public class ExamAttemptService {
         if (id == null)
             throw new ApiError(HttpStatus.NOT_FOUND, "Invalid Exam Attempt Id");
         return id;
-    }
-
-    public ExamAttempt fetchCurrentExamAttempt() {
-        return null;
     }
 }

@@ -1,5 +1,5 @@
 import { UUID } from "crypto";
-import { Question } from "../QuestionBuilder/types";
+import { Question } from "../Question/types/question-types";
 
 export interface QuestionPickerState {
   examId?: UUID;

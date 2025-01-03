@@ -6,9 +6,6 @@ import com.yashpz.examination_system.examination_system.service.ExamService;
 import com.yashpz.examination_system.examination_system.utils.ApiResponse;
 import com.yashpz.examination_system.examination_system.utils.ApiResponseUtil;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,10 +37,9 @@ public class ExamController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<ExamResponseDTO> >> getAllExams(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(required = false, defaultValue = "false") boolean drafted
     ) {
-        List<ExamResponseDTO> exams = examService.getAllExams();
+        List<ExamResponseDTO> exams = examService.getAllExams(drafted);
         return ApiResponseUtil.handleResponse(HttpStatus.OK, exams, "Exams Retrieved Successfully");
     }
 

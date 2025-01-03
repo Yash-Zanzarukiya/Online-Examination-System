@@ -30,13 +30,11 @@ export function useStudentProfileForm(userId: UUID) {
     }
   }, [profile]);
 
-  const onSubmit = async (data: StudentProfileDTO) => {
+  const onSubmit = (data: StudentProfileDTO) => {
     if (profile) {
-      await dispatch(
-        updateStudentProfileThunk({ profileId: profile.id, profile: { ...data, userId } })
-      );
+      dispatch(updateStudentProfileThunk({ profileId: profile.id, profile: { ...data, userId } }));
     } else {
-      await dispatch(createStudentProfileThunk({ ...data, userId }));
+      dispatch(createStudentProfileThunk({ ...data, userId }));
     }
   };
 

@@ -16,21 +16,33 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Input } from "@/components/ui/input";
 import { UUID } from "crypto";
 import { useExamScheduleForm } from "../hooks";
+import { ScheduledExam } from "../types";
+import { FormInput } from "@/components/custom/FormInput";
+import CollegeSelector from "@/features/student/components/CollegeSelector";
 
 interface ExamScheduleFormProps {
   examId: UUID;
-  startDate?: Date | null;
+  initialData?: ScheduledExam;
 }
 
-function ExamScheduleForm({ examId, startDate }: ExamScheduleFormProps) {
-  const { form, onSubmit, isLoading } = useExamScheduleForm(examId, startDate);
+function ExamScheduleForm({ examId, initialData }: ExamScheduleFormProps) {
+  const { form, onSubmit } = useExamScheduleForm(examId, initialData);
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        {/* name */}
+        <FormInput
+          control={form.control}
+          name="name"
+          label="Exam Name"
+          placeholder="Enter exam name"
+        />
+        <CollegeSelector control={form.control} />
+        {/* Date and time */}
         <FormField
           control={form.control}
-          name="startDate"
+          name="startingAt"
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Exam Start Date and Time</FormLabel>
@@ -91,9 +103,7 @@ function ExamScheduleForm({ examId, startDate }: ExamScheduleFormProps) {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isLoading}>
-          {isLoading ? "Updating..." : "Schedule Exam"}
-        </Button>
+        <Button type="submit">Save Schedule</Button>
       </form>
     </Form>
   );

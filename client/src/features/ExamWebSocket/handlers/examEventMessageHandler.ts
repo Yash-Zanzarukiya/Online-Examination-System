@@ -26,6 +26,8 @@ const eventHandlers: Record<
   [ExamEventType.CONNECT_RES]: handleConnectRes,
   [ExamEventType.TAB_SWITCH_RES]: handleTabSwitchRes,
   [ExamEventType.LOGOUT_RES]: handleLogoutRes,
+  [ExamEventType.COPY_RES]: handleCopyRes,
+  [ExamEventType.PASTE_RES]: handlePasteRes,
   [ExamEventType.ERROR_PROCESSING_REQUEST]: handleErrorProcessingRequest,
 };
 
@@ -48,10 +50,32 @@ function handleConnectRes(
 
 function handleTabSwitchRes(
   _client: WebSocketClient,
-  message: WebSocketMessage,
+  _message: WebSocketMessage,
+  _dispatch: Dispatch<Action>
+) {}
+
+function handleCopyRes(
+  _client: WebSocketClient,
+  _message: WebSocketMessage,
   _dispatch: Dispatch<Action>
 ) {
-  toastMessage("TAB_SWITCH_RES", message.payload);
+  // toastMessage(
+  //   "Warning: Copy Event Detected",
+  //   "Copying content during the exam is not allowed.",
+  //   false
+  // );
+}
+
+function handlePasteRes(
+  _client: WebSocketClient,
+  _message: WebSocketMessage,
+  _dispatch: Dispatch<Action>
+) {
+  // toastMessage(
+  //   "Warning: Paste Event Detected",
+  //   "Pasting content during the exam is not allowed.",
+  //   false
+  // );
 }
 
 function handleLogoutRes(

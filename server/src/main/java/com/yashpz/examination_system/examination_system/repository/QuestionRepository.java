@@ -11,6 +11,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface QuestionRepository extends JpaRepository<Question, UUID> {
-    @Query("SELECT q FROM Question q WHERE (:categoryId IS NULL OR q.category.id = :categoryId) AND (:difficulty IS NULL OR q.difficulty = :difficulty) AND (:type IS NULL OR q.type = :type)")
-    List<Question> findAllByFilters(@Param("categoryId") UUID categoryId, @Param("difficulty") Difficulty difficulty, @Param("type") QuestionType type);
+    @Query("SELECT q FROM Question q WHERE (:categoryId IS NULL OR q.category.id = :categoryId) AND (:difficulty IS NULL OR q.difficulty = :difficulty) AND (:type IS NULL OR q.type = :type)  AND (:marks IS NULL OR q.marks = :marks)")
+    List<Question> findAllByFilters(@Param("categoryId") UUID categoryId, @Param("difficulty") Difficulty difficulty, @Param("type") QuestionType type, @Param("marks") Integer marks);
 }

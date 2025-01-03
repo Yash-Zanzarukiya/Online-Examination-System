@@ -1,6 +1,7 @@
-import ExamsManagementPage from "./ExamsManagement";
+import ExamsManagementPage from "./ExamsDashboard";
 import CreateExamPage from "./CreateExam";
-import ManageExam from "./ManageExams";
-import ScheduleExam from "./ScheduleExams";
+import ManageScheduledExam from "./ManageScheduledExam";
+import UpdateExamSchedule from "./UpdateExamSchedule";
+import ManageExam from "./ManageExam";
 
-export { ExamsManagementPage, CreateExamPage, ManageExam, ScheduleExam };
+export { ExamsManagementPage, CreateExamPage, ManageScheduledExam, UpdateExamSchedule, ManageExam };

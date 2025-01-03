@@ -2,8 +2,10 @@ package com.yashpz.examination_system.examination_system.mappers;
 
 
 import com.yashpz.examination_system.examination_system.dto.CollegeDTO;
+import com.yashpz.examination_system.examination_system.dto.StudentProfile.StudentDataDTO;
 import com.yashpz.examination_system.examination_system.dto.StudentProfile.StudentProfileRequestDTO;
 import com.yashpz.examination_system.examination_system.dto.StudentProfile.StudentProfileResponseDTO;
+import com.yashpz.examination_system.examination_system.model.Auth;
 import com.yashpz.examination_system.examination_system.model.StudentProfile;
 import com.yashpz.examination_system.examination_system.model.College;
 
@@ -49,5 +51,25 @@ public class StudentProfileMapper {
         studentProfile.setPhone(requestDTO.getPhone());
         studentProfile.setPassout(requestDTO.getPassout());
         return studentProfile;
+    }
+
+    public static StudentDataDTO toStudentDataDTO(StudentProfile studentProfile) {
+        College college = studentProfile.getCollege();
+        Auth auth = studentProfile.getUser().getAuth();
+        return new StudentDataDTO(
+                studentProfile.getUser().getId(),
+                studentProfile.getId(),
+                auth.getEmail(),
+                auth.getUsername(),
+                studentProfile.getFullName(),
+                new CollegeDTO(college.getId(), college.getName()),
+                studentProfile.getBranch(),
+                studentProfile.getPhone(),
+                studentProfile.getPassout()
+        );
+    }
+
+    public static List<StudentDataDTO> toStudentDataDTO(List<StudentProfile> studentProfiles) {
+        return studentProfiles.stream().map(StudentProfileMapper::toStudentDataDTO).toList();
     }
 }

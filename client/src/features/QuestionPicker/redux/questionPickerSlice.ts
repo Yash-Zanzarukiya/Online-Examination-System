@@ -7,7 +7,7 @@ import {
   addExamQuestions,
   removeExamQuestion,
 } from "./questionPickerThunks";
-import { Question } from "@/features/QuestionBuilder/types";
+import { Question } from "@/features/Question/types/question-types";
 
 const initialState: QuestionPickerState = {
   examId: undefined,

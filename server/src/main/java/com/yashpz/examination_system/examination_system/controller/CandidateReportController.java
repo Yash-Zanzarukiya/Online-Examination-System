@@ -1,7 +1,9 @@
 package com.yashpz.examination_system.examination_system.controller;
 
 import com.yashpz.examination_system.examination_system.dto.CandidateEvaluation.*;
+import com.yashpz.examination_system.examination_system.dto.ExamActivity.ExamActivityResponseDTO;
 import com.yashpz.examination_system.examination_system.service.CandidateReportService;
+import com.yashpz.examination_system.examination_system.service.ExamActivityService;
 import com.yashpz.examination_system.examination_system.utils.ApiResponse;
 import com.yashpz.examination_system.examination_system.utils.ApiResponseUtil;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CandidateReportController {
     private final CandidateReportService candidateReportService;
+    private final ExamActivityService examActivityService;
 
     @GetMapping("/exam-candidate-states")
     public ResponseEntity<ApiResponse<List<CandidateStateDTO>>> getAllExamCandidateStates(@RequestParam("scheduledExamId") UUID scheduledExamId) {
@@ -54,4 +57,9 @@ public class CandidateReportController {
         return ApiResponseUtil.handleResponse(HttpStatus.OK, programmingSubmission, "Programming submission fetched successfully");
     }
 
+    @GetMapping("/exam-activities")
+    public ResponseEntity<ApiResponse<List<ExamActivityResponseDTO>>> getExamActivities(@RequestParam("examAttemptId") UUID examAttemptId) {
+        List<ExamActivityResponseDTO> examActivities = examActivityService.fetchExamActivities(examAttemptId);
+        return ApiResponseUtil.handleResponse(HttpStatus.OK, examActivities, "Exam activities fetched successfully");
+    }
 }

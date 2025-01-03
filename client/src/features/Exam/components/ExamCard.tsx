@@ -27,22 +27,18 @@ function ExamCard({ exam }: ExamCardProps) {
     <>
       <Card key={exam.id} className="relative">
         <CardHeader>
-          <CardTitle>{exam.title}</CardTitle>
+          <CardTitle>
+            <Link to={`manage/${exam.id}`}>{exam.title}</Link>
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">
-            Status:{" "}
-            {exam.startDate
-              ? `Scheduled (${formatter.formatDate(exam.startDate.toString())})`
-              : "Draft"}
-          </p>
           <p className="text-sm text-muted-foreground">
             Created: {formatter.formatTimestamp(exam.createdAt)}
           </p>
         </CardContent>
         <CardFooter className="flex justify-between items-center">
-          <Button variant="outline" asChild>
-            <Link to={`${exam.id}/pick`}>Manage Questions</Link>
+          <Button variant="outline" size="sm" asChild>
+            <Link to={`manage/${exam.id}`}>Manage Questions</Link>
           </Button>
           <div className="space-x-2">
             <Button size="icon" variant="outline" onClick={() => setIsDialogOpen(true)}>
@@ -54,7 +50,7 @@ function ExamCard({ exam }: ExamCardProps) {
               </Button>
             </ConfirmDialog>
             <Button size="icon" variant="outline" asChild>
-              <Link to={`/active-exam/${exam.id}`}>
+              <Link to={`manage/${exam.id}`}>
                 <MoveRight />
               </Link>
             </Button>

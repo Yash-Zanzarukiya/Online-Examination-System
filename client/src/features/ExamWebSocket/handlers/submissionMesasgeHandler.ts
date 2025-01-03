@@ -27,6 +27,7 @@ function handleMultipleChoiceSubmissionRes(
   _message: WebSocketMessage,
   _dispatch: Dispatch<Action>
 ) {
+  console.log("here: ");
   toastMessage("MCQ Answer Saved");
 }
 

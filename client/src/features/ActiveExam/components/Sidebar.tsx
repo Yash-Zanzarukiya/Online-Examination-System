@@ -2,7 +2,6 @@ import React, { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { useActiveExam } from "../hooks/useActiveExam";
 import { QuestionAttemptStatus } from "../types";
-import { QuestionType } from "@/types/QuestionType";
 
 const Sidebar: React.FC = () => {
   const { examState, questions, handleQuestionNavigation } = useActiveExam();
@@ -37,7 +36,7 @@ const Sidebar: React.FC = () => {
                   } ${index === examState.currentQuestionIndex ? "ring-2 ring-blue-500" : ""}`}
                   onClick={() => handleQuestionNavigation(index)}
                 >
-                  {question.question.type === QuestionType.MCQ ? "M" : "P"}
+                  {index + 1}
                 </Button>
               );
             })}

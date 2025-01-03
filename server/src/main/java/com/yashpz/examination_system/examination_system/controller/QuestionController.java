@@ -56,9 +56,10 @@ public class QuestionController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<QuestionResponseDTO>>> getAllQuestions(@RequestParam(required = false) UUID categoryId,
                                              @RequestParam(required = false) Difficulty difficulty,
-                                             @RequestParam(required = false) QuestionType type
+                                             @RequestParam(required = false) QuestionType type,
+                                                @RequestParam(required = false) Integer marks
     ) {
-        List<QuestionResponseDTO> allQuestions = questionService.getAllQuestions(categoryId, difficulty, type);
+        List<QuestionResponseDTO> allQuestions = questionService.getAllQuestions(categoryId, difficulty, type, marks);
         return ApiResponseUtil.handleResponse(HttpStatus.OK, allQuestions, "Questions fetched successfully");
     }
 

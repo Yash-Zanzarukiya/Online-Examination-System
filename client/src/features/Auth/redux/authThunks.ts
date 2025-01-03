@@ -31,10 +31,9 @@ export const logoutThunk = createAsyncThunk("auth/logout", async () => {
 export const getCurrentUserThunk = createAsyncThunk("auth/me", async () => {
   try {
     const apiRes = await getCurrentUser();
-    toastApiSuccess("User fetched Successfully 🙂", apiRes);
     return apiRes.data.data;
   } catch (error: any) {
-    toastApiError("Not Logged In...", error);
+    // toastApiError("Not Logged In...", error);
   }
 });
 

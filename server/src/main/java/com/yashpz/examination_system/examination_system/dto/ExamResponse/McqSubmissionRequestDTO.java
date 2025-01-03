@@ -16,4 +16,6 @@ public class McqSubmissionRequestDTO {
 
     @NotNull
     private UUID selectedOptionId;
+
+    private Integer questionNumber;
 }

@@ -10,7 +10,7 @@ import { QuestionFilter } from "../../QuestionBuilder/types";
 import { Difficulty } from "@/types/Difficulty";
 import { QuestionType } from "@/types/QuestionType";
 import { UUID } from "crypto";
-import { useCategory } from "../../QuestionBuilder/hooks/useCategory";
+import { useCategory } from "../../Question/hooks/useCategory";
 
 interface FilterBarProps {
   onFilterChange: (filter: Partial<QuestionFilter>) => void;
@@ -77,6 +77,7 @@ export default function FilterBar({ onFilterChange, currentFilter }: FilterBarPr
         </Label>
         <Select
           value={currentFilter.categoryId || "all"}
+          disabled={currentFilter.type === QuestionType.PROGRAMMING}
           onValueChange={(value) =>
             onFilterChange({
               categoryId: value === "all" ? undefined : (value as UUID),

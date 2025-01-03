@@ -4,12 +4,14 @@ import com.yashpz.examination_system.examination_system.constants.Roles;
 import com.yashpz.examination_system.examination_system.dto.Auth.AuthDTO;
 import com.yashpz.examination_system.examination_system.dto.Auth.LoginDTO;
 import com.yashpz.examination_system.examination_system.dto.Auth.UserDataDTO;
+import com.yashpz.examination_system.examination_system.dto.StudentProfile.ExcelStudentData;
 import com.yashpz.examination_system.examination_system.exception.ApiError;
 import com.yashpz.examination_system.examination_system.mappers.AuthDataMapper;
 import com.yashpz.examination_system.examination_system.model.Auth;
 import com.yashpz.examination_system.examination_system.model.User;
 import com.yashpz.examination_system.examination_system.repository.AuthRepository;
 import com.yashpz.examination_system.examination_system.utils.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +26,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
     private final AuthRepository authRepository;
@@ -32,13 +35,6 @@ public class AuthService {
     private final JwtUtil jwtUtil;
 
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-    public AuthService(AuthRepository userRepository, EmailService emailService, JwtUtil jwtUtil, UserService userService) {
-        this.authRepository = userRepository;
-        this.emailService = emailService;
-        this.jwtUtil = jwtUtil;
-        this.userService = userService;
-    }
 
     @Transactional
     public void registerUser(AuthDTO user) {

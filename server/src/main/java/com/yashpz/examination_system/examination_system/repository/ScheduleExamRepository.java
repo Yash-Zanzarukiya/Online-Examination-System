@@ -16,13 +16,13 @@ public interface ScheduleExamRepository extends JpaRepository<ScheduleExam, UUID
     @Query("SELECT se FROM ScheduleExam se " +
             "WHERE (:examId IS NULL OR se.exam.id = :examId) " +
             "AND (:collegeId IS NULL OR se.college.id = :collegeId) " +
-            "AND (:upcoming = FALSE OR se.startingAt > CURRENT_TIMESTAMP)")
-    List<ScheduleExam> findSchedulesByFilters(@Param("examId") UUID examId, @Param("collegeId") UUID collegeId, @Param("upcoming") boolean upcoming);
+            "AND (:status IS NULL OR se.status = :status)")
+    List<ScheduleExam> findSchedulesByFilters(@Param("examId") UUID examId, @Param("collegeId") UUID collegeId, @Param("status") ScheduledExamStatus status);
 
     @Query("SELECT se.exam.id FROM ScheduleExam se WHERE se.id = :scheduledExamId")
     UUID getExamIdByScheduledExamId(UUID scheduledExamId);
 
     @Modifying
     @Query("UPDATE ScheduleExam se SET se.status = :status WHERE se.id = :scheduledExamId")
-    ScheduleExam updateScheduleExamStatus(@Param("scheduledExamId") UUID scheduledExamId, @Param("status") ScheduledExamStatus status);
+    Integer updateScheduleExamStatus(@Param("scheduledExamId") UUID scheduledExamId, @Param("status") ScheduledExamStatus status);
 }

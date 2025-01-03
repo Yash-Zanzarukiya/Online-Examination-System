@@ -16,6 +16,7 @@ export interface Question {
   type: QuestionType;
   questionText: string;
   image: string;
+  marks: number;
   correctAnswerId: UUID;
 }
 
@@ -40,7 +41,6 @@ export interface QuestionForm {
   questionText: string;
   imageUrl?: string;
   imageFile?: File;
-  correctAnswerId?: UUID;
 }
 
 export interface McqOptionForm {

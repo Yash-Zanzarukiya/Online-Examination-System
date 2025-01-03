@@ -1,8 +1,11 @@
 import { UUID } from "crypto";
+import { ScheduledExamStatus } from "../ActiveExam/types";
 
 export interface ExamsState {
-  exams: Exam[] | [];
   exam: Exam | null;
+  exams: Exam[] | [];
+  scheduledExam: ScheduledExam | null;
+  scheduledExams: ScheduledExam[] | [];
   isLoading: boolean;
 }
 
@@ -11,13 +14,23 @@ export interface Exam {
   title: string;
   passingScore: number;
   timeLimit: number;
-  startDate: Date | null;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface ExamForm {
-  title: string;
-  passingScore: number;
-  timeLimit: number;
+export interface ScheduledExam {
+  id: UUID;
+  examId: UUID;
+  name: string;
+  collegeId: UUID;
+  status: ScheduledExamStatus;
+  startingAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ScheduledExamFilter {
+  examId?: UUID;
+  collegeId?: UUID;
+  status?: ScheduledExamStatus;
 }

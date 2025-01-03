@@ -41,6 +41,7 @@ public class CandidateReportMapper {
 
     public static DetailedProgrammingSubmissionDTO toDetailedProgrammingSubmissionDTO(ProgrammingQuestionResponseDTO question, ProgrammingSubmission submission) {
         DetailedProgrammingSubmissionDTO dto = new DetailedProgrammingSubmissionDTO();
+        dto.setId(submission.getId());
         dto.setQuestion(question);
         dto.setScore(submission.getMarks());
         dto.setSubmittedCode(submission.getSubmittedCode());

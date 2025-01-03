@@ -12,7 +12,6 @@ export function handleSocketMessage(
   dispatch: Dispatch<Action>
 ) {
   console.log("Received message of type: ", message.subtype);
-  console.log(message);
 
   switch (message.type) {
     case MessageType.ExamEvent:

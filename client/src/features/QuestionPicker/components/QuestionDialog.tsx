@@ -1,8 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { FullQuestion, Question } from "@/features/QuestionBuilder/types";
-import questionApi from "@/features/QuestionBuilder/api/questionApi";
-import { useEffect, useState } from "react";
+import { useFullQuestion } from "@/features/Question/hooks";
+import { Question } from "@/features/Question/types/question-types";
 
 interface QuestionDialogProps {
   question: Question | null;
@@ -13,24 +12,7 @@ interface QuestionDialogProps {
 export default function QuestionDialog({ question, isOpen, onClose }: QuestionDialogProps) {
   if (!question) return null;
 
-  const [fullQuestion, setFullQuestion] = useState<FullQuestion | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const fetchFullQuestion = async () => {
-      try {
-        setLoading(true);
-        const response = await questionApi.getFullQuestionByIdApi(question.id);
-        setFullQuestion(response.data.data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (question?.id) fetchFullQuestion();
-  }, [question]);
+  const { fullQuestion, loading } = useFullQuestion(question.id, question.type);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -40,9 +22,17 @@ export default function QuestionDialog({ question, isOpen, onClose }: QuestionDi
         </DialogHeader>
         <div className="space-y-4">
           <div className="flex flex-wrap gap-2">
-            <Badge variant="outline">{question.difficulty}</Badge>
-            <Badge variant="outline">{question.type}</Badge>
-            <Badge variant="outline">{question.category?.name}</Badge>
+            <Badge variant="outline" className=" border-green-600">
+              {question.type}
+            </Badge>
+            <Badge variant="outline" className=" border-red-600">
+              {question.difficulty}
+            </Badge>
+            {question.category && (
+              <Badge variant="outline" className=" border-blue-600">
+                {question.category.name}
+              </Badge>
+            )}
           </div>
 
           <div className="space-y-4">
@@ -88,6 +78,14 @@ export default function QuestionDialog({ question, isOpen, onClose }: QuestionDi
                       )}
                     </div>
                   ))}
+                </div>
+              </div>
+            )}
+            {fullQuestion?.referenceAnswer && (
+              <div>
+                <h3 className="font-medium mb-2">Reference Answer</h3>
+                <div className={`p-3 rounded-md text-sm bg-muted`}>
+                  {fullQuestion.referenceAnswer}
                 </div>
               </div>
             )}

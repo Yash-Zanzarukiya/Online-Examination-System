@@ -82,7 +82,7 @@ public class McqQuestionService {
 
     public List<McqQuestionResponseDTO> getAllMcqQuestions(UUID categoryId, Difficulty difficulty) {
         // Fetching all questions
-        List<QuestionResponseDTO> questions = questionService.getAllQuestions(categoryId, difficulty, QuestionType.MCQ);
+        List<QuestionResponseDTO> questions = questionService.getAllQuestions(categoryId, difficulty, QuestionType.MCQ, null);
 
         // Extracting question IDs
         List<UUID> questionIds = questions.stream()
