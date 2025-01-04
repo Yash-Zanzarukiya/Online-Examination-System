@@ -5,6 +5,7 @@ import com.yashpz.examination_system.examination_system.service.CategoryService;
 import com.yashpz.examination_system.examination_system.utils.ApiResponse;
 import com.yashpz.examination_system.examination_system.utils.ApiResponseUtil;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,13 +15,9 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/categories")
+@RequiredArgsConstructor
 public class CategoryController {
-
     private final CategoryService categoryService;
-
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
 
     @PostMapping
     public ResponseEntity<ApiResponse<CategoryDTO>> addCategory(@Valid @RequestBody CategoryDTO categoryDTO) {

@@ -6,6 +6,7 @@ import com.yashpz.examination_system.examination_system.service.McqOptionService
 import com.yashpz.examination_system.examination_system.utils.ApiResponse;
 import com.yashpz.examination_system.examination_system.utils.ApiResponseUtil;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,13 +16,10 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/mcq-options")
+@RequiredArgsConstructor
 public class McqOptionController {
 
     private final McqOptionService mcqOptionService;
-
-    public McqOptionController(McqOptionService mcqOptionService) {
-        this.mcqOptionService = mcqOptionService;
-    }
 
     @PostMapping
     public ResponseEntity<ApiResponse<McqOptionResponseDTO>> createMcqOption(@Valid @RequestBody McqOptionRequestDTO mcqOptionRequestDTO) {

@@ -1,7 +1,6 @@
 package com.yashpz.examination_system.examination_system.dto.ExamActivity;
 
 import com.yashpz.examination_system.examination_system.constants.ActiveExamActivities;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,8 +1,6 @@
 package com.yashpz.examination_system.examination_system.socket.handlers;
 
-import com.yashpz.examination_system.examination_system.constants.ExamAttemptStatus;
 import com.yashpz.examination_system.examination_system.constants.ExamSessionType;
-import com.yashpz.examination_system.examination_system.dto.ActiveExam.ActiveExamQuestions.ActiveExamQuestionsDTO;
 import com.yashpz.examination_system.examination_system.dto.ActiveExam.ActiveExamState.ActiveExamStateDTO;
 import com.yashpz.examination_system.examination_system.service.ActiveExamService;
 import com.yashpz.examination_system.examination_system.service.ExamActivityService;
@@ -19,7 +17,6 @@ import org.springframework.web.socket.WebSocketSession;
 
 import java.time.LocalDateTime;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiConsumer;

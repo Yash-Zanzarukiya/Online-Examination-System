@@ -5,6 +5,7 @@ import com.yashpz.examination_system.examination_system.exception.ApiError;
 import com.yashpz.examination_system.examination_system.mappers.CollegeMapper;
 import com.yashpz.examination_system.examination_system.model.College;
 import com.yashpz.examination_system.examination_system.repository.CollegeRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -12,13 +13,10 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class CollegeService {
 
     private final CollegeRepository collegeRepository;
-
-    public CollegeService(CollegeRepository collegeRepository) {
-        this.collegeRepository = collegeRepository;
-    }
 
     public CollegeDTO createCollege(CollegeDTO collegeDTO) {
         College college = CollegeMapper.toEntity(collegeDTO);

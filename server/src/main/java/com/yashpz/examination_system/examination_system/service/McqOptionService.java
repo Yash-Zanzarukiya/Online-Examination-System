@@ -7,6 +7,7 @@ import com.yashpz.examination_system.examination_system.mappers.McqOptionMapper;
 import com.yashpz.examination_system.examination_system.model.McqOption;
 import com.yashpz.examination_system.examination_system.model.Question;
 import com.yashpz.examination_system.examination_system.repository.McqOptionRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,17 +20,12 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class McqOptionService {
 
     private final McqOptionRepository mcqOptionRepository;
     private final QuestionService questionService;
     private final CloudinaryService cloudinaryService;
-
-    public McqOptionService(McqOptionRepository mcqOptionRepository, CloudinaryService cloudinaryService, QuestionService questionService) {
-        this.mcqOptionRepository = mcqOptionRepository;
-        this.cloudinaryService = cloudinaryService;
-        this.questionService = questionService;
-    }
 
     @Transactional
     public McqOptionResponseDTO createMcqOption(McqOptionRequestDTO mcqOptionRequestDTO){

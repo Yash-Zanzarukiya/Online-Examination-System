@@ -1,12 +1,9 @@
 package com.yashpz.examination_system.examination_system.socket.handlers;
 
-import com.yashpz.examination_system.examination_system.dto.ExamResponse.QuestionTimeSpentDTO;
 import com.yashpz.examination_system.examination_system.service.ExamActivityService;
-import com.yashpz.examination_system.examination_system.service.ExamAttemptService;
 import com.yashpz.examination_system.examination_system.socket.dto.ExamEvent;
 import com.yashpz.examination_system.examination_system.socket.dto.MessageType;
 import com.yashpz.examination_system.examination_system.socket.dto.SocketMessageDTO;
-import com.yashpz.examination_system.examination_system.socket.dto.Submission;
 import com.yashpz.examination_system.examination_system.socket.utils.WebSocketSessionUtil;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +19,6 @@ import java.util.function.BiConsumer;
 @RequiredArgsConstructor
 public class ExamEventHandler {
     private final WebSocketMessageSender webSocketMessageSender;
-    private final ExamAttemptService examAttemptService;
     private final WebSocketSessionUtil webSocketSessionUtil;
     private final ExamActivityService examActivityService;
 

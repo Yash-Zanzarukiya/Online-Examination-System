@@ -6,6 +6,7 @@ import com.yashpz.examination_system.examination_system.service.ExamService;
 import com.yashpz.examination_system.examination_system.utils.ApiResponse;
 import com.yashpz.examination_system.examination_system.utils.ApiResponseUtil;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,13 +16,10 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/exams")
+@RequiredArgsConstructor
 public class ExamController {
 
     private final ExamService examService;
-
-    public ExamController(ExamService examService) {
-        this.examService = examService;
-    }
 
     @PostMapping
     public ResponseEntity<ApiResponse<ExamResponseDTO>> createExam(@Valid @RequestBody ExamRequestDTO dto) {

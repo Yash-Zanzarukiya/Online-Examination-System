@@ -1,7 +1,6 @@
 package com.yashpz.examination_system.examination_system.controller;
 
 import com.yashpz.examination_system.examination_system.constants.ExamAttemptStatus;
-import com.yashpz.examination_system.examination_system.constants.ValidationGroups;
 import com.yashpz.examination_system.examination_system.dto.ActiveExam.ExamAttemptRequestDTO;
 import com.yashpz.examination_system.examination_system.service.ExamAttemptService;
 import com.yashpz.examination_system.examination_system.utils.ApiResponse;
@@ -13,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;

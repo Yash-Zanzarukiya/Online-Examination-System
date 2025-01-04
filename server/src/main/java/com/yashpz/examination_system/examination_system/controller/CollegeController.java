@@ -5,6 +5,7 @@ import com.yashpz.examination_system.examination_system.service.CollegeService;
 import com.yashpz.examination_system.examination_system.utils.ApiResponse;
 import com.yashpz.examination_system.examination_system.utils.ApiResponseUtil;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,13 +15,10 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("colleges")
+@RequiredArgsConstructor
 public class CollegeController {
 
     private final CollegeService collegeService;
-
-    public CollegeController(CollegeService collegeService) {
-        this.collegeService = collegeService;
-    }
 
     @PostMapping
     public ResponseEntity<ApiResponse<CollegeDTO>> createCollege(@Valid @RequestBody CollegeDTO collegeDTO) {

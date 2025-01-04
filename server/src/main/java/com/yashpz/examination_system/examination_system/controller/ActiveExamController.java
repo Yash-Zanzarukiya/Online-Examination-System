@@ -5,6 +5,7 @@ import com.yashpz.examination_system.examination_system.dto.ActiveExam.ActiveExa
 import com.yashpz.examination_system.examination_system.service.ActiveExamService;
 import com.yashpz.examination_system.examination_system.utils.ApiResponse;
 import com.yashpz.examination_system.examination_system.utils.ApiResponseUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,12 +18,9 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("active-exam")
+@RequiredArgsConstructor
 public class ActiveExamController {
     private final ActiveExamService activeExamService;
-
-    public ActiveExamController(ActiveExamService activeExamService) {
-        this.activeExamService = activeExamService;
-    }
 
     @GetMapping("/questions/{scheduledExamId}")
     public ResponseEntity<ApiResponse<List<ActiveExamQuestionsDTO>>> getQuestionsForExam(@PathVariable UUID scheduledExamId) {

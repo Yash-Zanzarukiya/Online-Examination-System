@@ -8,8 +8,6 @@ import com.yashpz.examination_system.examination_system.model.ExamAttempt;
 import com.yashpz.examination_system.examination_system.model.ExamSession;
 import com.yashpz.examination_system.examination_system.repository.ExamAttemptRepository;
 import com.yashpz.examination_system.examination_system.repository.ExamSessionRepository;
-import com.yashpz.examination_system.examination_system.socket.handlers.WebSocketMessageSender;
-import com.yashpz.examination_system.examination_system.socket.utils.WebSocketSessionUtil;
 import com.yashpz.examination_system.examination_system.utils.JwtUtil;
 
 import lombok.RequiredArgsConstructor;

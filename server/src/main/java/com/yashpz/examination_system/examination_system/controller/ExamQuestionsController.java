@@ -7,6 +7,7 @@ import com.yashpz.examination_system.examination_system.service.ExamQuestionsSer
 import com.yashpz.examination_system.examination_system.utils.ApiResponse;
 import com.yashpz.examination_system.examination_system.utils.ApiResponseUtil;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,13 +17,10 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/exam-questions")
+@RequiredArgsConstructor
 public class ExamQuestionsController {
 
     private final ExamQuestionsService examQuestionsService;
-
-    public ExamQuestionsController(ExamQuestionsService examQuestionsService) {
-        this.examQuestionsService = examQuestionsService;
-    }
 
     @PostMapping("/add")
     public ResponseEntity<ApiResponse<List<ExamQuestionsResponseDTO>>> addQuestions(@RequestBody @Valid ExamQuestionsRequestDTO dto) {

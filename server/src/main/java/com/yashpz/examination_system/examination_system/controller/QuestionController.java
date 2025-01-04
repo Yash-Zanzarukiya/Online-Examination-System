@@ -9,6 +9,7 @@ import com.yashpz.examination_system.examination_system.service.QuestionService;
 import com.yashpz.examination_system.examination_system.utils.ApiResponse;
 import com.yashpz.examination_system.examination_system.utils.ApiResponseUtil;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,15 +20,11 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/questions")
+@RequiredArgsConstructor
 public class QuestionController {
 
     private final QuestionService questionService;
     private final QuestionFileService questionFileService;
-
-    public QuestionController(QuestionService questionService, QuestionFileService questionFileService) {
-        this.questionService = questionService;
-        this.questionFileService = questionFileService;
-    }
 
     @PostMapping
     public ResponseEntity<ApiResponse<QuestionResponseDTO>> createQuestion(@RequestBody @Valid QuestionRequestDTO questionRequestDTO) {

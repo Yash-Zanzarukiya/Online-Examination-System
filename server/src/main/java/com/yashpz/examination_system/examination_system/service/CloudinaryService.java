@@ -2,6 +2,7 @@ package com.yashpz.examination_system.examination_system.service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,13 +12,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
+@RequiredArgsConstructor
 public class CloudinaryService {
 
     private final Cloudinary cloudinary;
-
-    public CloudinaryService(Cloudinary cloudinary) {
-        this.cloudinary = cloudinary;
-    }
 
     public String uploadImage(MultipartFile file) {
         try {

@@ -7,6 +7,7 @@ import com.yashpz.examination_system.examination_system.service.McqQuestionServi
 import com.yashpz.examination_system.examination_system.utils.ApiResponse;
 import com.yashpz.examination_system.examination_system.utils.ApiResponseUtil;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,13 +17,10 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/mcq-questions")
+@RequiredArgsConstructor
 public class McqQuestionController {
 
     private final McqQuestionService mcqQuestionService;
-
-    public McqQuestionController(McqQuestionService mcqQuestionService) {
-        this.mcqQuestionService = mcqQuestionService;
-    }
 
     @PostMapping
     public ResponseEntity<ApiResponse<McqQuestionResponseDTO>> createMcqQuestion(@RequestBody @Valid McqQuestionRequestDTO questionDTO) {

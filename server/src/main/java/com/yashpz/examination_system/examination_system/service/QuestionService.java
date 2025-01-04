@@ -9,6 +9,7 @@ import com.yashpz.examination_system.examination_system.model.Category;
 import com.yashpz.examination_system.examination_system.model.Question;
 import com.yashpz.examination_system.examination_system.repository.CategoryRepository;
 import com.yashpz.examination_system.examination_system.repository.QuestionRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,17 +21,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class QuestionService {
 
     private final QuestionRepository questionRepository;
     private final CategoryRepository categoryRepository;
     private final CloudinaryService cloudinaryService;
-
-    public QuestionService(QuestionRepository questionRepository, CategoryRepository categoryRepository, CloudinaryService cloudinaryService) {
-        this.questionRepository = questionRepository;
-        this.categoryRepository = categoryRepository;
-        this.cloudinaryService = cloudinaryService;
-    }
 
     @Transactional
     public QuestionResponseDTO createQuestion(QuestionRequestDTO questionRequestDTO) {

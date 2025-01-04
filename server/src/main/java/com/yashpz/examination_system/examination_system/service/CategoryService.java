@@ -5,6 +5,7 @@ import com.yashpz.examination_system.examination_system.exception.ApiError;
 import com.yashpz.examination_system.examination_system.mappers.CategoryMapper;
 import com.yashpz.examination_system.examination_system.model.Category;
 import com.yashpz.examination_system.examination_system.repository.CategoryRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -13,13 +14,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
-
-    public CategoryService(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-    }
 
     public CategoryDTO addCategory(CategoryDTO categoryDTO) {
         if (categoryRepository.existsByName(categoryDTO.getName())) {

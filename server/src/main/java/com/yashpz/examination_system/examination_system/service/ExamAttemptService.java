@@ -1,10 +1,8 @@
 package com.yashpz.examination_system.examination_system.service;
 
 import com.yashpz.examination_system.examination_system.constants.ExamAttemptStatus;
-import com.yashpz.examination_system.examination_system.contexts.ExamSessionContext;
 import com.yashpz.examination_system.examination_system.dto.ActiveExam.ExamAttemptRequestDTO;
 import com.yashpz.examination_system.examination_system.dto.Auth.LoginDTO;
-import com.yashpz.examination_system.examination_system.dto.Auth.UserDataDTO;
 import com.yashpz.examination_system.examination_system.exception.ApiError;
 import com.yashpz.examination_system.examination_system.mappers.ExamAttemptMapper;
 import com.yashpz.examination_system.examination_system.messaging.producer.MarksCalculationProducer;
@@ -17,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.EnumSet;
-import java.util.Objects;
 import java.util.UUID;
 
 @Service

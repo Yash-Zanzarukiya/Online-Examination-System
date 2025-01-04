@@ -11,6 +11,7 @@ import com.yashpz.examination_system.examination_system.model.ExamQuestions;
 import com.yashpz.examination_system.examination_system.model.Question;
 import com.yashpz.examination_system.examination_system.repository.ExamQuestionsRepository;
 import com.yashpz.examination_system.examination_system.repository.QuestionRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,17 +20,12 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class ExamQuestionsService {
 
     private final ExamService examService;
     private final QuestionRepository questionRepository;
     private final ExamQuestionsRepository examQuestionsRepository;
-
-    public ExamQuestionsService(ExamQuestionsRepository examQuestionsRepository, ExamService examService, QuestionRepository questionRepository) {
-        this.examQuestionsRepository = examQuestionsRepository;
-        this.examService = examService;
-        this.questionRepository = questionRepository;
-    }
 
     @Transactional
     public List<ExamQuestionsResponseDTO> addQuestions(ExamQuestionsRequestDTO dto) {

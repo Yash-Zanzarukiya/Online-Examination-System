@@ -12,6 +12,7 @@ import com.yashpz.examination_system.examination_system.model.ProgrammingQuestio
 import com.yashpz.examination_system.examination_system.model.Question;
 import com.yashpz.examination_system.examination_system.repository.ProgrammingQuestionRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -19,15 +20,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class ProgrammingQuestionService {
 
     private final ProgrammingQuestionRepository programmingQuestionRepository;
     private final QuestionService questionService;
-
-    public ProgrammingQuestionService(QuestionService questionService, ProgrammingQuestionRepository programmingQuestionRepository) {
-        this.programmingQuestionRepository = programmingQuestionRepository;
-        this.questionService = questionService;
-    }
 
     @Transactional
     public ProgrammingQuestionResponseDTO createProgrammingQuestion(ProgrammingQuestionRequestDTO programmingQuestionRequestDTO) {

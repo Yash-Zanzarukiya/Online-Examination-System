@@ -9,6 +9,7 @@ import com.yashpz.examination_system.examination_system.dto.Question.QuestionReq
 import com.yashpz.examination_system.examination_system.dto.Question.QuestionResponseDTO;
 import com.yashpz.examination_system.examination_system.dto.McqQuestion.McqQuestionRequestDTO;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,15 +19,11 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class McqQuestionService {
 
     private final QuestionService questionService;
     private final McqOptionService mcqOptionService;
-
-    public McqQuestionService(QuestionService questionService, McqOptionService mcqOptionService) {
-        this.questionService = questionService;
-        this.mcqOptionService = mcqOptionService;
-    }
 
     @Transactional
     public McqQuestionResponseDTO createMcqQuestion(McqQuestionRequestDTO mcqQuestionRequestDTO) {

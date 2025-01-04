@@ -7,6 +7,7 @@ import com.yashpz.examination_system.examination_system.service.ProgrammingQuest
 import com.yashpz.examination_system.examination_system.utils.ApiResponse;
 import com.yashpz.examination_system.examination_system.utils.ApiResponseUtil;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,13 +17,10 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/programming-questions")
+@RequiredArgsConstructor
 public class ProgrammingQuestionController {
 
     private final ProgrammingQuestionService programmingQuestionService;
-
-    public ProgrammingQuestionController(ProgrammingQuestionService programmingQuestionService) {
-        this.programmingQuestionService = programmingQuestionService;
-    }
 
     @PostMapping
     public ResponseEntity<ApiResponse<ProgrammingQuestionResponseDTO>> createProgrammingQuestion(@RequestBody @Valid ProgrammingQuestionRequestDTO questionDTO) {

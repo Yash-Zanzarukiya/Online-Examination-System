@@ -7,6 +7,7 @@ import com.yashpz.examination_system.examination_system.dto.McqQuestion.McqQuest
 import com.yashpz.examination_system.examination_system.dto.ProgrammingQuestion.ProgrammingQuestionRequestDTO;
 import com.yashpz.examination_system.examination_system.dto.Question.QuestionRequestDTO;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -19,14 +20,10 @@ import java.io.IOException;
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class QuestionFileService {
     private final McqQuestionService mcqQuestionService;
     private final ProgrammingQuestionService programmingQuestionService;
-
-    public QuestionFileService(McqQuestionService mcqQuestionService, ProgrammingQuestionService programmingQuestionService) {
-        this.mcqQuestionService = mcqQuestionService;
-        this.programmingQuestionService = programmingQuestionService;
-    }
 
     @Transactional
     public void processQuestionsFile(MultipartFile file) {

@@ -10,6 +10,7 @@ import com.yashpz.examination_system.examination_system.utils.ApiResponseUtil;
 import com.yashpz.examination_system.examination_system.utils.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,19 +18,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("auth")
+@RequiredArgsConstructor
 public class AuthController {
-
     private final AuthService authService;
-
     private final JwtUtil jwtUtil;
 
     @Value("${ACCESS_TOKEN_EXPIRY}")
     private int ACCESS_TOKEN_EXPIRY;
-
-    public AuthController(AuthService authService, JwtUtil jwtUtil) {
-        this.authService = authService;
-        this.jwtUtil = jwtUtil;
-    }
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<String>> register(@Valid @RequestBody AuthDTO user) {
