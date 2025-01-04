@@ -8,6 +8,7 @@ import { navigateTo } from "@/utils";
 import { useParams } from "react-router-dom";
 import { ScheduledExamStatus } from "@/features/ActiveExam/types";
 import ExamLobby from "./ExamLobby";
+import { setNewLoginDetected } from "@/features/ActiveExam/redux/activeExamSlice";
 
 export default function ExamSetup() {
   const webSocketClient = useWebSocket();
@@ -20,6 +21,9 @@ export default function ExamSetup() {
     socket.onmessage = (event) => {
       const message: WebSocketMessage = JSON.parse(event.data);
       handleSocketMessage(webSocketClient, message, dispatch);
+    };
+    socket.onclose = (closeEvent) => {
+      if (closeEvent.code === 1008) dispatch(setNewLoginDetected(true));
     };
   }, [webSocketClient]);
 

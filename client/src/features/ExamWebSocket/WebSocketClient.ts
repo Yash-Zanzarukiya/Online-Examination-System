@@ -25,9 +25,6 @@ export class WebSocketClient {
 
   public send(message: WebSocketMessage) {
     if (this.isConnected) {
-      console.log("sent message of type: " + message.subtype);
-      console.log(message);
-      console.log("----------------------------------------------");
       this.socket.send(JSON.stringify(message));
     } else {
       toastMessage("WebSocket is not connected. Cannot send message.");

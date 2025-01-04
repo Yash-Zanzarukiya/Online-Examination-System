@@ -36,7 +36,7 @@ function ImportQuestionDataDialog({ isOpen, onClose, onImport }: ImportQuestionD
         <DialogHeader>
           <DialogTitle>
             <div className="flex gap-1">
-              <span>Import Student Data</span>
+              <span>Import Questions Excel File</span>
             </div>
           </DialogTitle>
         </DialogHeader>

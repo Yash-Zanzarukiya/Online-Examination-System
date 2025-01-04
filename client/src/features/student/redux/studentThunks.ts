@@ -37,7 +37,7 @@ export const getStudentProfileThunk = createAsyncThunk(
       const apiRes = await studentProfileApi.getStudentProfileByUserId(userId);
       return apiRes.data.data;
     } catch (error) {
-      toastApiError("Failed to fetch profile", error);
+      // toastApiError("Failed to fetch profile", error);
     }
   }
 );

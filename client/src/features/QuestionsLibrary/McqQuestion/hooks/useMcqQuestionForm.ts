@@ -73,7 +73,6 @@ export const useMcqQuestionForm = (initialData?: McqQuestion) => {
   }, [initialData]);
 
   const handleSubmit = (data: McqQuestionForm) => {
-    console.log("data: ", data);
     if (initialData) {
       updateMcqQuestion(data);
     } else {

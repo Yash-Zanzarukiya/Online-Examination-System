@@ -97,7 +97,8 @@ public class ExamWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         String sessionToken = (String) session.getAttributes().get("sessionToken");
-        examSessionService.handleSessionDisconnect(sessionToken);
+        if(status.getCode() != 1008)
+            examSessionService.handleSessionDisconnect(sessionToken);
         sessionRegistry.closeAndRemoveSession(sessionToken);
         System.out.println("Connection closed: " + sessionToken);
     }

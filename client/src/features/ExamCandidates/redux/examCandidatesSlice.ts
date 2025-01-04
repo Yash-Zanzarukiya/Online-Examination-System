@@ -17,7 +17,6 @@ const examCandidatesSlice = createSlice({
       action: PayloadAction<{ examAttemptId: UUID; status: ExamAttemptStatus }>
     ) => {
       const { examAttemptId, status } = action.payload;
-      console.log("here: ", status);
       state.candidates = state.candidates.map((candidate) => {
         if (candidate.examAttemptId === examAttemptId) candidate.status = status;
         return candidate;

@@ -34,7 +34,6 @@ export default function QuestionEditor({ form }: QuestionEditorProps) {
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    console.log("file: ", file);
 
     if (file) {
       setValue(`question.imageFile`, file);

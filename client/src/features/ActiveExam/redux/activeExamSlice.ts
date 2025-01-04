@@ -18,6 +18,7 @@ const initialState: ActiveExamState = {
   timeRemaining: 0,
   isExamStarted: false,
   isExamSubmitted: false,
+  isNewLoginDetected: false,
 };
 
 const activeExamSlice = createSlice({
@@ -97,6 +98,9 @@ const activeExamSlice = createSlice({
     setFetchingQuestions: (state, action: PayloadAction<boolean>) => {
       state.isFetchingQuestions = action.payload;
     },
+    setNewLoginDetected: (state, action: PayloadAction<boolean>) => {
+      state.isNewLoginDetected = action.payload;
+    },
   },
 });
 
@@ -110,6 +114,7 @@ export const {
   saveConnectionResponse,
   setExamQuestions,
   setFetchingQuestions,
+  setNewLoginDetected,
 } = activeExamSlice.actions;
 
 export default activeExamSlice.reducer;

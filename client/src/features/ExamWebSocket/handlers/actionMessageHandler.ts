@@ -2,7 +2,11 @@ import { toastMessage } from "@/utils";
 import { ActionType } from "../types/message-types";
 import { WebSocketMessage } from "../types/types";
 import { WebSocketClient } from "../WebSocketClient";
-import { setExamQuestions, submitExam } from "@/features/ActiveExam/redux/activeExamSlice";
+import {
+  setExamQuestions,
+  setNewLoginDetected,
+  submitExam,
+} from "@/features/ActiveExam/redux/activeExamSlice";
 import { Action, Dispatch } from "@reduxjs/toolkit";
 import { ActiveExamQuestionsResponse } from "@/features/ActiveExam/types";
 
@@ -63,8 +67,9 @@ function handlePong(
 function handleForceLogout(
   _client: WebSocketClient,
   _message: WebSocketMessage,
-  _dispatch: Dispatch<Action>
+  dispatch: Dispatch<Action>
 ) {
+  dispatch(setNewLoginDetected(true));
   toastMessage("Forced logout received");
 }
 

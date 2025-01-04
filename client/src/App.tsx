@@ -76,8 +76,8 @@ function App() {
           <Route path="questions/build" element={<QuestionCreator />} />
 
           <Route path="questions/all" element={<QuestionLibrary />} />
-          <Route path="questions/mcq/:questionId" element={<CreateMcqQuestion />} />
           <Route path="questions/mcq" element={<CreateMcqQuestion />} />
+          <Route path="questions/mcq/:questionId" element={<CreateMcqQuestion />} />
 
           <Route path="exams/create" element={<CreateExamPage />} />
 

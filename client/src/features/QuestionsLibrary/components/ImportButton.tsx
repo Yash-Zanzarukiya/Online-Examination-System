@@ -13,7 +13,6 @@ export default function ImportButton() {
     if (file) {
       const formData = new FormData();
       formData.append("file", file);
-      console.log("FormData ready to be sent:", formData);
       dispatch(uploadQuestions(formData));
     }
   };

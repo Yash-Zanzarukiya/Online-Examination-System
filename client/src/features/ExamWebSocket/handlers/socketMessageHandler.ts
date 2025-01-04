@@ -11,7 +11,6 @@ export function handleSocketMessage(
   message: WebSocketMessage,
   dispatch: Dispatch<Action>
 ) {
-  console.log("Received message of type: ", message.subtype);
 
   switch (message.type) {
     case MessageType.ExamEvent:

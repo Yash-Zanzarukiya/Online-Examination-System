@@ -2,6 +2,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { useActiveExam } from "../hooks";
 import ConfirmDialog from "@/components/custom/ConfirmDialog";
+import { ModeToggle } from "@/components/Theming/mode-toggle";
 
 const ExamNavigation: React.FC = () => {
   const { examState, handleExamSubmit } = useActiveExam();
@@ -13,13 +14,15 @@ const ExamNavigation: React.FC = () => {
   };
 
   return (
-    <nav className="bg-white shadow-md p-4">
+    <nav className="shadow-md p-4">
       <div className="mx-auto flex justify-between items-center">
         <h1 className="text-2xl font-bold">Online Examination</h1>
         <div className="flex items-center space-x-8">
           <span className="text-lg font-medium">
             Time Remaining: {formatTime(examState.timeRemaining)}
           </span>
+
+          <ModeToggle />
 
           <ConfirmDialog
             onConfirm={handleExamSubmit}

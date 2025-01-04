@@ -135,7 +135,6 @@ const examSlice = createSlice({
     });
     builder.addCase(updateExamSchedule.fulfilled, (state, action) => {
       if (action.payload) state.scheduledExam = action.payload;
-      console.log(action.payload);
       state.isLoading = false;
     });
     builder.addCase(updateExamSchedule.rejected, (state) => {

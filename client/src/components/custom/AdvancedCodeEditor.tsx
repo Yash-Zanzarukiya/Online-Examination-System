@@ -54,7 +54,6 @@ const AdvancedCodeEditor = function AdvancedCodeEditor({
     onChange && onChange(generateMarkdown(newLanguage, code));
   };
 
-  // console.log("initialCode: ", initialCode);
   return (
     <div className="space-y-2 h-full w-full">
       <Select onValueChange={handleLanguageChange} value={language}>

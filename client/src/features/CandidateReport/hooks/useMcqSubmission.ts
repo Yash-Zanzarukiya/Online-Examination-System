@@ -17,7 +17,6 @@ function useMcqSubmission(questionId: UUID) {
     const fetchMcqSubmission = async (examAttemptId: UUID, questionId: UUID) => {
       try {
         const apiRes = await candidateReportApi.getMcqSubmission(examAttemptId, questionId);
-        console.log("apiRes: ", apiRes);
         setMcqSubmission(apiRes.data.data);
       } catch (error) {
         toastApiError("Failed to fetch MCQ submission", error);
@@ -25,7 +24,6 @@ function useMcqSubmission(questionId: UUID) {
         setIsLoading(false);
       }
     };
-    console.log(examAttemptId + " " + questionId);
 
     if (examAttemptId && questionId) {
       setIsLoading(true);

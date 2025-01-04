@@ -38,7 +38,7 @@ function StudentDashboard() {
                 size={"lg"}
                 onClick={() => navigateTo(`/student/profile`)}
               >
-                Give Exam
+                View Profile
               </Button>
               <Button size={"lg"} variant={"outline"} onClick={() => handleLogout()}>
                 Logout

@@ -4,10 +4,6 @@ import { MessageType, ExamEventType } from "@/features/ExamWebSocket/types/messa
 import useWarningDialog from "./useWarningDialog";
 import { WarningDialog } from "../components";
 
-let lastCopy: number | null = null;
-let lastPaste: number | null = null;
-let lastTabSwitch: number | null = null;
-
 const useExamSecurity = () => {
   const client = useWebSocket();
   const { isOpen, config, openDialog, closeDialog } = useWarningDialog();
@@ -103,7 +99,6 @@ const useExamSecurity = () => {
 
     const handleBlur = () => {
       logBlur();
-      lastTabSwitch = Date.now();
     };
 
     document.addEventListener("visibilitychange", handleVisibilityChange);

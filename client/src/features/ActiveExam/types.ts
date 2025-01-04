@@ -13,6 +13,7 @@ export interface ActiveExamState {
   timeRemaining: number;
   isExamStarted: boolean;
   isExamSubmitted: boolean;
+  isNewLoginDetected: boolean;
 }
 
 export interface ActiveExamData {

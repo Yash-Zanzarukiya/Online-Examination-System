@@ -40,7 +40,6 @@ export const useActiveExam = () => {
             subtype: ActionType.PING,
             payload: timeRemainingRef.current,
           });
-          console.log("Ping sent with remaining time:", timeRemainingRef.current);
         }, 15000);
       }
     }
