@@ -1,0 +1,54 @@
+spring:
+  # SQL Express configuration
+  datasource:
+    url: your-db-url
+    username: sa
+    password: root
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServerDialect
+        format_sql: true
+
+  # RabbitMQ configuration
+  rabbitmq:
+    host: your-host
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: your-v-host
+    listener:
+      simple:
+        concurrency: 1
+        max-concurrency: 10
+
+  # Email configuration
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: your-email@gmail.com
+    password: "your-email-password"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+# Cloudinary configuration
+cloudinary:
+  cloud-name: your-cloud-name
+  api-key: your-api-key
+  api-secret: your-api-secret
+
+# RabbitMQ specific queue and exchange setup
+rabbitmq:
+  queues:
+    marks: marks-calculation
+  exchanges:
+    marks: marks-exchange
+  routingKeys:
+    marks: marks-routing-key
