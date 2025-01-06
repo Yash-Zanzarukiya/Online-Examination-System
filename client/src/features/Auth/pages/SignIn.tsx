@@ -13,7 +13,7 @@ function SignIn() {
         <div className="text-center">
           <TypographyH1>Welcome Back In</TypographyH1>
           <Link to={"/"} className={`text-4xl lg:text-[2.65rem] tracking-normal`}>
-            ExamPro
+            OES
           </Link>
         </div>
 

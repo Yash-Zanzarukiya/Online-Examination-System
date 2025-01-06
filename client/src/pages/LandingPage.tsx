@@ -35,7 +35,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-background text-foreground">
       <header className="py-4 px-4 sm:px-6 lg:px-8 border-b border-border">
         <div className="container mx-auto flex justify-between items-center">
-          <p className="text-2xl font-bold text-primary">ExamPro</p>
+          <p className="text-2xl font-bold text-primary">OES</p>
           <nav className="hidden md:flex space-x-4">
             <p className="text-muted-foreground hover:text-primary">Features</p>
             <p className="text-primary">Home</p>
@@ -118,7 +118,7 @@ export default function LandingPage() {
           <div className="container mx-auto text-center">
             <h2 className="text-3xl font-bold mb-4">Ready to Transform Your Exams?</h2>
             <p className="text-xl mb-8 max-w-2xl mx-auto">
-              Join thousands of institutions already using ExamPro to conduct secure and efficient
+              Join thousands of institutions already using OES to conduct secure and efficient
               online examinations.
             </p>
             <Button size="lg" variant="default">

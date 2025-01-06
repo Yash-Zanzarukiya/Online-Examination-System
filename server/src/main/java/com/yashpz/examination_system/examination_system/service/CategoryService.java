@@ -44,7 +44,8 @@ public class CategoryService {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new ApiError(HttpStatus.NOT_FOUND, "Category not found"));
 
-        if (!category.getName().equals(categoryDTO.getName()) && categoryRepository.existsByName(categoryDTO.getName())) {
+        if (!category.getName().equals(categoryDTO.getName())
+                && categoryRepository.existsByName(categoryDTO.getName())) {
             throw new ApiError(HttpStatus.BAD_REQUEST, "Category name already exists");
         }
 
@@ -57,5 +58,16 @@ public class CategoryService {
             throw new ApiError(HttpStatus.NOT_FOUND, "Category not found");
         }
         categoryRepository.deleteById(id);
+    }
+
+    public Category fetchCategoryByName(String name) {
+        Category category = categoryRepository.findByName(name.toLowerCase().trim());
+        if (category == null)
+            throw new ApiError(HttpStatus.NOT_FOUND, "Category not found");
+        return category;
+    }
+
+    public UUID fetchCategoryIdByName(String name) {
+        return fetchCategoryByName(name).getId();
     }
 }

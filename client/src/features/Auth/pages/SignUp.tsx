@@ -9,7 +9,7 @@ function SignUp() {
         {/* Headers */}
         <div className="text-center">
           <TypographyH1>
-            Join <Link to={"/"}>ExamPro</Link>
+            Join <Link to={"/"}>OES</Link>
           </TypographyH1>
           <p>Sign up to start giving exam</p>
         </div>

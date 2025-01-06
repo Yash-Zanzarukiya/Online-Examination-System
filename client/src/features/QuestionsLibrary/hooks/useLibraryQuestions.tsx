@@ -1,16 +1,20 @@
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { getAllQuestions } from "../redux/questionThunks";
 
 function useLibraryQuestions() {
   const dispatch = useAppDispatch();
   const { questions } = useAppSelector(({ questionLibrary }) => questionLibrary);
 
-  useEffect(() => {
+  const fetchQuestions = useCallback(() => {
     dispatch(getAllQuestions());
   }, [dispatch]);
 
-  return { questions };
+  useEffect(() => {
+    fetchQuestions();
+  }, [dispatch]);
+
+  return { questions, reFetch: fetchQuestions };
 }
 
 export default useLibraryQuestions;

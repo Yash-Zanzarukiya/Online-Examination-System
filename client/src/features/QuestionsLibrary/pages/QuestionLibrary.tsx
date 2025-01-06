@@ -2,9 +2,11 @@ import { QuestionTable } from "../components/LibraryQuestionTable";
 import ImportButton from "../components/ImportButton";
 import { useLibraryQuestions } from "../hooks";
 import { AddQuestionButton } from "../components";
+import { RefreshCcw } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function QuestionLibrary() {
-  const { questions } = useLibraryQuestions();
+  const { questions, reFetch } = useLibraryQuestions();
 
   return (
     <div className="container mx-auto p-10 pt-5">
@@ -12,6 +14,9 @@ export default function QuestionLibrary() {
       <div className="flex justify-end gap-2">
         <ImportButton />
         <AddQuestionButton />
+        <Button size="icon" variant="outline" onClick={reFetch}>
+          <RefreshCcw />
+        </Button>
       </div>
       <QuestionTable data={questions} />
     </div>

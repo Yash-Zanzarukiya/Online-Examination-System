@@ -24,6 +24,7 @@ import java.util.*;
 public class QuestionFileService {
     private final McqQuestionService mcqQuestionService;
     private final ProgrammingQuestionService programmingQuestionService;
+    private final CategoryService categoryService;
 
     @Transactional
     public void processQuestionsFile(MultipartFile file) {
@@ -36,7 +37,8 @@ public class QuestionFileService {
 
             // Parse questions
             for (Row row : questionSheet) {
-                if (row.getRowNum() == 0) continue; // Skip header row
+                if (row.getRowNum() == 0)
+                    continue; // Skip header row
 
                 int srNo = (int) row.getCell(0).getNumericCellValue();
                 QuestionRequestDTO question = parseQuestion(row);
@@ -56,7 +58,8 @@ public class QuestionFileService {
 
             // Parse options
             for (Row row : optionSheet) {
-                if (row.getRowNum() == 0) continue; // Skip header row
+                if (row.getRowNum() == 0)
+                    continue; // Skip header row
 
                 int srNo = (int) row.getCell(0).getNumericCellValue();
                 String optionText = getCellValueAsString(row.getCell(1));
@@ -84,15 +87,18 @@ public class QuestionFileService {
         QuestionRequestDTO question = new QuestionRequestDTO();
         question.setDifficulty(Difficulty.valueOf(getCellValueAsString(row.getCell(3))));
         question.setType(QuestionType.valueOf(getCellValueAsString(row.getCell(1)).toUpperCase()));
-        if (question.getType() == QuestionType.MCQ)
-            question.setCategoryId(UUID.fromString(getCellValueAsString(row.getCell(2))));
+        if (question.getType() == QuestionType.MCQ) {
+            UUID categoryId = categoryService.fetchCategoryIdByName(getCellValueAsString(row.getCell(2)));
+            question.setCategoryId(categoryId);
+        }
         question.setQuestionText(getCellValueAsString(row.getCell(4)));
         question.setMarks(Integer.parseInt(getCellValueAsString(row.getCell(5))));
         return question;
     }
 
     private String getCellValueAsString(Cell cell) {
-        if (cell == null) return "";
+        if (cell == null)
+            return "";
         return switch (cell.getCellType()) {
             case STRING -> cell.getStringCellValue();
             case NUMERIC -> String.valueOf((int) cell.getNumericCellValue());
